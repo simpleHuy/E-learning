@@ -1,0 +1,111 @@
+<!-- Main Content -->
+        <div
+            class="container mx-auto mt-8 grid grid-cols-1 md:grid-cols-2 gap-8"
+        >
+            <!-- Testimonials Section -->
+            <div>
+                <h2 class="text-2xl font-bold mb-4">Students Testimonials</h2>
+                <p class="text-[#59595A] text-sm mb-4">
+                    Lorem ipsum dolor sit amet consectetur. Tempus tincidunt
+                    etiam eget elit id imperdiet et.
+                </p>
+                <div class="bg-white p-6 rounded-lg shadow-md text-base">
+                    <p>
+                        The web design course provided a solid foundation for
+                        me. The instructors were knowledgeable and supportive,
+                        and the interactive learning environment was engaging. I
+                        highly recommend it!
+                    </p>
+                    <div class="flex items-center mt-4">
+                        <img
+                            class="w-15 h-15 rounded-sm mr-3"
+                            src="/assets/images/Image.png"
+                            alt="User Image"
+                        />
+                        <div>
+                            <p class="font-semibold text-base">Sarah L</p>
+                        </div>
+                        <button
+                            class="ml-auto bg-[#4F75FF] text-white px-4 py-2 rounded hover:bg-blue-600"
+                        >
+                            Read More
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Login Section -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4 text-center">Sign Up</h2>
+                <p class="text-[#59595A] mb-6 text-center text-sm">
+                    Create an account to unlock exclusive features.
+                </p>
+                <form method="post" action="/users/signup">
+                    <label class="block text-base font-medium text-[#262626]" for="username"
+                        >Full Name</label
+                    >
+                    <input
+                        type="text"
+                        placeholder="Enter your Name" name="username" id="username"
+                        class="w-full px-4 py-2 border rounded mt-2 mb-4 text-base"
+                    /> 
+                    <label class="block text-base font-medium text-[#262626]" for="email"
+                        >Email</label
+                    >
+                    <input
+                        type="email"
+                        placeholder="Enter your Email" name="email" id="email"
+                        class="w-full px-4 py-2 border rounded mt-2 mb-4 text-base"
+                    />
+                    <label class="block text-base font-medium text-[#262626]" for="password"
+                        >Password</label
+                    >
+                    <div class="relative">
+                        <input
+                            id="passwordInput"
+                            type="password"
+                            placeholder="Enter your Password"
+                            name="password" id="password"
+                            class="w-full px-4 py-2 border rounded mt-2 mb-4 text-base"
+                        />
+                        <button
+                            type="button"
+                            id="togglePassword"
+                            class="absolute inset-y-0 right-4 text-[#59595A]"
+                        >
+                            <i class="" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" class="h-4 w-4" />
+                        <label class="ml-2 text-sm text-[#262626]"
+                            >Remember Me</label
+                        >
+                    </div>
+                    <button type="submit" 
+                        class="w-full bg-[#4F75FF] text-white py-2 rounded hover:bg-blue-600"
+                    >
+                        Sign Up
+                    </button>
+                    <div class="flex items-center my-4 text-xs text-[#59595A]">
+                        <hr class="flex-grow border-t border-[#59595A]" />
+                        <span class="mx-2">OR</span>
+                        <hr class="flex-grow border-t border-[#59595A]" />
+                    </div>
+                    <button
+                        class="w-full bg-[#F7F7F8] py-3 rounded text-[#262626] flex justify-center items-center"
+                    >
+                        <img
+                            src="/assets/images/Google.png"
+                            class="mr-2 w-4 h-4"
+                            alt="Google Logo"
+                        />
+                        Sign Up with Google
+                    </button>
+                </form>
+                <p class="text-center text-[#262626] mt-4 text-sm">
+                    Already have an account?
+                    <a href="#" class="text-[#4F75FF] hover:underline">Login</a>
+                </p>
+            </div>
+        </div>

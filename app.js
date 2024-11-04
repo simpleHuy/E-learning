@@ -6,8 +6,8 @@ const logger = require("morgan");
 const hbs = require("hbs");
 const db = require("./config/database");
 
-const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
+const homeRouter = require("./routes/home");
+const usersRouter = require("./routes/userRoute");
 
 const app = express();
 db.connect();
@@ -24,7 +24,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/public", express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
+app.use("/", homeRouter);
 app.use("/users", usersRouter);
 
 // catch 404 and forward to error handler
