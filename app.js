@@ -5,6 +5,8 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const hbs = require("hbs");
 const db = require("./config/database");
+const session = require("express-session");
+const flash = require("connect-flash");
 
 const homeRouter = require("./routes/home");
 const usersRouter = require("./routes/userRoute");
@@ -23,6 +25,22 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/public", express.static(path.join(__dirname, "public")));
+app.use(
+  session({
+    secret: "your_random_secret_key",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 60000 },
+  })
+);
+app.use(flash());
+app.use((req, res, next) => {
+  res.locals.successMessage = req.flash("successMessage");
+  res.locals.errorMessage = req.flash("errorMessage");
+  res.locals.existUser = req.flash("existUser");
+  res.locals.existMail = req.flash("existMail");
+  next();
+});
 
 app.use("/", homeRouter);
 app.use("/users", usersRouter);
