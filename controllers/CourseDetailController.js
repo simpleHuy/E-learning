@@ -15,18 +15,15 @@ const CourseDetailController = {
                     .json({ message: getReasonPhrase(StatusCodes.NOT_FOUND) });
             }
 
-            const Modules = await ModuleModel.find({ CourseId: CourseId });
-            const Lessons = await LessonModel.find({
-                ModuleId: { $in: Modules.map((module) => module._id) },
-            });
-
-            console.log("Course details:", Course);
-            console.log("Modules for course:", Modules);
-            console.log("Lessons for modules:", Lessons);
+            await Course.FetchAllModules();
+            for (let i = 0; i < Course.Modules.length; i++) {
+                const Module = Course.Modules[i];
+                await Module.FetchAllLessons();
+            }
 
             return res
                 .status(StatusCodes.OK)
-                .json({ Course, Modules, Lessons });
+                .render("CourseDetail", { Course });
         } catch (error) {
             console.error("Error fetching course detail:", error); // Log error
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

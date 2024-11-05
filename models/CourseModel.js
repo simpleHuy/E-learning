@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const ModuleModel = require("./ModuleModel");
 
 const CoursesSchema = new mongoose.Schema({
     Title: {
@@ -41,6 +42,23 @@ const CoursesSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    Modules: {
+        type: Array,
+        required: true,
+    },
 });
+
+CoursesSchema.methods.FetchAllModules = async function () {
+    const Modules = await ModuleModel.find({ CourseId: this._id });
+    this.Modules = Modules;
+};
+
+CoursesSchema.methods.calcTotalTime = function () {
+    let totalTime = 0;
+    for (let i = 0; i < this.Modules.length; i++) {
+        totalTime += this.Modules[i].calcTotalDuration();
+    }
+    return totalTime;
+};
 
 module.exports = mongoose.model("Courses", CoursesSchema, "Courses");
