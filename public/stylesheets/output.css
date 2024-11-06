@@ -1756,10 +1756,6 @@ video {
     width: 56px;
   }
 
-  .lg\:w-\[267px\] {
-    width: 267px;
-  }
-
   .lg\:grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -1828,8 +1824,8 @@ video {
     padding-top: 100px;
   }
 
-  .lg\:text-6xl {
-    font-size: 3.75rem;
+  .lg\:text-5xl {
+    font-size: 3rem;
     line-height: 1;
   }
 
@@ -1845,11 +1841,6 @@ video {
   .lg\:text-lg {
     font-size: 1.125rem;
     line-height: 1.75rem;
-  }
-
-  .lg\:text-5xl {
-    font-size: 3rem;
-    line-height: 1;
   }
 }
 
@@ -1962,10 +1953,6 @@ video {
 
   .\32xl\:w-\[92px\] {
     width: 92px;
-  }
-
-  .\32xl\:w-\[360px\] {
-    width: 360px;
   }
 
   .\32xl\:gap-12 {
