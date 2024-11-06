@@ -15,3 +15,11 @@ hbs.registerHelper("ConvertMinutesToHours", function (value) {
 hbs.registerHelper("increment", function (value) {
     return value + 1;
 });
+
+hbs.registerHelper("ConvertLevelToDesc", function (level) {
+    if (level === "Beginner") return "No prior experience required";
+
+    if (level === "Intermediate") return "Prior experience recommended";
+
+    if (level === "Advanced") return "Expert level";
+});
