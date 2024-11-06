@@ -9,9 +9,12 @@ const session = require("express-session");
 const flash = require("connect-flash");
 
 
+
+
 const homeRouter = require("./routes/home");
 const usersRouter = require("./routes/userRoute");
-const CourseDetailRouter = require("./routes/CourseDetailRoute");
+const coursesRouter = require("./routes/course");
+
 
 const app = express();
 db.connect();
@@ -23,6 +26,8 @@ hbs.registerPartials(path.join(__dirname, "views/partials"));
 
 //helpers
 require("./helpers/CourseDetailHelper");
+
+hbs.registerPartials(path.join(__dirname, "views/partials"));
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -49,8 +54,8 @@ app.use((req, res, next) => {
 
 app.use("/", homeRouter);
 app.use("/users", usersRouter);
-app.use("/courses", CourseDetailRouter);
 
+app.use("/courses", coursesRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next(createError(404));
