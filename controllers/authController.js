@@ -43,8 +43,6 @@ const authController = {
       res.redirect("/users/signup"); // Chuyển hướng về trang đăng
     } catch (error) {
       console.error(error);
-      console.log(req.session); // Kiểm tra xem session có tồn tại không
-      console.log(typeof req.flash);
       req.flash("errorMessage", "Signup failed!");
       res.redirect("/users/signup");
     }
