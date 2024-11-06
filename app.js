@@ -12,9 +12,13 @@ const CourseDetailRouter = require("./routes/CourseDetailRoute");
 
 const app = express();
 db.connect();
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
+
+//helpers
+require("./helpers/CourseDetailHelper");
 
 app.use(logger("dev"));
 app.use(express.json());

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const LessionSchema = new mongoose.Schema({
-    LessionName: {
+    LessonName: {
         type: String,
         required: true,
     },

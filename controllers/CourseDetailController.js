@@ -21,9 +21,10 @@ const CourseDetailController = {
                 await Module.FetchAllLessons();
             }
 
-            return res
-                .status(StatusCodes.OK)
-                .render("CourseDetail", { Course });
+            return res.status(StatusCodes.OK).render("CourseDetail", {
+                title: Course.Title,
+                Course: Course,
+            });
         } catch (error) {
             console.error("Error fetching course detail:", error); // Log error
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

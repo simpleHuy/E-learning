@@ -1,24 +1,28 @@
+<link rel="stylesheet" href="/stylesheets/CourseDetailStyle.css">
+
 <section class="bg-blue-200 py-6 mx-auto">
     <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2">
-        <div class="md:relative top-20 m-10">
-            <h1 class="text-4xl font-bold">{{Course.Title}}</h1>
-            </h1>
-            <p class="text-lg mt-2 text-gray-800">
-                Instructors: {{Course.Lecturer}}
-            </p>
-            <div class="text-3xl my-2 font-bold">${{Course.Price}}</div>
-            <div class="flex gap-2 mb-2">
-                <button class="min-w-[120px] max-w-[150px] text-white font-semibold bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-lg">
-                    Buy now
-                </button>
-                <button
-                    class="min-w-[120px] max-w-[150px] text-white font-semibold bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-lg"
-                >
-                    Add to cart
-                </button>
-            </div>
-            <div class="text-gray-800 text-sm">
-                3,880,886 already enrolled
+        <div class="flex items-center">
+            <div>
+                <h1 class="text-4xl font-bold">{{Course.Title}}</h1>
+                </h1>
+                <p class="text-lg mt-2 text-gray-800">
+                    Instructors: {{Course.Lecturer}}
+                </p>
+                <div class="text-3xl my-2 font-bold">${{Course.Price}}</div>
+                <div class="flex gap-2 mb-2">
+                    <button class="min-w-[120px] max-w-[150px] text-white font-semibold bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-lg">
+                        Buy now
+                    </button>
+                    <button
+                        class="min-w-[120px] max-w-[150px] text-white font-semibold bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-lg"
+                    >
+                        Add to cart
+                    </button>
+                </div>
+                <div class="text-gray-800 text-sm">
+                    3,880,886 already enrolled
+                </div>
             </div>
         </div>
 
@@ -32,21 +36,19 @@
     </div>
 </section>
 
-<section
-    class="max-w-7xl mx-auto px-4 py-4 grid grid-cols-2 gap-4 md:grid-cols-4 text-center"
->
+<section class="max-w-7xl mx-auto px-4 py-4 grid grid-cols-2 gap-4 md:grid-cols-4 text-center">
     <div class="p-4 bg-white rounded-lg shadow-lg">
-        <p class="text-lg font-semibold"> modules</p>
+        <p class="text-lg font-semibold"> {{calcNumberOfModules Course}} modules</p>
         <p class="text-sm text-gray-500">
             Gain insight into a topic and learn the fundamentals.
         </p>
     </div>
     <div class="p-4 bg-white rounded-lg shadow-lg">
-        <p class="text-lg font-semibold">4.8 ⭐</p>
+        <p class="text-lg font-semibold">{{Course.Rate}} ⭐</p>
         <p class="text-sm text-gray-500">(90,440 reviews)</p>
     </div>
     <div class="p-4 bg-white rounded-lg shadow-lg">
-        <p class="text-lg font-semibold">Intermediate level</p>
+        <p class="text-lg font-semibold">{{Course.Level}} level</p>
         <p class="text-sm text-gray-500">
             Some related experience required
         </p>
@@ -54,7 +56,7 @@
     <div class="p-4 bg-white rounded-lg shadow-lg">
         <p class="text-lg font-semibold">Flexible schedule</p>
         <p class="text-sm text-gray-500">
-            Approx. 14 hours, learn at your own pace
+            Approx. {{calcTotalVideoTime Course}} hours, learn at your own pace
         </p>
     </div>
 </section>
@@ -62,393 +64,63 @@
 <section class="max-w-7xl mx-auto px-4 py-8">
     <h2 class="text-2xl font-semibold mb-4">Skills you'll gain</h2>
     <div class="flex flex-wrap gap-4">
-        <span class="bg-gray-200 text-gray-800 px-4 py-2 rounded-full">User
-            Research</span>
-        <span
-            class="bg-gray-200 text-gray-800 px-4 py-2 rounded-full"
-        >Wireframing</span>
-        <span
-            class="bg-gray-200 text-gray-800 px-4 py-2 rounded-full"
-        >Prototyping</span>
-        <span
-            class="bg-gray-200 text-gray-800 px-4 py-2 rounded-full"
-        >Interaction Design</span>
+        {{#each Course.SkillGain}}
+            <span class="bg-gray-200 text-gray-800 px-4 py-2 rounded-full">{{this}}</span>
+        {{/each}}
     </div>
 </section>
 
 <section class="max-w-7xl mx-auto px-4 py-8">
     <h2 class="text-4xl font-semibold mb-4">
-        There are 5 modules in this course
+        There are {{calcNumberOfModules Course}} modules in this course
     </h2>
     <p class="text-gray-600 mb-12">
-        Welcome to our UI/UX Design course! This comprehensive program will help
-        you understand the basics of user-centered design, improve your
-        interface and visual design skills, and enhance your user experience
-        (UX) knowledge. Dive into the world of design strategy, wireframing,
-        prototyping, and usability testing, below is an overview of the
-        curriculum.
+        {{Course.Description}}
     </p>
 
-    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-        <div
-            class="hover:bg-blue-50 cursor-pointer"
-            onclick="toggleContent('module1')"
-        >
-            <h2 class="text-2xl font-bold mb-2 mx-2">
-                01. Introduction to UI/UX Design
-            </h2>
-            <h3 class="text-base mb-2 mx-2 text-gray-500">
-                Modules 1 - 2.5 hours to complete
-            </h3>
-        </div>
-
-        <div
-            id="module1"
-            class="text-gray-600 space-y-2 overflow-hidden max-h-0 hidden"
-        >
-            <ul>
-                <li
-                    class="flex justify-between border-2 border-gray-100 p-4 hover:border-yellow-500 cursor-pointer"
-                >
-                    <div>
-                        Understanding UI/UX Design Principles
-                        <br />
-                        Lesson 01
-                    </div>
-                    <div
-                        class="text-gray-500 inline-flex items-center bg-gray-100 rounded-md p-2"
-                    >
-                        <i class="fa-regular fa-clock mr-1"></i>
-                        45 Minutes
-                    </div>
-                </li>
-                <li
-                    class="flex justify-between border-2 border-gray-100 p-4 hover:border-yellow-500 cursor-pointer"
-                >
-                    <span>Importance of User-Centered Design
-                        <br />
-                        Lesson 02</span>
-                    <div
-                        class="text-gray-500 inline-flex items-center bg-gray-100 rounded-md p-2"
-                    >
-                        <i class="fa-regular fa-clock mr-1"></i>
-                        1 hour
-                    </div>
-                </li>
-                <li
-                    class="flex justify-between border-2 border-gray-100 p-4 hover:border-yellow-500 cursor-pointer"
-                >
-                    <span>The Role of UI/UX Design in Product Development
-                        <br />
-                        Lesson 03</span>
-                    <div
-                        class="text-gray-500 inline-flex items-center bg-gray-100 rounded-md p-2"
-                    >
-                        <i class="fa-regular fa-clock mr-1"></i>
-                        45 minutes
-                    </div>
-                </li>
-            </ul>
-
-            <div class="mx-2 font-semibold text-lg inline-block">
-                Also have:
-            </div>
-            <div class="inline-block">
-                <div class="inline-block mr-2">
-                    <i class="fa-brands fa-readme mx-0.5"></i>
-                    3 readings
+    {{#each Course.Modules}}
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                <div class="hover:bg-blue-50 cursor-pointer" onclick="toggleContent('module{{@index}}')">
+                    <h2 class="text-2xl font-bold mb-2 mx-2">
+                        0{{increment @index}}. {{this.ModuleName}}
+                    </h2>
+                    <h3 class="text-base mb-2 mx-2 text-gray-500">
+                        Modules {{increment @index}} - {{ConvertMinutesToHours this.Duration}} hours to complete
+                    </h3>
                 </div>
-                <i class="fa-regular fa-file-lines mx-0.5"></i>
-                3 assignments
-            </div>
-        </div>
-    </div>
 
-    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-        <div
-            class="hover:bg-blue-50 cursor-pointer"
-            onclick="toggleContent('module2')"
-        >
-            <h2 class="text-2xl font-bold mb-2 mx-2">
-                02. User Research and Analysis
-            </h2>
-            <h3 class="text-base mb-2 mx-2 text-gray-500">
-                Modules 2 - 3 hours to complete
-            </h3>
-        </div>
-        <div
-            id="module2"
-            class="text-gray-600 space-y-2 overflow-hidden max-h-0 transition-all duration-500 ease-in-out hidden"
-        >
-            <ul>
-                <li
-                    class="flex justify-between border-2 border-gray-100 p-4 hover:border-yellow-500 cursor-pointer"
-                >
-                    <span>Conducting User Research and Interviews
-                        <br />
-                        Lesson 01</span>
-                    <div
-                        class="text-gray-500 inline-flex items-center bg-gray-100 rounded-md p-2"
-                    >
-                        <i class="fa-regular fa-clock mr-1"></i>
-                        1 hour
+                <div id="module{{@index}}" class="text-gray-600 space-y-2 overflow-hidden max-h-0 hidden">
+                    {{#each this.Lessons}}
+                        <ul>
+                            <li class="flex justify-between border-2 border-gray-100 p-4 hover:border-yellow-500 cursor-pointer">
+                                <div>
+                                    {{this.LessonName}}
+                                    <br/>
+                                    Lesson 0{{increment @index}}
+                                </div>
+                                <div class="text-gray-500 inline-flex items-center bg-gray-100 rounded-md p-2">
+                                    <i class="fa-regular fa-clock mr-1"></i>
+                                    {{this.Duration}} Minutes
+                                </div>
+                            </li>
+                        </ul>
+                    {{/each}}
+                    <div class="mx-2 font-semibold text-lg inline-block">
+                        Also have:
                     </div>
-                </li>
-                <li
-                    class="flex justify-between border-2 border-gray-100 p-4 hover:border-yellow-500 cursor-pointer"
-                >
-                    <span>Analyzing User Needs and Behavior
-                        <br />
-                        Lesson 02</span>
-                    <div
-                        class="text-gray-500 inline-flex items-center bg-gray-100 rounded-md p-2"
-                    >
-                        <i class="fa-regular fa-clock mr-1"></i>
-                        1 hour
+                    <div class="inline-block">
+                        <div class="inline-block mr-2">
+                            <i class="fa-brands fa-readme mx-0.5"></i>
+                            3 readings
+                        </div>
+                        <i class="fa-regular fa-file-lines mx-0.5"></i>
+                        3 assignments
                     </div>
-                </li>
-                <li
-                    class="flex justify-between border-2 border-gray-100 p-4 hover:border-yellow-500 cursor-pointer"
-                >
-                    <span>Creating User Personas and Scenarios
-                        <br />
-                        Lesson 03</span>
-                    <div
-                        class="text-gray-500 inline-flex items-center bg-gray-100 rounded-md p-2"
-                    >
-                        <i class="fa-regular fa-clock mr-1"></i>
-                        1 hour
-                    </div>
-                </li>
-            </ul>
-
-            <div class="mx-2 font-semibold text-lg inline-block">
-                Also have:
-            </div>
-            <div class="inline-block">
-                <div class="inline-block mr-2">
-                    <i class="fa-brands fa-readme mx-0.5"></i>
-                    2 readings
                 </div>
-                <i class="fa-regular fa-file-lines mx-0.5"></i>
-                4 assignments
-            </div>
         </div>
-    </div>
-
-    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-        <div
-            class="hover:bg-blue-50 cursor-pointer"
-            onclick="toggleContent('module3')"
-        >
-            <h2 class="text-2xl font-bold mb-2 mx-2">
-                03. Wireframing and Prototyping
-            </h2>
-            <h3 class="text-base mb-2 mx-2 text-gray-500">
-                Modules 3 - 3 hours to complete
-            </h3>
-        </div>
-        <div
-            id="module3"
-            class="text-gray-600 space-y-2 overflow-hidden max-h-0 transition-all duration-500 ease-in-out hidden"
-        >
-            <ul>
-                <li
-                    class="flex justify-between border-2 border-gray-100 p-4 hover:border-yellow-500 cursor-pointer"
-                >
-                    <span>Introduction to Wireframing Tools and Techniques
-                        <br />
-                        Lesson 01</span>
-                    <div
-                        class="text-gray-500 inline-flex items-center bg-gray-100 rounded-md p-2"
-                    >
-                        <i class="fa-regular fa-clock mr-1"></i>
-                        1 hour
-                    </div>
-                </li>
-                <li
-                    class="flex justify-between border-2 border-gray-100 p-4 hover:border-yellow-500 cursor-pointer"
-                >
-                    <span>Creating Low-Fidelity Wireframes
-                        <br />
-                        Lesson 02</span>
-                    <div
-                        class="text-gray-500 inline-flex items-center bg-gray-100 rounded-md p-2"
-                    >
-                        <i class="fa-regular fa-clock mr-1"></i>
-                        1 hour
-                    </div>
-                </li>
-                <li
-                    class="flex justify-between border-2 border-gray-100 p-4 hover:border-yellow-500 cursor-pointer"
-                >
-                    <span>Prototyping and Interactive Mockups
-                        <br />
-                        Lesson 03</span>
-                    <div
-                        class="text-gray-500 inline-flex items-center bg-gray-100 rounded-md p-2"
-                    >
-                        <i class="fa-regular fa-clock mr-1"></i>
-                        1 hour
-                    </div>
-                </li>
-            </ul>
-
-            <div class="mx-2 font-semibold text-lg inline-block">
-                Also have:
-            </div>
-            <div class="inline-block">
-                <div class="inline-block mr-2">
-                    <i class="fa-brands fa-readme mx-0.5"></i>
-                    4 readings
-                </div>
-                <i class="fa-regular fa-file-lines mx-0.5"></i>
-                3 assignments
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-        <div
-            class="hover:bg-blue-50 cursor-pointer"
-            onclick="toggleContent('module4')"
-        >
-            <h2 class="text-2xl font-bold mb-2 mx-2">
-                04. Visual Design and Branding
-            </h2>
-            <h3 class="text-base mb-2 mx-2 text-gray-500">
-                Modules 4 - 2.75 hours to complete
-            </h3>
-        </div>
-        <div
-            id="module4"
-            class="text-gray-600 space-y-2 overflow-hidden max-h-0 transition-all duration-500 ease-in-out hidden"
-        >
-            <ul>
-                <li
-                    class="flex justify-between border-2 border-gray-100 p-4 hover:border-yellow-500 cursor-pointer"
-                >
-                    <span>Color Theory and Typography in UI Design
-                        <br />
-                        Lesson 01</span>
-                    <div
-                        class="text-gray-500 inline-flex items-center bg-gray-100 rounded-md p-2"
-                    >
-                        <i class="fa-regular fa-clock mr-1"></i>
-                        1 hour
-                    </div>
-                </li>
-                <li
-                    class="flex justify-between border-2 border-gray-100 p-4 hover:border-yellow-500 cursor-pointer"
-                >
-                    <span>Visual Hierarchy and Layout Design
-                        <br />
-                        Lesson 02</span>
-                    <div
-                        class="text-gray-500 inline-flex items-center bg-gray-100 rounded-md p-2"
-                    >
-                        <i class="fa-regular fa-clock mr-1"></i>
-                        1 hour
-                    </div>
-                </li>
-                <li
-                    class="flex justify-between border-2 border-gray-100 p-4 hover:border-yellow-500 cursor-pointer"
-                >
-                    <span>Creating a Strong Brand Identity
-                        <br />
-                        Lesson 03</span>
-                    <div
-                        class="text-gray-500 inline-flex items-center bg-gray-100 rounded-md p-2"
-                    >
-                        <i class="fa-regular fa-clock mr-1"></i>
-                        45 minutes
-                    </div>
-                </li>
-            </ul>
-
-            <div class="mx-2 font-semibold text-lg inline-block">
-                Also have:
-            </div>
-            <div class="inline-block">
-                <div class="inline-block mr-2">
-                    <i class="fa-brands fa-readme mx-0.5"></i>
-                    3 readings
-                </div>
-                <i class="fa-regular fa-file-lines mx-0.5"></i>
-                2 assignments
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-        <div
-            class="hover:bg-blue-50 cursor-pointer"
-            onclick="toggleContent('module5')"
-        >
-            <h2 class="text-2xl font-bold mb-2 mx-2">
-                05. Usability Testing and Iteration
-            </h2>
-            <h3 class="text-base mb-2 mx-2 text-gray-500">
-                Modules 5 - 2.5 hours to complete
-            </h3>
-        </div>
-        <div
-            id="module5"
-            class="text-gray-600 space-y-2 overflow-hidden max-h-0 transition-all duration-500 ease-in-out hidden"
-        >
-            <ul>
-                <li
-                    class="flex justify-between border-2 border-gray-100 p-4 hover:border-yellow-500 cursor-pointer"
-                >
-                    <span>Usability Testing Methods and Techniques
-                        <br />
-                        Lesson 01</span>
-                    <div
-                        class="text-gray-500 inline-flex items-center bg-gray-100 rounded-md p-2"
-                    >
-                        <i class="fa-regular fa-clock mr-1"></i>
-                        1 hour
-                    </div>
-                </li>
-                <li
-                    class="flex justify-between border-2 border-gray-100 p-4 hover:border-yellow-500 cursor-pointer"
-                >
-                    <span>Analyzing Usability Test Results
-                        <br />
-                        Lesson 02</span>
-                    <div
-                        class="text-gray-500 inline-flex items-center bg-gray-100 rounded-md p-2"
-                    >
-                        <i class="fa-regular fa-clock mr-1"></i>
-                        45 minutes
-                    </div>
-                </li>
-                <li
-                    class="flex justify-between border-2 border-gray-100 p-4 hover:border-yellow-500 cursor-pointer"
-                >
-                    <span>Iterating and Improving UX Designs
-                        <br />
-                        Lesson 03</span>
-                    <div
-                        class="text-gray-500 inline-flex items-center bg-gray-100 rounded-md p-2"
-                    >
-                        <i class="fa-regular fa-clock mr-1"></i>
-                        45 minutes
-                    </div>
-                </li>
-            </ul>
-
-            <div class="mx-2 font-semibold text-lg inline-block">
-                Also have:
-            </div>
-            <div class="inline-block">
-                <div class="inline-block mr-2">
-                    <i class="fa-brands fa-readme mx-0.5"></i>
-                    5 readings
-                </div>
-                <i class="fa-regular fa-file-lines mx-0.5"></i>
-                3 assignments
-            </div>
-        </div>
-    </div>
+    {{/each}}
 </section>
+
+<script src="/js/CourseDetailScript.js"></script>
+
+
