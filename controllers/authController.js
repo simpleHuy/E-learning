@@ -1,5 +1,5 @@
 const express = require("express");
-const User = require("../models/userService");
+const User = require("../models/UserModel");
 const bcrypt = require("bcrypt");
 
 const authController = {

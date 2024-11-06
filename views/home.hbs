@@ -33,6 +33,7 @@
             <div class="flex 2xl:mt-16 mt-12">
                 <button
                     class="bg-[#4f75ff] rounded-md 2xl:px-6 2xl:py-4 px-5 py-4 2xl:text-lg sm:text-base text-sm text-white font-semibold"
+                    onclick="window.location.href='/courses'"
                 >
                     Explore Courses
                 </button>
@@ -46,7 +47,7 @@
         <!--End Hero-->
         <!--Logo Company-->
         <div
-            class="sm:mt-20 mt-12 container mx-auto flex justify-center items-center bg-[#FCFCFD] border-[1px] border-solid border-[#F1F1F3] rounded-[12px]"
+            class="sm:mt-20 mt-12 container mx-auto flex justify-around items-center bg-[#FCFCFD] border-[1px] border-solid border-[#F1F1F3] rounded-[12px]"
         >
             <a
                 class="2xl:px-10 2xl:py-8 px-7 py-5"
@@ -366,7 +367,7 @@
                         feugiat senectus in.
                     </p>
                     <button
-                        onclick="window.location.href='../CoursesListPage/CoursesListPage.html'"
+                        onclick="window.location.href='/courses'"
                         class="hover:bg-slate-200 text-[#262626] lg:ml-auto lg:mt-0 mt-5 text-lg border-solid border-[1px] border-[#F1F1F3] bg-[#FCFCFD] rounded-lg px-6 py-4 lg:col-start-11 lg:col-span-2 col-span-3 font-medium"
                     >
                         View All
@@ -376,26 +377,27 @@
             <div
                 class="grid grid-cols-12 grid-rows-3 2xl:gap-7 gap-5 2xl:mt-20 mt-[60px]"
             >
+            {{#each Courses}}
                 <div
                     class="2xl:p-12 lg:p-10 p-6 lg:col-span-6 col-span-12 row-span-1 flex flex-col justify-between bg-white rounded-xl border-solid border-[1px] border-[##F1F1F3]"
                 >
                     <div>
-                        <img src="../assets/images/CourseImg01.png" alt="" />
+                        <img src="{{this.Img}}" alt="{{this.Title}}" class="w-full 2xl:h-[360px] lg:h-[267px] h-[172px] object-cover" />
                     </div>
                     <div
                         class="2xl:mt-7 mt-6 flex items-center justify-center gap-3"
                     >
                         <p class="text-[#4C4C4D] 2xl:text-lg text-sm">
-                            4 Weeks
+                            {{this.Duration}} Weeks
                         </p>
                         <p class="text-[#4C4C4D] 2xl:text-lg text-sm">
-                            Beginner
+                            {{this.Level}}
                         </p>
                         <div class="ml-auto">
                             <p
                                 class="text-[#262626] 2xl:text-xl text-base font-medium"
                             >
-                                By John Smith
+                                {{this.Lecturer}}
                             </p>
                         </div>
                     </div>
@@ -403,254 +405,24 @@
                         <p
                             class="text-[#262626] 2xl:text-2xl text-xl font-semibold"
                         >
-                            Web Design Fundamentals
+                            {{this.Title}}
                         </p>
                     </div>
                     <div class="mt-3">
                         <p
                             class="text-[#4C4C4D] 2xl:text-2xl text-xll flex-grow"
                         >
-                            Learn the fundamentals of web design, including
-                            HTML, CSS, and responsive design principles. Develop
-                            the skills to create visually appealing and
-                            user-friendly websites.
+                            {{this.ShortDesc}}
                         </p>
                     </div>
                     <button
-                        class="font-medium mt-auto px-6 py-4 text-[#262626] 2xl:text-xl text-sm rounded-md border-solid border-[1px] border-[#F1F1F3] bg-[#F7F7F8] w-full hover:bg-slate-200"
+                        class="font-medium mt-auto mb-3 px-6 py-4 text-[#262626] 2xl:text-xl text-sm rounded-md border-solid border-[1px] border-[#F1F1F3] bg-[#F7F7F8] w-full hover:bg-slate-200"
+                        onclick="window.location.href='/courses/{{this.id}}'"
                     >
                         Get it Now
                     </button>
                 </div>
-                <div
-                    class="2xl:p-12 lg:p-10 p-6 lg:col-span-6 col-span-12 row-span-1 flex flex-col justify-between bg-white rounded-xl border-solid border-[1px] border-[##F1F1F3]"
-                >
-                    <div>
-                        <img src="../assets/images/CourseImg02.png" alt="" />
-                    </div>
-                    <div
-                        class="2xl:mt-7 mt-6 flex items-center justify-center gap-3"
-                    >
-                        <p class="text-[#4C4C4D] 2xl:text-lg text-sm">
-                            6 Weeks
-                        </p>
-                        <p class="text-[#4C4C4D] 2xl:text-lg text-sm">
-                            Intermediate
-                        </p>
-                        <div class="ml-auto">
-                            <p
-                                class="text-[#262626] 2xl:text-xl text-base font-medium"
-                            >
-                                By Emily Johnson
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-6">
-                        <p
-                            class="text-[#262626] 2xl:text-2xl text-xl font-semibold"
-                        >
-                            UI/UX Design
-                        </p>
-                    </div>
-                    <div class="mt-3">
-                        <p
-                            class="text-[#4C4C4D] 2xl:text-2xl text-xll flex-grow"
-                        >
-                            Master the art of creating intuitive user interfaces
-                            (UI) and enhancing user experiences (UX). Learn
-                            design principles, wireframing, prototyping, and
-                            usability testing techniques.
-                        </p>
-                    </div>
-                    <button
-                        class="font-medium mt-auto px-6 py-4 text-[#262626] 2xl:text-xl text-sm rounded-md border-solid border-[1px] border-[#F1F1F3] bg-[#F7F7F8] w-full hover:bg-slate-200"
-                    >
-                        Get it Now
-                    </button>
-                </div>
-                <div
-                    class="2xl:p-12 lg:p-10 p-6 lg:col-span-6 col-span-12 row-span-1 flex flex-col justify-between bg-white rounded-xl border-solid border-[1px] border-[##F1F1F3]"
-                >
-                    <div>
-                        <img src="../assets/images/CourseImg03.png" alt="" />
-                    </div>
-                    <div
-                        class="2xl:mt-7 mt-6 flex items-center justify-center gap-3"
-                    >
-                        <p class="text-[#4C4C4D] 2xl:text-lg text-sm">
-                            8 Weeks
-                        </p>
-                        <p class="text-[#4C4C4D] 2xl:text-lg text-sm">
-                            Intermediate
-                        </p>
-                        <div class="ml-auto">
-                            <p
-                                class="text-[#262626] 2xl:text-xl text-base font-medium"
-                            >
-                                By David Brown
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-6">
-                        <p
-                            class="text-[#262626] 2xl:text-2xl text-xl font-semibold"
-                        >
-                            Mobile App Development
-                        </p>
-                    </div>
-                    <div class="mt-3">
-                        <p
-                            class="text-[#4C4C4D] 2xl:text-2xl text-xll flex-grow"
-                        >
-                            Dive into the world of mobile app development. Learn
-                            to build native iOS and Android applications using
-                            industry-leading frameworks like Swift and Kotlin.
-                        </p>
-                    </div>
-                    <button
-                        class="font-medium mt-auto px-6 py-4 text-[#262626] 2xl:text-xl text-sm rounded-md border-solid border-[1px] border-[#F1F1F3] bg-[#F7F7F8] w-full hover:bg-slate-200"
-                    >
-                        Get it Now
-                    </button>
-                </div>
-                <div
-                    class="2xl:p-12 lg:p-10 p-6 lg:col-span-6 col-span-12 row-span-1 flex flex-col justify-between bg-white rounded-xl border-solid border-[1px] border-[##F1F1F3]"
-                >
-                    <div>
-                        <img src="../assets/images/CourseImg04.png" alt="" />
-                    </div>
-                    <div
-                        class="2xl:mt-7 mt-6 flex items-center justify-center gap-3"
-                    >
-                        <p class="text-[#4C4C4D] 2xl:text-lg text-sm">
-                            10 Weeks
-                        </p>
-                        <p class="text-[#4C4C4D] 2xl:text-lg text-sm">
-                            Beginner
-                        </p>
-                        <div class="ml-auto">
-                            <p
-                                class="text-[#262626] 2xl:text-xl text-base font-medium"
-                            >
-                                By Sarah Thompson
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-6">
-                        <p
-                            class="text-[#262626] 2xl:text-2xl text-xl font-semibold"
-                        >
-                            Graphic Design for Beginners
-                        </p>
-                    </div>
-                    <div class="mt-3">
-                        <p
-                            class="text-[#4C4C4D] 2xl:text-2xl text-xll flex-grow"
-                        >
-                            Discover the fundamentals of graphic design,
-                            including typography, color theory, layout design,
-                            and image manipulation techniques. Create visually
-                            stunning designs for print and digital media.
-                        </p>
-                    </div>
-                    <button
-                        class="font-medium mt-auto px-6 py-4 text-[#262626] 2xl:text-xl text-sm rounded-md border-solid border-[1px] border-[#F1F1F3] bg-[#F7F7F8] w-full hover:bg-slate-200"
-                    >
-                        Get it Now
-                    </button>
-                </div>
-                <div
-                    class="2xl:p-12 lg:p-10 p-6 lg:col-span-6 col-span-12 row-span-1 flex flex-col justify-between bg-white rounded-xl border-solid border-[1px] border-[##F1F1F3]"
-                >
-                    <div>
-                        <img src="../assets/images/CourseImg05.png" alt="" />
-                    </div>
-                    <div
-                        class="2xl:mt-7 mt-6 flex items-center justify-center gap-3"
-                    >
-                        <p class="text-[#4C4C4D] 2xl:text-lg text-sm">
-                            10 Weeks
-                        </p>
-                        <p class="text-[#4C4C4D] 2xl:text-lg text-sm">
-                            Intermediate
-                        </p>
-                        <div class="ml-auto">
-                            <p
-                                class="text-[#262626] 2xl:text-xl text-base font-medium"
-                            >
-                                By Michael Adams
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-6">
-                        <p
-                            class="text-[#262626] 2xl:text-2xl text-xl font-semibold"
-                        >
-                            Front-End Web Development
-                        </p>
-                    </div>
-                    <div class="mt-3">
-                        <p
-                            class="text-[#4C4C4D] 2xl:text-2xl text-xll flex-grow"
-                        >
-                            Become proficient in front-end web development.
-                            Learn HTML, CSS, JavaScript, and popular frameworks
-                            like Bootstrap and React. Build interactive and
-                            responsive websites.
-                        </p>
-                    </div>
-                    <button
-                        class="font-medium mt-auto px-6 py-4 text-[#262626] 2xl:text-xl text-sm rounded-md border-solid border-[1px] border-[#F1F1F3] bg-[#F7F7F8] w-full hover:bg-slate-200"
-                    >
-                        Get it Now
-                    </button>
-                </div>
-                <div
-                    class="2xl:p-12 lg:p-10 p-6 lg:col-span-6 col-span-12 row-span-1 flex flex-col justify-between bg-white rounded-xl border-solid border-[1px] border-[##F1F1F3]"
-                >
-                    <div>
-                        <img src="../assets/images/CourseImg06.png" alt="" />
-                    </div>
-                    <div
-                        class="2xl:mt-7 mt-6 flex items-center justify-center gap-3"
-                    >
-                        <p class="text-[#4C4C4D] 2xl:text-lg text-sm">
-                            6 Weeks
-                        </p>
-                        <p class="text-[#4C4C4D] 2xl:text-lg text-sm">
-                            Advance
-                        </p>
-                        <div class="ml-auto">
-                            <p
-                                class="text-[#262626] 2xl:text-xl text-base font-medium"
-                            >
-                                By Jennifer Wilson
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-6">
-                        <p
-                            class="text-[#262626] 2xl:text-2xl text-xl font-semibold"
-                        >
-                            Advanced JavaScript
-                        </p>
-                    </div>
-                    <div class="mt-3">
-                        <p
-                            class="text-[#4C4C4D] 2xl:text-2xl text-xll flex-grow"
-                        >
-                            Take your JavaScript skills to the next level.
-                            Explore advanced concepts like closures, prototypes,
-                            asynchronous programming, and ES6 features. Build
-                            complex applications with confidence.
-                        </p>
-                    </div>
-                    <button
-                        class="font-medium mt-auto px-6 py-4 text-[#262626] 2xl:text-xl text-sm rounded-md border-solid border-[1px] border-[#F1F1F3] bg-[#F7F7F8] w-full hover:bg-slate-200"
-                    >
-                        Get it Now
-                    </button>
-                </div>
+                  {{/each}}
             </div>
         </div>
         <!--End Courses-->
