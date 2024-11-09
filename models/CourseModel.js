@@ -48,6 +48,10 @@ const CoursesSchema = new mongoose.Schema({
     },
 });
 
+CoursesSchema.statics.GetCourseById = async function (CourseId) {
+    return await this.findById(CourseId);
+};
+
 CoursesSchema.methods.FetchAllModules = async function () {
     const Modules = await ModuleModel.find({ CourseId: this._id });
     this.Modules = Modules;
