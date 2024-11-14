@@ -4,9 +4,9 @@ const userController = require("../controllers/authController");
 
 /* GET signup page. */
 router
-  .get("/signup", function (req, res) {
-    res.render("signup", { title: "Signup" });
-  })
-  .post("/signup", userController.registerUser);
+    .get("/signup", function (req, res) {
+        res.render("/pages/signup", { title: "Signup" });
+    })
+    .post("/signup", userController.registerUser);
 
 module.exports = router;

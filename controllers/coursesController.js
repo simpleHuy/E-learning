@@ -27,7 +27,7 @@ const CourseController = {
             const isLastPage = page === totalPages;
 
             // Render the Handlebars template with pagination and courses data
-            res.render("courseslist", {
+            res.render("/pages/courseslist", {
                 courses,
                 currentPage: page,
                 totalPages,
