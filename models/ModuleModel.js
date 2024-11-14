@@ -8,6 +8,7 @@ const ModuleSchema = new mongoose.Schema({
     },
     CourseId: {
         type: mongoose.Schema.Types.ObjectId,
+        ref: "Courses",
         required: true,
     },
     Lessons: {

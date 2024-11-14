@@ -59,9 +59,12 @@ const CourseController = {
                 await Module.FetchAllLessons();
             }
 
+            const RelevantCourses = await Course.GetAllRelevantCourses(Course);
+
             return res.status(StatusCodes.OK).render("pages/CourseDetail", {
                 title: Course.Title,
                 Course: Course,
+                RelevantCourses: RelevantCourses,
             });
         } catch (error) {
             console.error("Error fetching course detail:", error); // Log error
