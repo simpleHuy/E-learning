@@ -27,7 +27,7 @@ const CourseController = {
             const isLastPage = page === totalPages;
 
             // Render the Handlebars template with pagination and courses data
-            res.render("/pages/courseslist", {
+            res.render("pages/courseslist", {
                 courses,
                 currentPage: page,
                 totalPages,
@@ -59,7 +59,7 @@ const CourseController = {
                 await Module.FetchAllLessons();
             }
 
-            return res.status(StatusCodes.OK).render("CourseDetail", {
+            return res.status(StatusCodes.OK).render("pages/CourseDetail", {
                 title: Course.Title,
                 Course: Course,
             });

@@ -5,7 +5,7 @@ const HomeController = {
     GetHomePage: async (req, res) => {
         try {
             const Courses = await Course.find().limit(6);
-            return res.status(200).render("home", {
+            return res.status(200).render("pages/home", {
                 title: "E-Learning Website",
                 Courses: Courses,
             });

@@ -5,7 +5,7 @@ const userController = require("../controllers/authController");
 /* GET signup page. */
 router
     .get("/signup", function (req, res) {
-        res.render("/pages/signup", { title: "Signup" });
+        res.render("pages/signup", { title: "Signup" });
     })
     .post("/signup", userController.registerUser);
 
