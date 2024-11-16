@@ -871,6 +871,10 @@ video {
   max-height: 0px;
 }
 
+.min-h-screen {
+  min-height: 100vh;
+}
+
 .w-0 {
   width: 0px;
 }
@@ -1509,6 +1513,10 @@ video {
   transition-duration: 150ms;
 }
 
+.duration-300 {
+  transition-duration: 300ms;
+}
+
 .duration-500 {
   transition-duration: 500ms;
 }
@@ -1520,6 +1528,11 @@ video {
 .hover\:border-yellow-500:hover {
   --tw-border-opacity: 1;
   border-color: rgb(234 179 8 / var(--tw-border-opacity));
+}
+
+.hover\:bg-\[\#3b5bcc\]:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(59 91 204 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-\[\#4f75ff\]:hover {

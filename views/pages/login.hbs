@@ -19,7 +19,7 @@
                     <div class="flex items-center mt-4">
                         <img
                             class="w-15 h-15 rounded-sm mr-3"
-                            src="/assets/images/Image.png"
+                            src="../assets/images/Image.png"
                             alt="User Image"
                         />
                         <div>
@@ -36,42 +36,30 @@
 
             <!-- Login Section -->
             <div class="bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-2xl font-bold mb-4 text-center">Sign Up</h2>
+                <h2 class="text-2xl font-bold mb-4 text-center">Login</h2>
                 <p class="text-[#59595A] mb-6 text-center text-sm">
-                    Create an account to unlock exclusive features.
+                    Welcome back! Please log in to access your account.
                 </p>
-                <form method="post" action="/auth/signup">
-                    <label class="block text-base font-medium text-[#262626]" for="username"
-                        >Full Name</label
-                    >
-                    <input
-                        type="text"
-                        placeholder="Enter your Name" name="username" id="username"
-                        class="w-full px-4 py-2 border rounded mt-2 mb-4 text-base"
-                    /> 
-                    {{#if existUser}}
-                    <p class="text-red-500 text-sm">Username already exists</p>
-                    {{/if}}
-                    <label class="block text-base font-medium text-[#262626]" for="email"
+                <form method="post" action="/auth/login">
+                    <label class="block text-base font-medium text-[#262626]"
                         >Email</label
                     >
                     <input
                         type="email"
-                        placeholder="Enter your Email" name="email" id="email"
+                        placeholder="Enter your Email"
+                        name="email"
+                        id="email"
                         class="w-full px-4 py-2 border rounded mt-2 mb-4 text-base"
                     />
-                    {{#if existMail}}
-                    <p class="text-red-500 text-sm">Email already exists</p>
-                    {{/if}}
-                    <label class="block text-base font-medium text-[#262626]" for="password"
+                    <label class="block text-base font-medium text-[#262626]"
                         >Password</label
                     >
                     <div class="relative">
                         <input
                             id="passwordInput"
                             type="password"
+                            name="password"
                             placeholder="Enter your Password"
-                            name="password" id="password"
                             class="w-full px-4 py-2 border rounded mt-2 mb-4 text-base"
                         />
                         <button
@@ -88,32 +76,38 @@
                             >Remember Me</label
                         >
                     </div>
-                    <button type="submit" 
+                    {{> notification}}
+                    <button
+                        type="submit"
                         class="w-full bg-[#4F75FF] text-white py-2 rounded hover:bg-blue-600"
                     >
-                        Sign Up
+                        Login
                     </button>
                     <div class="flex items-center my-4 text-xs text-[#59595A]">
                         <hr class="flex-grow border-t border-[#59595A]" />
                         <span class="mx-2">OR</span>
                         <hr class="flex-grow border-t border-[#59595A]" />
                     </div>
+                </form>
+                <form action="/auth/google" method="get">
                     <button
+                        type="submit"
                         class="w-full bg-[#F7F7F8] py-3 rounded text-[#262626] flex justify-center items-center"
                     >
                         <img
-                            src="/assets/images/Google.png"
+                            src="../assets/images/Google.png"
                             class="mr-2 w-4 h-4"
                             alt="Google Logo"
                         />
-                        Sign Up with Google
+                        Login with Google
                     </button>
                 </form>
-{{> notification}}
-
                 <p class="text-center text-[#262626] mt-4 text-sm">
-                    Already have an account?
-                    <a href="/login" class="text-[#4F75FF] hover:underline">Login</a>
+                    Don’t have an account?
+                    <a href="/signup" class="text-[#4F75FF] hover:underline"
+                        >Sign Up</a
+                    >
                 </p>
             </div>
         </div>
+<script src="/javascripts/Login.js"></script> </script>

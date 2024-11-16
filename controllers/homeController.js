@@ -16,5 +16,15 @@ const HomeController = {
             });
         }
     },
+    GetSignUpPage: (req, res) => {
+        return res.status(200).render("pages/signup", {
+            title: "Sign Up",
+        });
+    },
+    GetLoginPage: (req, res) => {
+        return res.status(200).render("pages/login", {
+            title: "Login",
+        });
+    },
 };
 module.exports = HomeController;

@@ -7,14 +7,15 @@ const hbs = require("hbs");
 const db = require("./config/database");
 const session = require("express-session");
 const flash = require("connect-flash");
-
-
-
+const dotenv = require("dotenv");
+dotenv.config({ path: "config.env" });
+const MongoStore = require("connect-mongo");
+const passport = require("./passport");
 
 const homeRouter = require("./routes/home");
-const usersRouter = require("./routes/userRoute");
+const authRouter = require("./routes/auth");
 const coursesRouter = require("./routes/course");
-
+const dashboardRoutes = require("./routes/dashboard");
 
 const app = express();
 db.connect();
@@ -36,24 +37,36 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/public", express.static(path.join(__dirname, "public")));
 app.use(
-  session({
-    secret: "your_random_secret_key",
-    resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 60000 },
-  })
+    session({
+        secret: process.env.SECRET_KEY, // Khóa bí mật dùng để mã hóa session
+        resave: false, // Không lưu session nếu không có thay đổi
+        saveUninitialized: false, // Không lưu session trống
+        cookie: {
+            maxAge: 1000 * 60 * 60 * 24, // Thời hạn cookie (1 giờ)
+        },
+        store: MongoStore.create({
+            mongoUrl: process.env.MONGODB_URI, // URL kết nối MongoDB
+            collectionName: "sessions", // Tên collection lưu session
+        }),
+    })
 );
+// Cấu hình Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Cấu hình flash messages
 app.use(flash());
 app.use((req, res, next) => {
-  res.locals.successMessage = req.flash("successMessage");
-  res.locals.errorMessage = req.flash("errorMessage");
-  res.locals.existUser = req.flash("existUser");
-  res.locals.existMail = req.flash("existMail");
-  next();
+    res.locals.successMessage = req.flash("successMessage");
+    res.locals.errorMessage = req.flash("errorMessage");
+    res.locals.existUser = req.flash("existUser");
+    res.locals.existMail = req.flash("existMail");
+    next();
 });
 
 app.use("/", homeRouter);
-app.use("/users", usersRouter);
+app.use("/", authRouter);
+app.use("/", dashboardRoutes);
 
 app.use("/courses", coursesRouter);
 // catch 404 and forward to error handler
