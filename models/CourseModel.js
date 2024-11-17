@@ -80,18 +80,18 @@ CoursesSchema.methods.calcTotalTime = function () {
 };
 
 CoursesSchema.methods.GetAllRelevantCourses = async function (CourseId) {
-    const Course = await this.model('Courses').findById(CourseId);
+    const Course = await this.model("Courses").findById(CourseId);
 
     if (!Course) {
-        throw new Error('Course not found');
+        throw new Error("Course not found");
     }
 
-    const RelevantCoursesByTopic = await this.model('Courses').find({
+    const RelevantCoursesByTopic = await this.model("Courses").find({
         Topic: Course.Topic,
         _id: { $ne: CourseId },
     });
 
-    const RelevantCoursesBySkill = await this.model('Courses').find({
+    const RelevantCoursesBySkill = await this.model("Courses").find({
         SkillGain: { $in: Course.SkillGain },
         _id: { $ne: CourseId },
     });
@@ -101,14 +101,14 @@ CoursesSchema.methods.GetAllRelevantCourses = async function (CourseId) {
         ...RelevantCoursesBySkill,
     ];
 
-    const uniqueRelevantCourses = allRelevantCourses.filter((value, index, self) =>
-        index === self.findIndex((t) => (
-            t._id.toString() === value._id.toString()
-        ))
-    );
+    const uniqueRelevantCourses = allRelevantCourses
+        .filter(
+            (value, index, self) =>
+                index ===
+                self.findIndex((t) => t._id.toString() === value._id.toString())
+        )
 
     return uniqueRelevantCourses;
 };
-
 
 module.exports = mongoose.model("Courses", CoursesSchema, "Courses");
