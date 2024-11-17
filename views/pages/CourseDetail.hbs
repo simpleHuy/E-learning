@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="/stylesheets/CourseDetailStyle.css">
 
 <section class="bg-blue-200 py-6 mx-auto">
-    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2">
+    <div class="mx-auto max-w-8xl px-4 grid grid-cols-1 md:grid-cols-2">
         <div class="flex items-center">
             <div>
                 <h1 class="text-4xl font-bold">{{Course.Title}}</h1>
@@ -36,7 +36,7 @@
     </div>
 </section>
 
-<section class="max-w-7xl mx-auto px-4 py-4 grid grid-cols-2 gap-4 md:grid-cols-4 text-center">
+<section class="max-w-8xl mx-auto px-4 py-4 grid grid-cols-2 gap-4 md:grid-cols-4 text-center">
     <div class="p-4 bg-white rounded-lg shadow-lg">
         <p class="text-lg font-semibold"> {{calcNumberOfModules Course}} modules</p>
         <p class="text-sm text-gray-500">
@@ -61,7 +61,7 @@
     </div>
 </section>
 
-<section class="max-w-7xl mx-auto px-4 py-8">
+<section class="max-w-8xl mx-auto px-4 py-8">
     <h2 class="text-2xl font-semibold mb-4">Skills you'll gain</h2>
     <div class="flex flex-wrap gap-4">
         {{#each Course.SkillGain}}
@@ -70,7 +70,7 @@
     </div>
 </section>
 
-<section class="max-w-7xl mx-auto px-4 py-8">
+<section class="max-w-8xl mx-auto px-4 py-8">
     <h2 class="text-4xl font-semibold mb-4">
         There are {{calcNumberOfModules Course}} modules in this course
     </h2>
@@ -121,26 +121,23 @@
     {{/each}}
 </section>
 
-<h2 class="max-w-7xl text-2xl font-bold mx-auto px-4">You might also like</h2>
-<br>
-
-<section class="max-w-7xl mx-auto px-4 py-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<h2 class="text-2xl font-semibold mb-4 max-w-8xl mx-auto px-4">You might also like</h2>
+<section class="max-w-8xl mx-auto px-4 py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     {{#each RelevantCourses}}
     <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col cursor-pointer" id="Course"
-        onclick="SeeCourseDetail">
+        onclick="SeeDetail({{this._id}})">
         <img src="{{this.Img}}" alt="{{this.Title}}" class="w-full h-72 object-cover" />
-        <div class="p-6 flex-grow">
+        <div class="p-4 flex-grow">
             <div class="flex items-center text-sm text-gray-500 mb-2">
                 <div class="mr-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">{{this.Duration}} Weeks</div> | 
                 <span class="ml-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">{{this.Level}}</span>
             </div>
-            <h3 class="text-xl font-semibold">{{this.Title}}</h3>
-            <p class="text-gray-400 text-sm mt-2">{{this.ShortDesc}}</p>
+            <h3 class="text-sm font-semibold">{{this.Title}}</h3>
+            <p class="text-gray-500 text-xs">{{this.ShortDesc}}</p>
         </div>
     </div>
     {{/each}}
 </section>
-
-<script src="/javascripts/CourseDetailScript.js"></script> </script>
+<script src="/javascripts/CourseDetailScript.js"></script>
 
 

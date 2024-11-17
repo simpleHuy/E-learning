@@ -10,3 +10,7 @@ function toggleContent(module) {
         setTimeout(() => content.classList.add("hidden"), 300);
     }
 }
+
+function SeeDetail(id) {
+    window.location.href = `../${id}`;
+}
