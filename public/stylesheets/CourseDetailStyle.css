@@ -21,6 +21,24 @@
     }
 }
 
+/* @media (max-width: 768px) {
+    div[name="Course"]:nth-child(n+3) {
+        display: none;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    div[name="Course"]:nth-child(n+4) {
+        display: none;
+    }
+}
+
+@media (min-width: 1024px) {
+    div[name="Course"]:nth-child(n+5) {
+        display: none;
+    }
+} */
+
 .slide-down {
     animation: slideDown 0.3s ease forwards;
 }
@@ -29,12 +47,16 @@
     animation: slideUp 0.3s ease forwards;
 }
 
-#Course {
+div[name="Course"] {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-#Course:hover {
+div[name="Course"]:hover {
     transform: translateY(-10px); 
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.custom-max-h {
+    max-height: 422px;
 }

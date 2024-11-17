@@ -120,24 +120,33 @@
         </div>
     {{/each}}
 </section>
+<div class="max-w-8xl mx-auto flex items-center justify-between">
+    <h2 class="text-2xl font-semibold mb-4 px-4 flex-grow">You might also like</h2>
+    <button id="ShowAllBtn" class="min-w-[120px] max-w-[150px] text-white font-semibold bg-blue-700 hover:bg-blue-800 
+                    px-4 py-2 rounded-lg mb-4" onclick="showAllCourses()">
+        Show All
+    </button>
+</div>
 
-<h2 class="text-2xl font-semibold mb-4 max-w-8xl mx-auto px-4">You might also like</h2>
-<section class="max-w-8xl mx-auto px-4 py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-    {{#each RelevantCourses}}
-    <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col cursor-pointer" id="Course"
-        onclick="SeeDetail({{this._id}})">
-        <img src="{{this.Img}}" alt="{{this.Title}}" class="w-full h-72 object-cover" />
-        <div class="p-4 flex-grow">
-            <div class="flex items-center text-sm text-gray-500 mb-2">
-                <div class="mr-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">{{this.Duration}} Weeks</div> | 
-                <span class="ml-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">{{this.Level}}</span>
+<section id="CourseContainer" class="max-w-8xl mx-auto px-4 py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6
+                                    overflow-hidden custom-max-h">
+        {{#each RelevantCourses}}
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col cursor-pointer" Name="Course"
+            onclick="window.location.href = `./courses/{{this._id}}`;">
+            <img src="{{this.Img}}" alt="{{this.Title}}" class="w-full h-72 object-cover" />
+            <div class="p-4 flex-grow">
+                <div class="flex items-center text-sm text-gray-500 mb-2">
+                    <div class="mr-1 border border-slate-300 rounded-md inline-block py-0.5 px-2">{{this.Duration}} Weeks</div> |
+                    <span class="ml-1 border border-slate-300 rounded-md inline-block py-0.5 px-2">{{this.Level}}</span>
+                </div>
+                <h3 class="text-sm font-semibold">{{this.Title}}</h3>
+                <p class="text-gray-500 text-xs">{{this.ShortDesc}}</p>
             </div>
-            <h3 class="text-sm font-semibold">{{this.Title}}</h3>
-            <p class="text-gray-500 text-xs">{{this.ShortDesc}}</p>
         </div>
+        {{/each}}
     </div>
-    {{/each}}
 </section>
+
 <script src="/javascripts/CourseDetailScript.js"></script>
 
 

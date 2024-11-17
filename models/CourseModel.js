@@ -108,6 +108,7 @@ CoursesSchema.methods.GetAllRelevantCourses = async function (CourseId) {
                 self.findIndex((t) => t._id.toString() === value._id.toString())
         )
 
+
     return uniqueRelevantCourses;
 };
 
