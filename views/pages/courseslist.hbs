@@ -26,34 +26,44 @@
         </div>
 
         <!-- Course Cards -->
+        {{#if courses.length}}
         <div id="course-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {{#each courses}}
             <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
-    <img src="{{this.Img}}" alt="{{this.Title}}" class="w-full h-72 object-cover" />
-    <div class="p-6 flex-grow">
-        <div class="flex items-center text-sm text-gray-500 mb-2">
-            <div class="mr-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">{{this.Duration}} Weeks</div> | 
-            <span class="ml-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">{{this.Level}}</span>
-        </div>
-        <h3 class="text-xl font-semibold">{{this.Title}}</h3>
-        <p class="text-gray-400 text-sm mt-2">{{this.ShortDesc}}</p>
-    </div>
-    <div class="grid grid-cols-2 gap-2 mt-auto mb-3 p-3">
-        <button class="mt-4 w-full bg-gray-100 text-black py-2 rounded-md">Get it Now</button>
-        <button id="seeMore-btn" class="mt-4 w-full bg-gray-100 text-black py-2 rounded-md" 
-        onclick="window.location.href='/courses/{{this._id}}'">See detail</button>
-    </div>
-</div>
-
+                <img src="{{this.Img}}" alt="{{this.Title}}" class="w-full h-72 object-cover" />
+                <div class="p-6 flex-grow">
+                    <div class="flex items-center text-sm text-gray-500 mb-2">
+                        <div class="mr-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">{{this.Duration}} Weeks</div> | 
+                        <span class="ml-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">{{this.Level}}</span>
+                    </div>
+                    <h3 class="text-xl font-semibold">{{this.Title}}</h3>
+                    <p class="text-gray-400 text-sm mt-2">{{this.ShortDesc}}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-auto mb-3 p-3">
+                    <button class="mt-4 w-full bg-gray-100 text-black py-2 rounded-md">Get it Now</button>
+                    <button id="seeMore-btn" class="mt-4 w-full bg-gray-100 text-black py-2 rounded-md" 
+                    onclick="window.location.href='/courses/{{this._id}}'">See detail</button>
+                </div>
+            </div>
             {{/each}}
         </div>
+        {{else}}
+        <div class="text-center text-gray-600 mt-8">
+            <h2 class="text-4xl font-bold text-center">No Courses found</h2>
+        </div>
+        {{/if}}
 
         <!-- Pagination -->
         <div class="flex justify-center mt-8 space-x-4">
-            <button id="prev-btn" class="px-4 py-2 bg-gray-800 text-white rounded-md {{#if isFirstPage}}disabled:bg-gray-300 text-gray-700{{/if}}" onclick="window.location.href='courses?page={{prevPage}}'" {{#if isFirstPage}}disabled{{/if}}>Previous</button>
+            <button id="prev-btn" class="px-4 py-2 bg-gray-800 text-white rounded-md {{#if isFirstPage}}disabled:bg-gray-300 text-gray-700{{/if}}" 
+                    onclick="changePage('prev')"
+                    {{#if isFirstPage}}disabled{{/if}}>Previous</button>
             <div id="page-info" class="text-gray-700 font-medium inline-block relative top-2">Page {{currentPage}} of {{totalPages}}</div>
-            <button id="next-btn" class="px-4 py-2 bg-gray-800 text-white rounded-md {{#if isLastPage}}disabled:bg-gray-300 text-gray-700{{/if}}" onclick="window.location.href='courses?page={{nextPage}}'" {{#if isLastPage}}disabled{{/if}}>Next</button>
+            <button id="next-btn" class="px-4 py-2 bg-gray-800 text-white rounded-md {{#if isLastPage}}disabled:bg-gray-300 text-gray-700{{/if}}" 
+                    onclick="changePage('next')"
+                    {{#if isLastPage}}disabled{{/if}}>Next</button>
         </div>
     </main>
     </body>
+    <script src="/javascripts/CourseScript.js"></script>
 </html>
