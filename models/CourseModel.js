@@ -101,15 +101,55 @@ CoursesSchema.methods.GetAllRelevantCourses = async function (CourseId) {
         ...RelevantCoursesBySkill,
     ];
 
-    const uniqueRelevantCourses = allRelevantCourses
-        .filter(
-            (value, index, self) =>
-                index ===
-                self.findIndex((t) => t._id.toString() === value._id.toString())
-        )
-
+    const uniqueRelevantCourses = allRelevantCourses.filter(
+        (value, index, self) =>
+            index ===
+            self.findIndex((t) => t._id.toString() === value._id.toString())
+    );
 
     return uniqueRelevantCourses;
+};
+
+CoursesSchema.statics.GetCoursesByFilter = async function (
+    search = null,
+    topic = null,
+    skill = null,
+    level = null,
+    minPrice = null,
+    maxPrice = null
+) {
+    let query = {};
+
+    if (search) {
+        query.$or = [
+            { Title: { $regex: search, $options: "i" } },
+            { Description: { $regex: search, $options: "i" } },
+            { Lecturer: { $regex: search, $options: "i" } },
+        ];
+    }
+    if (topic) {
+        const topics = await TopicModel.find({
+            Name: { $regex: topic, $options: "i" },
+        });
+        query.Topic = { $in: topics.map((t) => t._id) };
+    }
+
+    if (skill) {
+        const skills = await SkillModel.find({
+            Name: { $regex: skill, $options: "i" },
+        });
+        query.SkillGain = { $in: skills.map((s) => s._id) };
+    }
+
+    if (level) {
+        query.Level = { $regex: level, $options: "i" };
+    }
+
+    if (minPrice && maxPrice) {
+        query.Price = { $gte: minPrice, $lte: maxPrice };
+    }
+
+    return this.find(query);
 };
 
 module.exports = mongoose.model("Courses", CoursesSchema, "Courses");
