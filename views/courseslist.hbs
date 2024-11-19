@@ -1,17 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Our Courses</title>
-    <link rel="stylesheet" href="../css/output.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap" rel="stylesheet" />
-</head>
-<style>
-    body {
-        font-family: "Be Vietnam Pro", sans-serif;
-    }
-</style>
 <body class="bg-gray-100 font-sans">
       <main class="mx-4 md:mx-10 lg:mx-20 p-6">
         <div class="mb-12">
@@ -24,6 +10,161 @@
                 </div>
             </div>
         </div>
+         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl p-6 mb-6 bg-white rounded-lg shadow-lg">
+        <div class="flex flex-col mb-4">
+    <label for="topic" class="mb-1 text-sm text-gray-600">Topic</label>
+    <div class="relative ">
+      <!-- Selected Items -->
+      <div
+        id="selected-topic"
+        class="flex flex-wrap gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer"
+        onclick="toggleDropdown('topic')"
+      >
+        <span class="text-gray-400">All topics</span>
+      </div>
+        
+      <!-- Dropdown -->
+      <div
+        id="dropdown-topic"
+        class="absolute z-50 w-full bg-white border rounded shadow-lg hidden max-h-48 overflow-y-auto"
+      >
+        <div
+          class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+          onclick="toggleSelection('Web Development', 'topic')"
+        >
+          Web Development
+        </div>
+        <div
+          class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+          onclick="toggleSelection('Data Science', 'topic')"
+        >
+          Data Science
+        </div>
+        <div
+          class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+          onclick="toggleSelection('Machine Learning', 'topic')"
+        >
+          Machine Learning
+        </div>
+      </div>
+      <div id="topic-tags" class="mt-2 flex flex-wrap gap-2"></div>
+    </div>
+  </div>
+
+  <!-- Multiselect Dropdown for Price -->
+  <div class="flex flex-col mb-4">
+    <label for="price" class="mb-1 text-sm text-gray-600">Price</label>
+    <div class="relative">
+      <!-- Selected Items -->
+      <div
+        id="selected-price"
+        class="flex flex-wrap gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer"
+        onclick="toggleDropdown('price')"
+      >
+        <span class="text-gray-400">All prices</span>
+      </div>
+
+      <!-- Dropdown -->
+      <div
+        id="dropdown-price"
+        class="absolute z-50 w-full bg-white border rounded shadow-lg hidden max-h-48 overflow-y-auto"
+      >
+        <div
+          class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+          onclick="toggleSelection('$200 - $800', 'price')"
+        >
+          $200 - $800
+        </div>
+        <div
+          class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+          onclick="toggleSelection('$800 - $1500', 'price')"
+        >
+          $800 - $1500
+        </div>
+        <div
+          class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+          onclick="toggleSelection('$1500+', 'price')"
+        >
+          $1500+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Multiselect Dropdown for Level -->
+  <div class="flex flex-col mb-4">
+    <label for="level" class="mb-1 text-sm text-gray-600">Level</label>
+    <div class="relative">
+      <!-- Selected Items -->
+      <div
+        id="selected-level"
+        class="flex flex-wrap gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer"
+        onclick="toggleDropdown('level')"
+      >
+        <span class="text-gray-400">All levels</span>
+      </div>
+
+      <!-- Dropdown -->
+      <div
+        id="dropdown-level"
+        class="absolute z-50 w-full bg-white border rounded shadow-lg hidden max-h-48 overflow-y-auto"
+      >
+        <div
+          class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+          onclick="toggleSelection('Beginner', 'level')"
+        >
+          Beginner
+        </div>
+        <div
+          class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+          onclick="toggleSelection('Intermediate', 'level')"
+        >
+          Intermediate
+        </div>
+        <div
+          class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+          onclick="toggleSelection('Advanced', 'level')"
+        >
+          Advanced
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Multiselect Dropdown for Skill -->
+  <div class="flex flex-col mb-4">
+    <label for="skill" class="mb-1 text-sm text-gray-600">SkillGain</label>
+    <div class="relative">
+      <!-- Selected Items -->
+      <div
+        id="selected-skill"
+        class="flex flex-wrap gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer"
+        onclick="toggleDropdown('skill')"
+      >
+        <span class="text-gray-400">Any skill</span>
+      </div>
+
+      <!-- Dropdown -->
+      <div
+        id="dropdown-skill"
+        class="absolute z-50 w-full bg-white border rounded shadow-lg hidden max-h-48 overflow-y-auto"
+      >
+        <div
+          class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+          onclick="toggleSelection('Programming', 'skill')"
+        >
+          Programming
+        </div>
+        <div
+          class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+          onclick="toggleSelection('Design', 'skill')"
+        >
+          Design
+        </div>
+      </div>
+    </div>
+  </div>
+         </div>
 
         <!-- Course Cards -->
         <div id="course-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -54,5 +195,86 @@
             <button id="next-btn" class="px-4 py-2 bg-gray-800 text-white rounded-md {{#if isLastPage}}disabled:bg-gray-300 text-gray-700{{/if}}" onclick="window.location.href='courses?page={{nextPage}}'" {{#if isLastPage}}disabled{{/if}}>Next</button>
         </div>
     </main>
-    </body>
-</html>
+    <script>
+    // Multiselect logic
+    const selectedItems = {
+      topic: [],
+      price: [],
+      level: [],
+      skill: [],
+    };
+
+    // Tạo đối tượng lưu trạng thái các dropdown
+let activeDropdown = null;
+
+function toggleDropdown(field) {
+    const dropdown = document.getElementById(`dropdown-${field}`);
+
+    // Ẩn dropdown hiện tại nếu có và không trùng với dropdown được nhấn
+    if (activeDropdown && activeDropdown !== dropdown) {
+        activeDropdown.classList.add("hidden");
+    }
+
+    // Toggle trạng thái dropdown hiện tại
+    dropdown.classList.toggle("hidden");
+
+    // Cập nhật trạng thái dropdown đang hoạt động
+    activeDropdown = dropdown.classList.contains("hidden") ? null : dropdown;
+}
+
+function toggleSelection(item, field) {
+    const selectedContainer = document.getElementById(`${field}-tags`); // Move the selected container here
+    const dropdown = document.getElementById(`dropdown-${field}`);
+
+    // Kiểm tra nếu item đã được chọn
+    if (selectedItems[field].includes(item)) {
+        selectedItems[field] = selectedItems[field].filter((i) => i !== item);
+    } else {
+        selectedItems[field].push(item);
+    }
+
+    // Xóa nội dung hiện tại của container
+    selectedContainer.innerHTML = "";
+
+    // Nếu không có tag nào được chọn
+    if (selectedItems[field].length === 0) {
+        const span = document.createElement("span");
+        span.className = "text-gray-400";
+        span.textContent = `All ${field}`;
+        selectedContainer.appendChild(span);
+    } else {
+        selectedItems[field].forEach((i) => {
+            const tag = document.createElement("span");
+            tag.className =
+                "px-2 py-1 bg-[#4f75ff] text-white rounded-full flex items-center";
+            tag.innerHTML = `${i} <button class="ml-2" onclick="removeSelection('${i}', '${field}')">&times;</button>`;
+            selectedContainer.appendChild(tag);
+        });
+    }
+
+    // Đóng dropdown
+    dropdown.classList.add("hidden");
+}
+
+
+
+    // Đóng dropdown
+    dropdown.classList.add("hidden");
+
+
+function removeSelection(item, field) {
+    toggleSelection(item, field);
+}
+
+// Ẩn tất cả dropdown khi nhấp ra ngoài
+window.addEventListener("click", (e) => {
+    if (!e.target.closest(".relative")) {
+        document
+            .querySelectorAll(".relative .absolute")
+            .forEach((dropdown) => dropdown.classList.add("hidden"));
+        activeDropdown = null;
+    }
+});
+
+  </script>
+</body>
