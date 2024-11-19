@@ -38,8 +38,11 @@ if (!isOverflowing) {
 }
 
 function changePage(page) {
+    // Get the current page from the URL
     const url = new URL(window.location.href);
     const params = new URLSearchParams(url.search);
+
+    // Get the current page number from the query parameters or set to 1 if not provided
     let currentPage = parseInt(params.get("page")) || 1;
 
     if (page === "prev") {
@@ -47,6 +50,8 @@ function changePage(page) {
     } else if (page === "next") {
         currentPage += 1;
     }
+
+    // page transitions
     currentPage = Math.max(currentPage, 1);
     params.set("page", currentPage);
     url.search = params.toString();
