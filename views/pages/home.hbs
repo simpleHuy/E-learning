@@ -379,7 +379,7 @@
             >
             {{#each Courses}}
                 <div
-                    class="2xl:p-12 lg:p-10 p-6 lg:col-span-6 col-span-12 row-span-1 flex flex-col justify-between bg-white rounded-xl border-solid border-[1px] border-[##F1F1F3]"
+                    class=" relative 2xl:p-12 lg:p-10 p-6 lg:col-span-6 col-span-12 row-span-1 flex flex-col justify-between bg-white rounded-xl border-solid border-[1px] overflow-hidden border-[##F1F1F3]"
                 >
                     <div>
                         <img src="{{this.Img}}" alt="{{this.Title}}" class="w-full 2xl:h-[360px] lg:h-[267px] h-[172px] object-cover" />
@@ -421,7 +421,11 @@
                     >
                         Get it Now
                     </button>
+                    <div class="absolute top-[72px] right-[-26px] bg-red-500 text-white text-base font-bold px-12 py-2 rotate-[40deg] origin-top-right">
+                           {{this.Sale}}% OFF
+                    </div>
                 </div>
+                
                   {{/each}}
             </div>
         </div>

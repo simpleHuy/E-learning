@@ -4,7 +4,8 @@ const express = require("express");
 const HomeController = {
     GetHomePage: async (req, res) => {
         try {
-            const Courses = await Course.find().limit(6);
+            const Courses = await Course.find().sort({ Sale: -1 }).limit(6);
+            console.log(Courses);
             return res.status(200).render("pages/home", {
                 title: "E-Learning Website",
                 Courses: Courses,

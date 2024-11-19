@@ -46,6 +46,10 @@ const CoursesSchema = new mongoose.Schema({
         type: Array,
         required: true,
     },
+    Sale: {
+        type: Number,
+        required: true,
+    },
 });
 
 CoursesSchema.statics.GetCourseById = async function (CourseId) {
