@@ -125,24 +125,27 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
             { Title: { $regex: search, $options: "i" } },
             { Description: { $regex: search, $options: "i" } },
             { Lecturer: { $regex: search, $options: "i" } },
+            { Level: { $regex: search, $options: "i" } },
         ];
     }
     if (topic) {
+        // topic is an array of topic names
         const topics = await TopicModel.find({
-            Name: { $regex: topic, $options: "i" },
+            Name: { $in: topic },
         });
         query.Topic = { $in: topics.map((t) => t._id) };
     }
 
     if (skill) {
+        // skill is an array of skill names
         const skills = await SkillModel.find({
-            Name: { $regex: skill, $options: "i" },
+            Name: { $in: skill },
         });
         query.SkillGain = { $in: skills.map((s) => s._id) };
     }
 
     if (level) {
-        query.Level = { $regex: level, $options: "i" };
+        query.Level = { $in: level };   
     }
 
     if (minPrice && maxPrice) {
