@@ -13,7 +13,7 @@
     }
 </style>
 <body class="bg-gray-100 font-sans">
-      <main class="mx-4 md:mx-10 lg:mx-20 p-6">
+    <main class="mx-4 md:mx-10 lg:mx-20 p-6">
         <div class="mb-12">
             <div class="grid grid-cols-5 gap-6">
                 <div class="col-span-4">
@@ -25,6 +25,118 @@
             </div>
         </div>
 
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl p-6 mb-6 bg-white rounded-lg shadow-lg">
+            <div class="flex flex-col mb-4">
+                <label for="topic" class="mb-1 text-sm text-gray-600">Topic</label>
+                <div class="relative ">
+                    <!-- Selected Items -->
+                    <div id="selected-topic" nclick="toggleDropdown('topic')"
+                        class="flex flex-wrap gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer">
+                        <span class="text-gray-400">All topics</span>
+                    </div>
+
+                    <!-- Dropdown -->
+                    <div class="absolute z-50 w-full bg-white border rounded shadow-lg hidden max-h-48 overflow-y-auto"
+                        id="dropdown-topic">
+                        <div class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                            onclick="toggleSelection('Web Development', 'topic')">
+                            Web Development
+                        </div>
+                        <div class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                            onclick="toggleSelection('Data Science', 'topic')">
+                            Data Science
+                        </div>
+                        <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" 
+                            onclick="toggleSelection('Machine Learning', 'topic')">
+                            Machine Learning
+                        </div>
+                    </div>
+                    <div id="topic-tags" class="mt-2 flex flex-wrap gap-2"></div>
+                </div>
+            </div>
+
+            <!-- Multiselect Dropdown for Price -->
+            <div class="flex flex-col mb-4">
+                <label for="price" class="mb-1 text-sm text-gray-600">Price</label>
+                <div class="relative">
+                    <!-- Selected Items -->
+                    <div id="selected-price" onclick="toggleDropdown('price')"
+                        class="flex flex-wrap gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer">
+                        <span class="text-gray-400">All prices</span>
+                    </div>
+
+                    <!-- Dropdown -->
+                    <div class="absolute z-50 w-full bg-white border rounded shadow-lg hidden max-h-48 overflow-y-auto"
+                                id="dropdown-price">
+                        <div class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                            onclick="toggleSelection('$200 - $800', 'price')">
+                            $200 - $800
+                        </div>
+                        <div class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                            onclick="toggleSelection('$800 - $1500', 'price')">
+                            $800 - $1500
+                        </div>
+                        <div class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                            onclick="toggleSelection('$1500+', 'price')">
+                            $1500+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Multiselect Dropdown for Level -->
+            <div class="flex flex-col mb-4">
+                <label for="level" class="mb-1 text-sm text-gray-600">Level</label>
+                <div class="relative">
+                    <!-- Selected Items -->
+                    <div id="selected-level" onclick="toggleDropdown('level')"
+                        class="flex flex-wrap gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer">
+                        <span class="text-gray-400">All levels</span>
+                    </div>
+
+                    <!-- Dropdown -->
+                    <div class="absolute z-50 wn-full bg-white border rounded shadow-lg hidden max-h-48 overflow-y-auto"
+                        id="dropdown-level">
+                        <div class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                            onclick="toggleSelection('Beginner', 'level')">
+                            Beginner
+                        </div>
+                        <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" 
+                                onclick="toggleSelection('Intermediate', 'level')">
+                            Intermediate
+                        </div>
+                        <div class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                onclick="toggleSelection('Advanced', 'level')">
+                            Advanced
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Multiselect Dropdown for Skill -->
+            <div class="flex flex-col mb-4">
+                <label for="skill" class="mb-1 text-sm text-gray-600">SkillGain</label>
+                <div class="relative">
+                    <!-- Selected Items -->
+                    <div id="selected-skill" onclick="toggleDropdown('skill')"
+                        class="flex flex-wrap gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer">
+                        <span class="text-gray-400">Any skill</span>
+                    </div>
+
+                    <!-- Dropdown -->
+                    <div class="absolute z-50 w-full bg-white border rounded shadow-lg hidden max-h-48 overflow-y-auto"
+                            id="dropdown-skill">
+                        <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="toggleSelection('Programming', 'skill')">
+                            Programming
+                        </div>
+                        <div class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                            onclick="toggleSelection('Design', 'skill')" >
+                            Design
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Course Cards -->
         {{#if courses.length}}
         <div id="course-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -64,6 +176,6 @@
                     {{#if isLastPage}}disabled{{/if}}>Next</button>
         </div>
     </main>
-    </body>
     <script src="/javascripts/CourseScript.js"></script>
+</body>
 </html>
