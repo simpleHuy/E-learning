@@ -1,52 +1,53 @@
 const express = require("express");
-const User = require("../models/UserModel");
-const bcrypt = require("bcrypt");
+const authService = require("../Services/authService");
+const passport = require("../passport");
 
 const authController = {
     registerUser: async (req, res) => {
-        console.log(req.body); // Kiểm tra nội dung của req.body
         try {
-            const { username, email, password } = req.body; // Destructure req.body
-
-            // Kiểm tra nếu các trường không được để trống
-            if (!username || !email || !password) {
-                req.flash("errorMessage", "All fields are required!");
-                return res.redirect("/users/signup");
-            }
-
-            // Kiểm tra xem tên đăng nhập đã tồn tại
-            const existingUserByUsername = await User.findOne({ username });
-            if (existingUserByUsername) {
-                req.flash("existUser", "Username already exists!");
-                return res.redirect("/users/signup");
-            }
-
-            // Kiểm tra xem email đã tồn tại
-            const existingUserByEmail = await User.findOne({ email });
-            if (existingUserByEmail) {
-                req.flash("existMail", "Email already exists!");
-                return res.redirect("/users/signup");
-            }
-
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
-            const user = await new User({
-                username: req.body.username,
-                password: hashedPassword,
-                email: req.body.email,
-            });
-
-            await user.save();
-            console.log(req.session); // Kiểm tra xem session có tồn tại không
-            console.log(typeof req.flash);
-            req.flash("successMessage", "Signup successfully!");
-            res.redirect("/users/signup"); // Chuyển hướng về trang đăng
+            await authService.registerUser(req, res);
         } catch (error) {
-            console.error(error);
-            req.flash("errorMessage", "Signup failed!");
-            res.redirect("/users/signup");
+            console.error("Error registering user:", error); // Log error
+            return res.status(500).json({
+                message: "Internal Server Error",
+            });
         }
+    },
+    loginUser: async (req, res, next) => {
+        try {
+            await authService.loginUser(req, res, next);
+        } catch (error) {
+            console.error("Error logging in:", error); // Log error
+            return res.status(500).json({
+                message: "Internal Server Error",
+            });
+        }
+    },
+    googleLogin: (req, res, next) => {
+        passport.authenticate("google", {
+            scope: ["profile", "email"],
+        })(req, res, next);
+    },
+    // Handle Google OAuth callback
+    googleCallback: (req, res, next) => {
+        passport.authenticate(
+            "google",
+            { failureRedirect: "pages/login" },
+            (err, user, info) => {
+                if (err) {
+                    return next(err);
+                }
+                if (!user) {
+                    return res.redirect("pages/login");
+                }
+                req.logIn(user, (err) => {
+                    if (err) {
+                        return next(err);
+                    }
+                    return res.redirect("/dashboard");
+                });
+            }
+        )(req, res, next);
     },
 };
 module.exports = authController;

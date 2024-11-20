@@ -54,6 +54,9 @@ const CoursesSchema = new mongoose.Schema({
     Topic: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Topics",
+    },
+    Sale: {
+        type: Number,
         required: true,
     },
 });
@@ -145,7 +148,7 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
     }
 
     if (level) {
-        query.Level = { $in: level };   
+        query.Level = { $in: level };
     }
 
     if (minPrice && maxPrice) {
