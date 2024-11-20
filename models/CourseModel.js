@@ -118,8 +118,7 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
     topic = null,
     skill = null,
     level = null,
-    minPrice = null,
-    maxPrice = null
+    price = null
 ) {
     let query = {};
 
@@ -151,7 +150,9 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
         query.Level = { $in: level };
     }
 
-    if (minPrice && maxPrice) {
+    if (price) {
+        const minPrice = price[0];
+        const maxPrice = price[1];
         query.Price = { $gte: minPrice, $lte: maxPrice };
     }
 

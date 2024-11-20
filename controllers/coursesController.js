@@ -10,8 +10,17 @@ const { StatusCodes, getReasonPhrase } = require("http-status-codes");
 const CourseController = {
     getCourses: async (req, res) => {
         try {
-            const { search, topic, skill, level, minPrice, maxPrice } =
+            const { search, topic, skill, level, price } =
                 req.query;
+
+            const coursesQuery = await CourseModel.GetCoursesByFilter(
+                search,
+                topic,
+                skill,
+                level,
+                price,
+            );
+
             // Get the current page number from the query parameters or set to 1 if not provided
             const page = parseInt(req.query.page) || 1;
 
@@ -19,14 +28,6 @@ const CourseController = {
             const startIndex = (page - 1) * ITEMS_PER_PAGE;
             const endIndex = page * ITEMS_PER_PAGE;
             // Calculate pagination details
-            const coursesQuery = await CourseModel.GetCoursesByFilter(
-                search,
-                topic,
-                skill,
-                level,
-                minPrice,
-                maxPrice
-            );
             const totalCourses = coursesQuery.length;
             const totalPages = Math.ceil(totalCourses / ITEMS_PER_PAGE);
 
