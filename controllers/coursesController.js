@@ -1,30 +1,45 @@
 // coursesController.js
 const ITEMS_PER_PAGE = 6;
 
-const CourseModel = require("../models/CourseModel"); // Adjust this path if necessary
+const CourseModel = require("../models/CourseModel");
+const SkillModel = require("../models/SkillModel");
+const TopicModel = require("../models/TopicModel");
 const { StatusCodes, getReasonPhrase } = require("http-status-codes");
 
 // Function to fetch and display courses with pagination
 const CourseController = {
     getCourses: async (req, res) => {
         try {
+            const { search, topic, skill, level, minPrice, maxPrice } =
+                req.query;
             // Get the current page number from the query parameters or set to 1 if not provided
             const page = parseInt(req.query.page) || 1;
 
             // Fetch the total number of courses to calculate total pages
-            const totalCourses = await CourseModel.countDocuments();
+            const startIndex = (page - 1) * ITEMS_PER_PAGE;
+            const endIndex = page * ITEMS_PER_PAGE;
+            // Calculate pagination details
+            const coursesQuery = await CourseModel.GetCoursesByFilter(
+                search,
+                topic,
+                skill,
+                level,
+                minPrice,
+                maxPrice
+            );
+            const totalCourses = coursesQuery.length;
             const totalPages = Math.ceil(totalCourses / ITEMS_PER_PAGE);
 
-            // Calculate pagination details
-            const courses = await CourseModel.find()
-                .skip((page - 1) * ITEMS_PER_PAGE)
-                .limit(ITEMS_PER_PAGE);
-
+            const courses = coursesQuery.slice(startIndex, endIndex);
             // Prepare pagination variables
             const prevPage = page > 1 ? page - 1 : null;
             const nextPage = page < totalPages ? page + 1 : null;
             const isFirstPage = page === 1;
             const isLastPage = page === totalPages;
+
+            // get all topics and skills
+            const topics = await TopicModel.GetAllTopics();
+            const skills = await SkillModel.GetAllSkills();
 
             // Render the Handlebars template with pagination and courses data
             res.render("pages/courseslist", {
@@ -35,6 +50,8 @@ const CourseController = {
                 nextPage,
                 isFirstPage,
                 isLastPage,
+                topics: topics,
+                skills: skills,
             });
         } catch (error) {
             console.error("Error fetching courses:", error);
@@ -59,9 +76,12 @@ const CourseController = {
                 await Module.FetchAllLessons();
             }
 
+            const RelevantCourses = await Course.GetAllRelevantCourses(Course);
+
             return res.status(StatusCodes.OK).render("pages/CourseDetail", {
                 title: Course.Title,
                 Course: Course,
+                RelevantCourses: RelevantCourses,
             });
         } catch (error) {
             console.error("Error fetching course detail:", error); // Log error

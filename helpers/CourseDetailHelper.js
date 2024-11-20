@@ -23,3 +23,10 @@ hbs.registerHelper("ConvertLevelToDesc", function (level) {
 
     if (level === "Advanced") return "Expert level";
 });
+
+hbs.registerHelper("lt", function (v1, v2, options) {
+    if (v1 < v2) {
+        return options.fn(this);
+    }
+    return options.inverse(this);
+});

@@ -11,6 +11,7 @@ const LessionSchema = new mongoose.Schema({
     },
     ModuleId: {
         type: mongoose.Schema.Types.ObjectId,
+        ref: "Modules",
         required: true,
     },
 });
