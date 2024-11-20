@@ -40,7 +40,7 @@
                 <p class="text-[#59595A] mb-6 text-center text-sm">
                     Create an account to unlock exclusive features.
                 </p>
-                <form method="post" action="/auth/signup">
+                <form method="post" action="/signup">
                     <label class="block text-base font-medium text-[#262626]" for="username"
                         >Full Name</label
                     >
@@ -98,17 +98,21 @@
                         <span class="mx-2">OR</span>
                         <hr class="flex-grow border-t border-[#59595A]" />
                     </div>
+                     </form>
+                    <form action="/auth/google" method="get">
                     <button
+                        type="submit"
                         class="w-full bg-[#F7F7F8] py-3 rounded text-[#262626] flex justify-center items-center"
                     >
                         <img
-                            src="/assets/images/Google.png"
+                            src="../assets/images/Google.png"
                             class="mr-2 w-4 h-4"
                             alt="Google Logo"
                         />
-                        Sign Up with Google
+                        Login with Google
                     </button>
                 </form>
+               
 {{> notification}}
 
                 <p class="text-center text-[#262626] mt-4 text-sm">

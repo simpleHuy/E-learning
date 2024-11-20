@@ -41,7 +41,9 @@ passport.use(
         },
         async (token, tokenSecret, profile, done) => {
             try {
-                let user = await User.findOne({ googleId: profile.id });
+                let user = await User.findOne({
+                    email: profile.emails[0].value,
+                });
                 if (!user) {
                     user = new User({
                         googleId: profile.id,

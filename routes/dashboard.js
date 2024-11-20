@@ -1,19 +1,31 @@
 const express = require("express");
 const router = express.Router();
-
-// Middleware to check if the user is authenticated
-function isAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect("/login");
-}
-
+const {
+    ensureAuthenticated,
+    ensureGuest,
+} = require("../middleware/authencation");
 // Dashboard route with authentication middleware
-router.get("/dashboard", isAuthenticated, (req, res) => {
+router.get("/dashboard", ensureAuthenticated, (req, res) => {
     res.render("pages/dashboard", {
         layout: "dashboardLayout",
         user: req.user,
+    });
+});
+router.post("/logout", ensureAuthenticated, (req, res, next) => {
+    req.logout((err) => {
+        if (err) {
+            console.error("Lỗi khi logout:", err);
+            return next(err);
+        }
+        req.session.destroy((err) => {
+            if (err) {
+                console.error("Lỗi khi xóa session:", err);
+                return next(err);
+            }
+            console.log("Session đã bị xóa");
+            res.clearCookie("connect.sid"); // Xóa cookie chứa session ID
+            res.redirect("/");
+        });
     });
 });
 
