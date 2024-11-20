@@ -1,8 +1,7 @@
-const express = require("express");
 const User = require("../models/UserModel");
-const bcrypt = require("bcrypt");
+const hashPassword = require("../helpers/HashPassword");
 
-const authController = {
+const UserService = {
     registerUser: async (req, res) => {
         console.log(req.body); // Kiểm tra nội dung của req.body
         try {
@@ -28,8 +27,7 @@ const authController = {
                 return res.redirect("/users/signup");
             }
 
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(req.body.password, salt);
+            const hashedPassword = await hashPassword(password); // Hash password
 
             const user = await new User({
                 username: req.body.username,
@@ -49,4 +47,5 @@ const authController = {
         }
     },
 };
-module.exports = authController;
+
+module.exports = UserService;

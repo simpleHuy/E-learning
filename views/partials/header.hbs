@@ -1,21 +1,23 @@
 <!--Header-->
-        <div class="mt-5 mx-7">
-            <div class="bg-[#4f75ff] rounded-lg">
+        <div class="2xl:mt-5 2xl:mx-7 xl:mx-5 sm:mx-4 mt-10">
+            <div class="bg-[#4f75ff] 2xl:rounded-lg rounded-md">
                 <a
-                    class="text-white text-lg flex justify-center items-center py-4 gap-6"
+                    class="text-white 2xl:text-lg xl:text-sm flex justify-center items-center 2xl:py-4 xl:py-2 xl:gap-6 gap-3"
                 >
                     <p>Free Courses 🌟 Sale Ends Soon, Get It Now</p>
                     <img
-                        src="/assets/icon/Icon.svg"
+                        src="../assets/icon/Icon.svg"
                         alt="icon"
-                        class="w-6 h-6"
+                        class="2xl:w-6 2xl:h-6 w-5 h-5"
                     />
                 </a>
             </div>
-            <div class="mt-5 container mx-auto">
-                <div class="flex pt-5 pb-6 items-center">
+            <div class="2xl:mt-5 mt-4 container mx-auto">
+                <div
+                    class="flex 2xl:pt-5 2xl:pb-6 xl:pt-4 xl:pb-5 py-4 items-center"
+                >
                     <img
-                        src="/assets/icon/logo.svg"
+                        src="../assets/icon/logo.svg"
                         alt="logo"
                         class="w-10 h-10 bg-[#4f75ff] rounded-lg"
                     />
@@ -34,36 +36,72 @@
                             >Courses</a
                         >
                         <a
-                            href="/AboutUs/AboutUs.html"
-                            class="hover:bg-[#4f75ff] hover:rounded-md hover:text-white text-lg text-[#262626] px-5 py-3"
+                            href="../AboutUs/AboutUs.html"
+                            class="hover:bg-[#4f75ff] hover:rounded-md hover:text-white 2xl:text-lg text-sm text-[#262626] lg:px-5 lg:py-3 px-4 py-2"
                             >About us</a
                         >
                         <a
-                            class="hover:bg-[#4f75ff] hover:rounded-md hover:text-white text-lg text-[#262626] px-5 py-3"
+                            class="hover:bg-[#4f75ff] hover:rounded-md hover:text-white 2xl:text-lg text-sm text-[#262626] lg:px-5 lg:py-3 px-4 py-2"
                             >Pricing</a
                         >
                         <a
-                            href="/Contact/contact.html"
-                            href="contact.html"
-                            class="hover:bg-[#4f75ff] hover:rounded-md hover:text-white text-lg text-[#262626] px-5 py-3"
+                            href="../Contact/contact.html"
+                            class="hover:bg-[#4f75ff] hover:rounded-md hover:text-white 2xl:text-lg text-sm text-[#262626] lg:px-5 lg:py-3 px-4 py-2"
                             >Contact</a
                         >
                     </div>
-                    <div class="flex gap-7 ml-auto">
+                    <div class="flex sm:gap-7 gap-5 ml-auto">
                         <a
                             href="/users/signup"
-                            class="hover:bg-[#4f75ff] hover:rounded-md hover:text-white text-lg text-[#262626] px-5 py-3"
+                            class="hover:bg-[#4f75ff] hover:rounded-md hover:text-white 2xl:text-lg text-base text-[#262626] px-5 py-3"
                             >Sign up</a
                         >
 
                         <button
-                            onclick="window.location.href='/Login/Login.html'"
-                            class="bg-[#4f75ff] rounded-md px-8 py-3 text-lg text-white"
+                            onclick="window.location.href='../Login/Login.html'"
+                            class="bg-[#4f75ff] rounded-md text-white 2xl:text-lg text-base lg:px-5 lg:py-3 px-3 py-2"
                         >
                             Login
                         </button>
+                        <button class="md:hidden block" onclick="openNav()">
+                            <img
+                                src="../assets/icon/Nav_Icon.svg"
+                                alt="menu"
+                                class="w-8 h-8"
+                            />
+                        </button>
                     </div>
                 </div>
+            </div>
+            <div
+                id="Sidenav"
+                class="sidenav h-1/2 w-0 fixed z-[-1px] top-8 right-0 bg-[#4f75ff] bg-opacity-50 overflow-x-hidden pt-10 transition duration-500 rounded-md"
+            >
+                <a
+                    href="javascript:void(0)"
+                    class="closeNav p-2 absolute top-0 right-6 text-5xl text-white block"
+                    onclick="closeNav()"
+                    >&times;</a
+                >
+                <a href="#" class="p-2 text-xl text-white mt-3 block">Home</a>
+                <a
+                    href="/courses"
+                    class="p-2 text-xl text-white mt-3 block"
+                    >Courses</a
+                >
+                <a
+                    href="../AboutUs/AboutUs.html"
+                    class="p-2 text-xl text-white mt-3 block"
+                    >About us</a
+                >
+                <a href="#" class="p-2 text-xl ] text-white mt-3 block"
+                    >Pricing</a
+                >
+                <a
+                    href="../Contact/contact.html"
+                    class="p-2 text-xl text-white mt-3 block"
+                    >Contact</a
+                >
             </div>
         </div>
         <!--End Header-->

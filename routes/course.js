@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { getCourses } = require("../controllers/coursesController"); // Import getCourses
+const CourseController = require("../controllers/coursesController"); // Import getCourses
 
 // Define route to get all courses
-router.get("/", getCourses);
+router
+    .get("/", CourseController.getCourses)
+    .get("/:id", CourseController.GetCourseDetail);
 
 module.exports = router;
