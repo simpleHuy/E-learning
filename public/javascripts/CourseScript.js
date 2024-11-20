@@ -286,3 +286,17 @@ function SubmitFilter() {
     url.search = params.toString();
     window.location.href = url.toString();
 }
+
+const searchInput = document.getElementById('search');
+searchInput.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') { 
+        const query = searchInput.value.trim();
+        if (query) {
+            const url = new URL(window.location.href);
+            const params = new URLSearchParams(url.search);
+            params.set('search', query);
+            url.search = params.toString();
+            window.location.href = url.toString();
+        }
+    }
+});
