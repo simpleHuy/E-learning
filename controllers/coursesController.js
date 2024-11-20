@@ -2,6 +2,8 @@
 const ITEMS_PER_PAGE = 6;
 
 const CourseModel = require("../models/CourseModel");
+const SkillModel = require("../models/SkillModel");
+const TopicModel = require("../models/TopicModel");
 const { StatusCodes, getReasonPhrase } = require("http-status-codes");
 
 // Function to fetch and display courses with pagination
@@ -35,6 +37,10 @@ const CourseController = {
             const isFirstPage = page === 1;
             const isLastPage = page === totalPages;
 
+            // get all topics and skills
+            const topics = await TopicModel.GetAllTopics();
+            const skills = await SkillModel.GetAllSkills();
+
             // Render the Handlebars template with pagination and courses data
             res.render("pages/courseslist", {
                 courses,
@@ -44,6 +50,8 @@ const CourseController = {
                 nextPage,
                 isFirstPage,
                 isLastPage,
+                topics: topics,
+                skills: skills,
             });
         } catch (error) {
             console.error("Error fetching courses:", error);

@@ -1,3 +1,4 @@
+// click on module will show lessons
 function toggleContent(module) {
     const content = document.getElementById(module);
     const OpenFlag = content.classList.contains("hidden");
@@ -26,17 +27,23 @@ function showAllCourses() {
     }
 }
 
+// Check if the section is overflowing
 function isSectionOverflowing(section) {
+    if (!section) {
+        return false;
+    }
     return section.scrollHeight > section.clientHeight;
 }
 
+// Check if the course container is overflowing
 const courseContainer = document.getElementById("CourseContainer");
 const isOverflowing = isSectionOverflowing(courseContainer);
 if (!isOverflowing) {
     const toggleButton = document.getElementById("ShowAllBtn");
-    toggleButton.style.display = "none";
+    if (toggleButton) toggleButton.style.display = "none";
 }
 
+// Pagination logic
 function changePage(page) {
     // Get the current page from the URL
     const url = new URL(window.location.href);

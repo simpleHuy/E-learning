@@ -7,4 +7,8 @@ const TopicSchema = new mongoose.Schema({
     },
 });
 
+TopicSchema.statics.GetAllTopics = async function () {
+    return this.find();
+};
+
 module.exports = mongoose.model("Topics", TopicSchema, "Topics");

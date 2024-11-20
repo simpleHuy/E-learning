@@ -7,4 +7,8 @@ const SkillSchema = new mongoose.Schema({
     },
 });
 
+SkillSchema.statics.GetAllSkills = async function () {
+    return this.find();
+};
+
 module.exports = mongoose.model("Skills", SkillSchema, "Skills");
