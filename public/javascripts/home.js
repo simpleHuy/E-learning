@@ -28,13 +28,16 @@ prev.addEventListener("click", () => {
         carousel.scrollLeft = 0;
     } else {
         carousel.scrollLeft += first;
+        console.log(first);
     }
 });
 
 next.addEventListener("click", () => {
     if (carousel.scrollLeft === 0) {
         carousel.scrollLeft = carousel.scrollWidth - carousel.offsetWidth;
+        console.log(carousel.scrollWidth);
     } else {
         carousel.scrollLeft -= first;
+        console.log(first);
     }
 });
