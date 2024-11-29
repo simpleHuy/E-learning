@@ -7,7 +7,7 @@ const {
 // Dashboard route with authentication middleware
 router.get("/dashboard", ensureAuthenticated, (req, res) => {
     res.render("pages/dashboard", {
-        layout: "dashboardLayout",
+        layout: "dashboardlayout",
         user: req.user,
     });
 });
