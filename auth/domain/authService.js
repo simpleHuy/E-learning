@@ -1,6 +1,6 @@
-const User = require("../models/UserModel");
+const User = require("../data-access/UserModel");
 const hashHelper = require("../helpers/HashPassword");
-const passport = require("passport");
+const passport = require("../domain/passport");
 const UserService = {
     registerUser: async (req, res) => {
         console.log(req.body); // Kiểm tra nội dung của req.body

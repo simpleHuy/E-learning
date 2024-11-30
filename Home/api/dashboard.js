@@ -3,8 +3,8 @@ const router = express.Router();
 const {
     ensureAuthenticated,
     ensureGuest,
-} = require("../middleware/authencation");
-// Dashboard route with authentication middleware
+} = require("../middlewares/authencation");
+// Dashboard route with authentication middlewares
 router.get("/dashboard", ensureAuthenticated, (req, res) => {
     res.render("pages/dashboard", {
         layout: "dashboardlayout",

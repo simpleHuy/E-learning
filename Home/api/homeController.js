@@ -1,4 +1,4 @@
-const Course = require("../models/CourseModel");
+const Course = require("../../course/data-access/CourseModel");
 const express = require("express");
 
 const HomeController = {

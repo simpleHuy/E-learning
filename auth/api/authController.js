@@ -1,6 +1,6 @@
 const express = require("express");
-const authService = require("../Services/authService");
-const passport = require("../passport");
+const authService = require("../domain/authService");
+const passport = require("../domain/passport");
 
 const authController = {
     registerUser: async (req, res) => {

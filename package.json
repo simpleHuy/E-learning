@@ -5,7 +5,8 @@
   "scripts": {
     "start": "nodemon ./bin/www",
     "build:css": "tailwindcss -i ./public/stylesheets/input.css -o ./public/stylesheets/output.css --watch",
-    "dev": "concurrently \"npm run build:css\" \"npm run start\""
+    "dev": "concurrently \"npm run build:css\" \"npm run start\"",
+    "start server": "node ./bin/www"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

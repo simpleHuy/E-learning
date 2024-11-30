@@ -10,12 +10,12 @@ const flash = require("connect-flash");
 const dotenv = require("dotenv");
 dotenv.config({ path: "config.env" });
 const MongoStore = require("connect-mongo");
-const passport = require("./passport");
+const passport = require("./auth/domain/passport");
 
-const homeRouter = require("./routes/home");
-const authRouter = require("./routes/auth");
-const coursesRouter = require("./routes/course");
-const dashboardRoutes = require("./routes/dashboard");
+const homeRouter = require("./Home/api/home");
+const authRouter = require("./auth/api/authRoutes");
+const coursesRouter = require("./course/api/course");
+const dashboardRoutes = require("./Home/api/dashboard");
 
 const app = express();
 db.connect();
@@ -26,7 +26,7 @@ app.set("view engine", "hbs");
 hbs.registerPartials(path.join(__dirname, "views/partials"));
 
 //helpers
-require("./helpers/CourseDetailHelper");
+require("./views/helpers/CourseHelper");
 
 hbs.registerPartials(path.join(__dirname, "views/partials"));
 
