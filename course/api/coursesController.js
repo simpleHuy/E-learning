@@ -1,24 +1,23 @@
 // coursesController.js
 const ITEMS_PER_PAGE = 6;
 
-const CourseModel = require("../models/CourseModel");
-const SkillModel = require("../models/SkillModel");
-const TopicModel = require("../models/TopicModel");
+const CourseModel = require("../data-access/CourseModel");
+const SkillModel = require("../data-access/SkillModel");
+const TopicModel = require("../data-access/TopicModel");
 const { StatusCodes, getReasonPhrase } = require("http-status-codes");
 
 // Function to fetch and display courses with pagination
 const CourseController = {
     getCourses: async (req, res) => {
         try {
-            const { search, topic, skill, level, price } =
-                req.query;
+            const { search, topic, skill, level, price } = req.query;
 
             const coursesQuery = await CourseModel.GetCoursesByFilter(
                 search,
                 topic,
                 skill,
                 level,
-                price,
+                price
             );
 
             // Get the current page number from the query parameters or set to 1 if not provided
