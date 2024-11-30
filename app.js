@@ -26,7 +26,7 @@ app.set("view engine", "hbs");
 hbs.registerPartials(path.join(__dirname, "views/partials"));
 
 //helpers
-require("./Libraries/helpers/CourseHelper");
+require("./views/helpers/CourseHelper");
 
 hbs.registerPartials(path.join(__dirname, "views/partials"));
 
