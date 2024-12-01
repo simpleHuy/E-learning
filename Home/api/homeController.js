@@ -27,5 +27,15 @@ const HomeController = {
             title: "Login",
         });
     },
+    GetForgotPasswordPage: (req, res) => {
+        return res.status(200).render("pages/forgotpass", {
+            title: "Forgot Password",
+        });
+    },
+    GetResetPasswordPage: (req, res) => {
+        return res.status(200).render("pages/resetpass", {
+            title: "Reset Password",
+        });
+    },
 };
 module.exports = HomeController;

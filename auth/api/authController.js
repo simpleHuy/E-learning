@@ -13,11 +13,41 @@ const authController = {
             });
         }
     },
+    verifyUser: async (req, res) => {
+        try {
+            await authService.verifyUser(req, res);
+        } catch (error) {
+            console.error("Error verifying user:", error); // Log error
+            return res.status(500).json({
+                message: "Internal Server Error",
+            });
+        }
+    },
     loginUser: async (req, res, next) => {
         try {
             await authService.loginUser(req, res, next);
         } catch (error) {
             console.error("Error logging in:", error); // Log error
+            return res.status(500).json({
+                message: "Internal Server Error",
+            });
+        }
+    },
+    forgotPassword: async (req, res) => {
+        try {
+            await authService.forgotPassword(req, res);
+        } catch (error) {
+            console.error("Error forgot password:", error); // Log error
+            return res.status(500).json({
+                message: "Internal Server Error",
+            });
+        }
+    },
+    resetPassword: async (req, res) => {
+        try {
+            await authService.resetPassword(req, res);
+        } catch (error) {
+            console.error("Error resetting password:", error); // Log error
             return res.status(500).json({
                 message: "Internal Server Error",
             });

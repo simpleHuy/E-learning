@@ -59,6 +59,7 @@ app.use(flash());
 app.use((req, res, next) => {
     res.locals.successMessage = req.flash("successMessage");
     res.locals.errorMessage = req.flash("errorMessage");
+    res.locals.warningMessage = req.flash("warningMessage");
     res.locals.existUser = req.flash("existUser");
     res.locals.existMail = req.flash("existMail");
     next();
