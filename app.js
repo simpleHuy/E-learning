@@ -16,6 +16,7 @@ const homeRouter = require("./Home/api/home");
 const authRouter = require("./auth/api/authRoutes");
 const coursesRouter = require("./course/api/course");
 const dashboardRoutes = require("./Home/api/dashboard");
+const validate = require("./validate/api/validate");
 
 const app = express();
 db.connect();
@@ -64,7 +65,7 @@ app.use((req, res, next) => {
     res.locals.existMail = req.flash("existMail");
     next();
 });
-
+app.use("/validate", validate);
 app.use("/", homeRouter);
 app.use("/", authRouter);
 app.use("/", dashboardRoutes);
