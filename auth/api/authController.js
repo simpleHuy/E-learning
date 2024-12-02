@@ -73,7 +73,8 @@ const authController = {
                     if (err) {
                         return next(err);
                     }
-                    return res.redirect("/dashboard");
+                    req.session.isLoggedIn = true;
+                    return res.redirect("/");
                 });
             }
         )(req, res, next);

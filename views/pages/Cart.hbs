@@ -1,0 +1,73 @@
+<section  class="container mx-auto mt-8 grid grid-cols-1 md:grid-cols-4  gap-8" >
+    {{#if isLoggedIn}}
+    <div class="col-span-3">
+        <h1 class="text-4xl font-bold ">Shopping Cart</h1>
+        {{#if courses.length}}
+            <div class="max-w-4xl mx-auto p-4">
+        {{#each courses}}
+        <div class="flex items-start border-t pt-4 mb-4">
+            <!-- Hình ảnh khóa học -->
+            <img src="{{this.Img}}" alt="{{this.Title}}" class="w-24 h-24 rounded object-cover mr-4">
+            
+            <!-- Thông tin khóa học -->
+            <div class="flex-1">
+                <h2 class="font-bold text-lg">{{this.Title}}</h2>
+                <p class="text-sm text-gray-600">By {{this.Lecturer}}</p>
+                <div class="flex items-center text-yellow-500 mt-2">
+                    <span class="font-semibold">{{this.Rate}}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 .587l3.668 7.431 8.208 1.192-5.916 5.773 1.396 8.153L12 18.896l-7.356 3.87 1.396-8.153-5.916-5.773 8.208-1.192z" />
+                    </svg>
+                    <span class="text-gray-500 text-xs ml-2">({{this.Rate}} ratings)</span>
+                </div>
+                <p class="text-gray-600 text-sm mt-1">{{this.ShortDesc}}</p>
+                <p class="text-gray-500 text-sm mt-2">
+                    {{this.Duration}} total hours • {{calcNumberOfModules Course}} lectures • {{this.Level}}
+                </p>
+            </div>
+            
+            <!-- Giá và nút hành động -->
+            <div class="text-right">
+                <p class="font-bold text-lg text-[#4f75ff]">
+                {{calculateDiscount Price Sale}}₫
+                </p>
+                <p class="text-gray-500 line-through text-sm">{{this.Price}}₫</p>
+                <button class="text-[#4f75ff] hover:underline text-sm">Remove</button>
+            </div>
+        </div>
+        {{/each}}
+        </div>
+        {{else}}
+            {{#if courses.length}}
+            <div class="max-w-4xl mx-auto p-4">
+                <div class="text-center py-8">
+                    <h2 class="text-2xl font-bold text-gray-600">Your cart is empty</h2>
+                    <p class="text-gray-500 text-sm mt-2">Browse our courses and start learning today!</p>
+                    <a href="/courses" class="mt-4 inline-block bg-[#4f75ff] text-white px-8 py-3 rounded-md">
+                        Explore Courses
+                    </a>
+                </div>
+            </div>
+            {{/if}}
+        {{/if}}
+    </div>  
+    <div class="col-span-1">
+        <p class="text-mg text-gray-600">Total: </p>
+        <p class="text-2xl font-bold text-[#4f75ff]">{{totalPrice}}₫</p>
+        <p class="text-sm text-gray-500">You saved {{saved}} on this order</p>
+        <button class="bg-[#4f75ff] text-white px-8 py-3 rounded-md mt-4">Checkout</button>
+    </div>
+    {{else}}
+    <div class="col-span-3">
+    <h1 class="text-4xl font-bold">Shopping Cart</h1>
+    <div id="cart-container" class="max-w-4xl mx-auto p-4">
+        
+        </div>
+    </div>
+    <div class="col-span-1" id="cart-summary">
+        
+    </div>
+    {{/if}}
+</section>
+<script src="/javascripts/RenderCart.js"></script>
+

@@ -120,7 +120,8 @@ const UserService = {
                     return res.redirect("/login");
                 }
                 req.flash("successMessage", "Login successfully!");
-                return res.redirect("/dashboard");
+                req.session.isLoggedIn = true;
+                return res.redirect("/");
             });
         })(req, res, next);
     },

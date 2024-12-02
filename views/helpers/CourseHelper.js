@@ -30,3 +30,13 @@ hbs.registerHelper("lt", function (v1, v2, options) {
     }
     return options.inverse(this);
 });
+
+hbs.registerHelper("calculateDiscount", (price, sale) => {
+    const discountedPrice = price - (price * sale) / 100;
+    return discountedPrice.toFixed(0); // Làm tròn số
+});
+hbs.registerHelper("isEmpty", function (array, options) {
+    return array && array.length === 0
+        ? options.fn(this)
+        : options.inverse(this);
+});
