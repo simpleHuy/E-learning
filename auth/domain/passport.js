@@ -54,11 +54,7 @@ passport.use(
                             "Please check your email to verify your account before logging in.",
                     });
                 }
-                return done(
-                    null,
-                    { type: null, message: "Login successfully!" },
-                    user
-                );
+                return done(null, user);
             } catch (error) {
                 return done(error);
             }
@@ -99,6 +95,7 @@ passport.use(
 
 // Serialize user
 passport.serializeUser((user, done) => {
+    console.log("Serialize User:", user); // Kiểm tra dữ liệu user
     done(null, {
         id: user.id,
         username: user.username,
@@ -108,6 +105,7 @@ passport.serializeUser((user, done) => {
 
 // Deserialize user
 passport.deserializeUser(async (user, done) => {
+    console.log("Deserialize User:", user); // Kiểm tra dữ liệu user
     try {
         done(null, user);
     } catch (error) {

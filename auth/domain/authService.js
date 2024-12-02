@@ -100,7 +100,7 @@ const UserService = {
                 req.flash("errorMessage", "Login failed!");
                 return res.redirect("/login");
             }
-            if (info.type === "verify") {
+            if (info && info.type === "verify") {
                 res.cookie("verify-token", info.token, {
                     maxAge: 60 * 60 * 60,
                     httpOnly: true,
