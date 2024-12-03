@@ -1,4 +1,3 @@
-
 // Pagination logic
 function changePage(page) {
     // Get the current page from the URL
@@ -65,14 +64,14 @@ function toggleSelection(item, field) {
 
     // Kiểm tra nếu item đã được chọn
     if (selectedItems[field].includes(item)) {
-        selectedItems[field] = selectedItems[field].filter((i) => i !== item);
+        removeSelection(item, field);
     } else {
         selectedItems[field].push(item);
+        showButtonSubmit();
     }
 
     // Cập nhật giao diện
     updateTags(selectedContainer, field);
-    showButtonSubmit();
     // Đóng dropdown
     dropdown.classList.add("hidden");
 }
@@ -243,14 +242,14 @@ function SubmitFilter() {
     window.location.href = url.toString();
 }
 
-const searchInput = document.getElementById('search');
-searchInput.addEventListener('keydown', function (event) {
-    if (event.key === 'Enter') { 
+const searchInput = document.getElementById("search");
+searchInput.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
         const query = searchInput.value.trim();
         if (query) {
             const url = new URL(window.location.href);
             const params = new URLSearchParams(url.search);
-            params.set('search', query);
+            params.set("search", query);
             url.search = params.toString();
             window.location.href = url.toString();
         }
