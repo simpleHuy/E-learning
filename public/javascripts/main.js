@@ -12,11 +12,14 @@ function loadCartFromLocalStorage() {
     if (cartData) {
         carts = JSON.parse(cartData);
     }
-    const cartCount = document.getElementById("cart-count");
-    if (cartCount) {
-        cartCount.innerText = carts.length;
-    } else {
-        console.error("Element with ID 'cart-count' not found.");
-    }
+    const cartCount = document
+        .querySelectorAll("#cart-count")
+        .forEach((element) => {
+            if (element) {
+                element.innerText = carts.length;
+            } else {
+                console.error("Element with ID 'cart-count' not found.");
+            }
+        });
 }
 window.addEventListener("DOMContentLoaded", loadCartFromLocalStorage);

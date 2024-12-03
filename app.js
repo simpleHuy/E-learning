@@ -71,6 +71,7 @@ app.use((req, res, next) => {
 });
 app.use((req, res, next) => {
     res.locals.isLoggedIn = req.session.isLoggedIn || false;
+    res.locals.user = req.user || {};
     next();
 });
 app.use("/validate", validate);

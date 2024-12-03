@@ -176,12 +176,15 @@ function syncCartToServer() {
 
 // Render giỏ hàng
 function renderCart() {
-    const cartCount = document.getElementById("cart-count");
-    if (cartCount) {
-        cartCount.innerText = cart.length;
-    } else {
-        console.error("Element with ID 'cart-count' not found.");
-    }
+    const cartCount = document
+        .querySelectorAll("#cart-count")
+        .forEach((element) => {
+            if (element) {
+                element.innerText = cart.length;
+            } else {
+                console.error("Element with ID 'cart-count' not found.");
+            }
+        });
     const cartContainer = document.getElementById("cart-container");
     const summaryContainer = document.getElementById("cart-summary");
 

@@ -11,12 +11,15 @@ function loadCartFromLocalStorage() {
     if (cartData) {
         cart = JSON.parse(cartData);
     }
-    const cartCount = document.getElementById("cart-count");
-    if (cartCount) {
-        cartCount.innerText = cart.length;
-    } else {
-        console.error("Element with ID 'cart-count' not found.");
-    }
+    const cartCount = document
+        .querySelectorAll("#cart-count")
+        .forEach((element) => {
+            if (element) {
+                element.innerText = cart.length;
+            } else {
+                console.error("Element with ID 'cart-count' not found.");
+            }
+        });
 }
 // Call the loadCartFromLocalStorage function to load cart data when the page is loaded
 window.addEventListener("DOMContentLoaded", loadCartFromLocalStorage);
@@ -39,14 +42,17 @@ function addToCart(CourseId) {
                     console.log("Current cart:", cart);
                     cart.push(response.course);
                     saveCartToLocalStorage();
-                    const cartCount = document.getElementById("cart-count");
-                    if (cartCount) {
-                        cartCount.innerText = cart.length;
-                    } else {
-                        console.error(
-                            "Element with ID 'cart-count' not found."
-                        );
-                    }
+                    const cartCount = document
+                        .querySelectorAll("#cart-count")
+                        .forEach((element) => {
+                            if (element) {
+                                element.innerText = cart.length;
+                            } else {
+                                console.error(
+                                    "Element with ID 'cart-count' not found."
+                                );
+                            }
+                        });
                 } else {
                     console.error("Failed to add to cart:", response);
                 }
