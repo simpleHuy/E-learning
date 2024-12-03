@@ -14,6 +14,7 @@ const passport = require("./auth/domain/passport");
 
 const homeRouter = require("./Home/api/home");
 const authRouter = require("./auth/api/authRoutes");
+const paymentRouter = require("./payment/api/pay")
 const coursesRouter = require("./course/api/course");
 const dashboardRoutes = require("./Home/api/dashboard");
 const cartRoutes = require("./cart/api/cart");
@@ -78,6 +79,7 @@ app.use("/", homeRouter);
 app.use("/", authRouter);
 app.use("/", dashboardRoutes);
 app.use("/courses", coursesRouter);
+app.use("/paycourses", paymentRouter);
 app.use("/cart", cartRoutes);
 app.use("/courses", AjaxCourseRouter);
 // catch 404 and forward to error handler

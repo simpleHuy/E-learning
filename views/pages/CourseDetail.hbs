@@ -11,9 +11,11 @@
                 </p>
                 <div class="text-3xl my-2 font-bold">${{Course.Price}}</div>
                 <div class="flex gap-2 mb-2">
-                    <button class="min-w-[120px] max-w-[150px] text-white font-semibold bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-lg">
-                        Buy now
+                    <button class="min-w-[120px] max-w-[150px] text-white font-semibold bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-lg"
+                    onclick="buyNow('{{Course._id}}', '{{Course.Title}}', '{{Course.Price}}', '{{Course.Img}}')">
+                       Buy now
                     </button>
+
                     <button
                         class="min-w-[120px] max-w-[150px] text-white font-semibold bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-lg"
                         onclick="addToCart('{{Course._id}}')">
@@ -163,6 +165,20 @@
             }
         }
     });
+    function buyNow(courseId, title, price, img) {
+    // Check if the user is authenticated via session variable
+    const isLoggedIn = {{isLoggedIn}}; // Inject this from the server if you're using Handlebars
+
+    if (isLoggedIn) {
+        // If logged in, redirect to the paycourses page with course details
+        window.location.href = `/paycourses?courseId=${courseId}&title=${title}&price=${price}`;
+    } else {
+        // If not logged in, redirect to the login page
+        window.location.href = `/login?redirect=/paycourses?courseId=${courseId}&title=${title}&price=${price}`;
+    }
+}
+
+
 </script>
 <script src="/javascripts/CourseScript.js"></script>
 <script src="/javascripts/CartScript.js"></script>
