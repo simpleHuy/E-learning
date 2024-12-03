@@ -154,8 +154,8 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
 
     if (price) {
         // price less is min price, price greater is max price
-        //price [100 , 0]
-        // or pice[0, 100]
+        //price '0, 100' => price[0, 100]
+        price = price.split(",").map((p) => parseInt(p));
         const minPrice = Math.min(...price);
         const maxPrice = Math.max(...price);
         query.Price = { $gte: minPrice, $lte: maxPrice };
