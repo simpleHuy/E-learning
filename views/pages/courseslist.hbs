@@ -208,35 +208,25 @@
             </div>
 
             <!-- Dropdown -->
-            <div id="dropdown-level"
-              class="absolute z-50 w-full bg-white border rounded shadow-lg hidden max-h-48 overflow-y-auto">
-              <label class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100">
-                <input
-                  type="checkbox"
-                  value="Beginner"
-                  class="form-checkbox text-blue-500 mr-2"
-                  onchange="toggleCheckboxSelection(this, 'level')"/>
-                Beginner
-              </label>
-              <label class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100">
-                <input
-                  type="checkbox"
-                  value="Intermediate"
-                  class="form-checkbox text-blue-500 mr-2"
-                  onchange="toggleCheckboxSelection(this, 'level')"
-                />
-                Intermediate
-              </label>
-              <label class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100">
-                <input
-                  type="checkbox"
-                  value="Advanced"
-                  class="form-checkbox text-blue-500 mr-2"
-                  onchange="toggleCheckboxSelection(this, 'level')"
-                />
-                Advanced
-              </label>
-            </div>
+              <div
+                id="dropdown-level"
+                class="absolute z-50 w-full bg-white border rounded shadow-lg hidden max-h-48 overflow-y-auto">
+                <div
+                  class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                  onclick="toggleSelection('Beginner', 'level')">
+                    Beginner
+                </div>
+                <div
+                  class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                  onclick="toggleSelection('Intermediate', 'level')">
+                    Intermediate
+                </div>
+                <div
+                  class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                  onclick="toggleSelection('Advance', 'level')">
+                    Advance
+                </div>
+              </div>
             <div id="level-tags" class="mt-2 flex flex-wrap gap-2"></div>
           </div>
           </div>
