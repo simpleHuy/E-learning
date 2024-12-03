@@ -8,7 +8,7 @@ const TopicSchema = new mongoose.Schema({
 });
 
 TopicSchema.statics.GetAllTopics = async function () {
-    return this.find();
+    return this.find().sort({ Name: 1 });
 };
 
 module.exports = mongoose.model("Topics", TopicSchema, "Topics");
