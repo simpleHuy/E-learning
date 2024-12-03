@@ -210,16 +210,22 @@ function clearAllFilters() {
 
 function SubmitFilter() {
     const url = new URL(window.location.href);
-    // please delete all query params related to filters
-    const params = new URLSearchParams();
-    for (const [key, value] of Object.entries(selectedItems)) {
-        // make it like topic=A&topic=B&topic=C
-        if (value.length > 0) {
-            value.forEach((item) => {
-                params.append(key, item);
-            });
+
+    //deletel all search params except page, sort, order
+    const params = new URLSearchParams(url.search);
+    for (const key of params.keys()) {
+        if (key !== "page" && key !== "sort" && key !== "order") {
+            params.delete(key);
         }
     }
+
+    // Add the selected items to the URL
+    for (const field in selectedItems) {
+        if (selectedItems[field].length > 0) {
+            params.set(field, selectedItems[field].join(","));
+        }
+    }
+
     clearAllFilters();
     url.search = params.toString();
     window.location.href = url.toString();
@@ -239,12 +245,58 @@ searchInput.addEventListener("keydown", function (event) {
     }
 });
 
-function appliedSort(sort, order) {
-    // giữ nguyên các query params khác
+function appliedSort(field, direction) {
+    if (field === "default") {
+        document.getElementById("dropdown-sort").classList.add("hidden");
+        return;
+    }
+    // Update the URL
     const url = new URL(window.location.href);
     const params = new URLSearchParams(url.search);
-    params.set("sort", sort);
-    params.set("order", order);
+    params.set("sort", field);
+    params.set("order", direction);
     url.search = params.toString();
     window.location.href = url.toString();
 }
+
+function changeSortInfo(field, direction) {
+    // Update the sort info text based on the selected option
+    const sortInfo = document.getElementById("sort-info");
+
+    // Determine the text to display based on the field and direction
+    let sortText = "";
+    switch (field) {
+        case "Title":
+            sortText =
+                direction === "asc" ? "By Name ( A - Z )" : "By Name ( Z - A )";
+            break;
+        case "Price":
+            sortText =
+                direction === "asc"
+                    ? "By Price ( Low - High )"
+                    : "By Price ( High - Low )";
+            break;
+        case "Duration":
+            sortText =
+                direction === "asc"
+                    ? "By Duration ( Short - Long )"
+                    : "By Duration ( Long - Short )";
+            break;
+    }
+
+    // Update the #sort-info element's text
+    sortInfo.textContent = sortText;
+}
+
+// chỉnh lại sort info khi trang được tải
+window.addEventListener("DOMContentLoaded", (event) => {
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    const sortField = params.get("sort");
+    const sortOrder = params.get("order");
+
+    if (sortField && sortOrder) {
+        changeSortInfo(sortField, sortOrder);
+    } else {
+    }
+});

@@ -283,7 +283,7 @@
                 class="flex flex-wrap gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer"
                 onclick="toggleDropdown('sort')"
               >
-                <span class="text-gray-400 w-30">No sort now</span>
+                <span id="sort-info" class="text-gray-400 w-30">None</span>
                 <svg class="w-4 h-4 ml-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
@@ -292,23 +292,26 @@
               <!-- Dropdown -->
               <div id="dropdown-sort"
                 class="absolute z-50 w-full bg-white border rounded shadow-lg hidden max-h-48 overflow-y-auto text-base">
-                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('name', 'asc')">
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('Title', 'asc')">
                   By Name ( A - Z )
                 </div>
-                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('name', 'desc')">
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('Title', 'desc')">
                   By Name ( Z - A )
                 </div>
-                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('price', 'asc')">
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('Price', 'asc')">
                   By Price ( Low - High )
                 </div>
-                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('price', 'desc')">
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('Price', 'desc')">
                   By Price ( High - Low )
                 </div>
-                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('duration', 'asc')">
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('Duration', 'asc')">
                   By Duration ( Short - Long )
                 </div>
-                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('duration', 'desc')">
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('Duration', 'desc')">
                   By Duration ( Long - Short )
+                </div>
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('default', 'none')">
+                  None
                 </div>
               </div>
             </div>
