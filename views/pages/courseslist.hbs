@@ -272,6 +272,49 @@
           </button>
         </div>
       </div>
+
+      <!-- Sort Section -->
+      <div class="inline-block relative text-4xl shadow-lg px-4 py-1 rounded-lg top-10 mb-6 bg-white">
+        <div class="mb-4">
+            <span for="sort" class="mb-1 text-xl text-gray-600">Sort</span>
+            <div class="inline-block ">
+              <!-- Selected Items -->
+              <div
+                class="flex flex-wrap gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer"
+                onclick="toggleDropdown('sort')"
+              >
+                <span class="text-gray-400 w-30">No sort now</span>
+                <svg class="w-4 h-4 ml-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+                
+              <!-- Dropdown -->
+              <div id="dropdown-sort"
+                class="absolute z-50 w-full bg-white border rounded shadow-lg hidden max-h-48 overflow-y-auto text-base">
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('name', 'asc')">
+                  By Name ( A - Z )
+                </div>
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('name', 'desc')">
+                  By Name ( Z - A )
+                </div>
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('price', 'asc')">
+                  By Price ( Low - High )
+                </div>
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('price', 'desc')">
+                  By Price ( High - Low )
+                </div>
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('duration', 'asc')">
+                  By Duration ( Short - Long )
+                </div>
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('duration', 'desc')">
+                  By Duration ( Long - Short )
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
       <!-- Course Cards -->
       {{#if courses.length}}
       <div id="course-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

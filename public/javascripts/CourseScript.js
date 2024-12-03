@@ -123,23 +123,6 @@ function removeSelection(item, field) {
     hiddenButtonSubmit();
 }
 
-// Hàm xử lý với checkbox
-function toggleCheckboxSelection(checkbox, field) {
-    const selectedContainer = document.getElementById(`${field}-tags`);
-
-    if (checkbox.checked) {
-        selectedItems[field].push(checkbox.value);
-    } else {
-        selectedItems[field] = selectedItems[field].filter(
-            (item) => item !== checkbox.value
-        );
-    }
-
-    // Cập nhật giao diện
-    updateTags(selectedContainer, field);
-    showButtonSubmit();
-}
-
 // Ẩn dropdown khi nhấp ra ngoài
 window.addEventListener("click", (e) => {
     // Kiểm tra xem người dùng có nhấn ngoài các dropdown không
@@ -255,3 +238,13 @@ searchInput.addEventListener("keydown", function (event) {
         }
     }
 });
+
+function appliedSort(sort, order) {
+    // giữ nguyên các query params khác
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    params.set("sort", sort);
+    params.set("order", order);
+    url.search = params.toString();
+    window.location.href = url.toString();
+}
