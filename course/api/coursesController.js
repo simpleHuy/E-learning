@@ -10,14 +10,16 @@ const { StatusCodes, getReasonPhrase } = require("http-status-codes");
 const CourseController = {
     getCourses: async (req, res) => {
         try {
-            const { search, topic, skill, level, price } = req.query;
+            const { search, topic, skill, level, price, sort, order } = req.query;
 
             const coursesQuery = await CourseModel.GetCoursesByFilter(
                 search,
                 topic,
                 skill,
                 level,
-                price
+                price,
+                sort, 
+                order
             );
 
             // Get the current page number from the query parameters or set to 1 if not provided

@@ -118,7 +118,9 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
     topic = null,
     skill = null,
     level = null,
-    price = null
+    price = null,
+    sort = null,
+    order = "asc"
 ) {
     let query = {};
 
@@ -159,7 +161,18 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
         query.Price = { $gte: minPrice, $lte: maxPrice };
     }
 
-    return this.find(query);
+    if(sort === null)
+        return this.find(query);
+
+    const validSortFields = ["Title", "Duration", "Price"];
+    let sortOption = {};
+    if (sort && validSortFields.includes(sort)) {
+        sortOption[sort] = order === "desc" ? -1 : 1;
+    } else {
+        sortOption["Title"] = 1; // Default sort by Title ascending
+    }
+
+    return this.find(query).sort(sortOption);
 };
 
 module.exports = mongoose.model("Courses", CoursesSchema, "Courses");
