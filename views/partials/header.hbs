@@ -49,12 +49,60 @@
                     <p id= "cart-count" class="absolute top-[2px] right-[-6px] bg-[#4f75ff] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</p>
                 </a>
                 {{#if isLoggedIn}}
-                <a href="/dashboard" class="lg:px-3 lg:py-2 px-5 py-3  xl:px-5 xl:py-3">
-                    <img
-                        src="assets/icon/Avatar.svg"
-                        alt="avatar"
-                        class="w-8 h-8 rounded-lg">
+              
+                <div class="relative group">
+        <!-- Avatar -->
+        <div class="cursor-pointer lg:px-3 lg:py-2 px-5 py-3  xl:px-5 xl:py-3 ">
+            <a href="#" class="pb-3">
+                            <img
+                                src="assets/icon/Avatar.svg"
+                                alt="avatar"
+                                class="w-8 h-8 rounded-lg">
+            </a>
+        </div>
+
+        <!-- Dropdown Menu -->
+        <div
+            class="absolute right-0 mt-0 w-64 bg-white border border-gray-300 rounded-lg shadow-lg hidden group-hover:block z-10"
+        >
+            <!-- User Info -->
+            <div class="px-4 py-3 border-b border-gray-200">
+            <p class="font-bold text-sm">{{user.username}}</p>
+            <p class="text-gray-500 text-sm">{{user.email}}</p>
+            </div>
+
+            <!-- Menu Items -->
+            <ul class="text-sm text-gray-700">
+            <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">My learning</li>
+            <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                <a href="/cart" class="flex justify-between items-center">
+                    <span>My Cart</span>
+                    <span id="cart-count" class="bg-[#4f75ff] text-white text-xs font-bold px-2 py-1 rounded-full">0</span>
                 </a>
+            </li>
+
+            <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Teach on</li>
+            <hr class="my-1 border-gray-200" />
+            <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Notifications</li>
+            <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Messages</li>
+            <hr class="my-1 border-gray-200" />
+            <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Account settings</li>
+            <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Payment methods</li>
+            <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Subscriptions</li>
+            <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                <a href="/paycourses/payhistory" class="text-gray-700">Purchase history</a>
+            </li>
+
+            <hr class="my-1 border-gray-200" />
+            <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                <form action="/logout" method="POST">
+                        <button type="submit">Logout</button>
+                </form>
+                
+            </li>
+            </ul>
+        </div>
+        </div>
                 {{else}}
                 <a
                     href="/signup"

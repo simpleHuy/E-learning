@@ -18,7 +18,11 @@ const paymentRouter = require("./payment/api/pay")
 const coursesRouter = require("./course/api/course");
 const dashboardRoutes = require("./Home/api/dashboard");
 const cartRoutes = require("./cart/api/cart");
-
+hbs.registerHelper("calcTotal", (courses, isPaid) => {
+    return courses
+        .filter(course => course.isPaid === isPaid)
+        .reduce((total, course) => total + course.price, 0);
+});
 //AJAX API
 const validate = require("./validate/api/validate");
 const AjaxCourseRouter = require("./course/api/AjaxCourse");
@@ -110,7 +114,6 @@ app.post('/complete-checkout', async (req, res) => {
 
 app.use((req, res, next) => {
     res.locals.isLoggedIn = req.session.isLoggedIn || false;
-    res.locals.user = req.user || {};
     next();
 });
 app.use("/validate", validate);

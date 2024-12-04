@@ -11,6 +11,11 @@ const paymentSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Courses",
             required: true,
+            status: {
+                type: String,
+                enum: ["paid", "pending"],
+                default: "pending", // New courses added to payment are initially "pending"
+            },
         },
     ],
     total: {
@@ -37,16 +42,25 @@ paymentSchema.methods.AddCourse = function (CourseId) {
     this.calcTotal();
 };
 
+paymentSchema.methods.AddCourse = async function (CourseId) {
+    const course = await this.model("Courses").findById(CourseId); // Lấy khóa học từ database
+    if (!course) {
+        throw new Error("Course not found");
+    }
+    this.items.push(course); // Thêm đối tượng khóa học vào giỏ hàng
+    this.calcTotal();
+};
+
 paymentSchema.methods.RemoveCourse = async function (courseId) {
+    // Kiểm tra xem courseId có phải ObjectId hợp lệ không
+    if (!mongoose.Types.ObjectId.isValid(courseId)) {
+        throw new Error("Invalid course ID");
+    }
+
     const initialCount = this.items.length;
-    this.items = this.items.filter((item) => {
-        if (item) {
-            return item._id.toString() !== courseId.toString();
-        } else {
-            console.error("Undefined item found in payment items");
-            return true;
-        }
-    });
+    this.items = this.items.filter(
+        (item) => item._id.toString() !== courseId.toString()
+    );
 
     if (this.items.length < initialCount) {
         await this.save();
@@ -56,10 +70,11 @@ paymentSchema.methods.RemoveCourse = async function (courseId) {
 };
 
 paymentSchema.methods.FetchAllCourses = async function () {
-    const Courses = await this.model("Payments")
+    const payment = await this.model("Payments")
         .findById(this._id)
-        .populate("items");
-    this.items = Courses.items;
+        .populate("items"); // Populating courses
+
+    this.items = payment.items;
     this.calcTotal();
 };
 
@@ -68,6 +83,8 @@ paymentSchema.statics.GetPaymentByUserId = async function (UserId) {
     if (!payment) {
         payment = new this({ userId: UserId, items: [], total: 0 });
         await payment.save();
+    } else {
+        payment.calcTotal(); // Tính lại tổng nếu đã có giỏ hàng
     }
     return payment;
 };
