@@ -5,6 +5,9 @@ function openNav() {
 function closeNav() {
     document.getElementById("Sidenav").style.width = "0";
 }
+function logout() {
+    localStorage.removeItem("cart");
+}
 // Load cart from localStorage
 let carts = [];
 function loadCartFromLocalStorage() {
