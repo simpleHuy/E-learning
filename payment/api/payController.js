@@ -1,4 +1,5 @@
 const Payment = require("../data-access/PayModel");
+const Cart = require("../../cart/data-access/CartModel")
 
 // paymentController.js
 const paymentController = {
@@ -56,39 +57,59 @@ const paymentController = {
     // New payHistory method to fetch payment history
     payHistory: async (req, res) => {
         try {
-            // Fetch the user's payment history
+            // Ensure user is authenticated
+            if (!req.user || !req.user.id) {
+                console.error("User not authenticated");
+                return res.status(401).json({ success: false, message: "User not authenticated" });
+            }
+
+            // Fetch payment history for the user
             const paymentHistory = await Payment.find({ userId: req.user.id })
-                .populate('items')  // Populate the courses in the payment
-                .sort({ createdAt: -1 });
-    
-            // Fetch the courses in the user's cart (not yet paid)
-            const cart = await Cart.GetCartByUserId(req.user.id);  // Fetch cart data
+                .populate('items')  // Populate the courses in the payment history
+                .sort({ createdAt: -1 });  // Sort by most recent payment first
+
+            if (!paymentHistory) {
+                console.log("No payment history found for user:", req.user.id);
+            }
+
+            // Fetch cart for the user
+            const cart = await Cart.GetCartByUserId(req.user.id);
+            if (!cart) {
+                console.error("No cart found for user:", req.user.id);
+                return res.status(404).json({ success: false, message: "No cart found" });
+            }
+
+            // Populate courses in the cart
             await cart.FetchAllCourses();
             const cartCourses = cart.items;
-    
-            // Combine the payment history and cart courses
-            const allCourses = paymentHistory.map(payment => ({
-                ...payment._doc,
-                isPaid: true  // Mark courses as paid
+
+            // Combine the payment history (paid courses) and cart courses (unpaid courses)
+            const paidCourses = paymentHistory.map(payment => ({
+                ...payment._doc,  // Spread the payment document
+                isPaid: true,     // Mark these courses as paid
+                courses: payment.items,
             }));
-    
+
             const unpaidCourses = cartCourses.map(course => ({
-                ...course._doc,
-                isPaid: false  // Mark courses as not paid
+                ...course._doc,   // Spread the course document
+                isPaid: false,    // Mark these courses as unpaid
             }));
-    
-            const allCoursesWithStatus = [...allCourses, ...unpaidCourses];
-    
+
+            // Combine both arrays (paid and unpaid courses)
+            const allCourses = [...paidCourses, ...unpaidCourses];
+
+            // Render the pay history page with combined courses
             res.render('pages/payhistory', {
                 title: 'Payment History',
                 isLoggedIn: true,
-                paymentHistory: allCoursesWithStatus,
+                courses: allCourses,
             });
         } catch (error) {
             console.error("Error fetching payment history:", error);
             res.status(500).json({ success: false, message: "Internal server error" });
         }
     }
+    
     
 
 };

@@ -6,15 +6,21 @@ function loadPaymentHistory(isLoggedIn) {
         paymentHistory = [];
         // If logged in, fetch payment history from the server
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "/payment-history/get", true);
+        xhr.open("GET", "/paycourses/payhistory", true);
+
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
                     // On success, set payment history from the server
                     var data = JSON.parse(xhr.responseText);
-                    paymentHistory = data.payments; // Store the payment history
-                    renderPaymentHistory();
+                    if (data.success) {
+                        paymentHistory = data.courses; // Updated key to match server response
+                        renderPaymentHistory();
+                    } else {
+                        alert("Failed to load payment history: " + data.message);
+                    }
+
                 } else {
                     alert("Failed to load payment history.");
                 }
