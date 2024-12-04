@@ -11,7 +11,6 @@ router
     })
     .get("/get", ensureAuthenticated, paymentController.getPaymentData)
     .post("/sync", ensureAuthenticated, paymentController.syncPayment)
-    .delete("/remove/:id", ensureAuthenticated, paymentController.removeCourse)
     .get("/payhistory",ensureAuthenticated, paymentController.payHistory)
     .post("/complete-checkout", paymentController.completeCheckout);
     

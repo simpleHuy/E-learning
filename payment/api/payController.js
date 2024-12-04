@@ -85,20 +85,6 @@ const paymentController = {
         console.log("Updated payment:", payments.items.length);
         await payments.save();
     },
-    removeCourse: async (req, res) => {
-        try {
-            const courseId = req.params.id;
-            console.log("Removing course:", courseId);
-            const payment = await Payment.GetPaymentByUserId(req.user.id);
-            console.log("Payment items:", payment.items);
-            await payment.RemoveCourse(courseId);
-            await payment.save();
-            res.status(200).json({ success: true });
-        } catch (error) {
-            console.error("Error removing course:", error);
-            res.status(500).json({ success: false });
-        }
-    },
     payHistory: async (req, res) => {
         try {
             const courseId = req.params.id;
