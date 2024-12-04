@@ -10,8 +10,6 @@ router
     .get("/signup", ensureGuest, (req, res) => {
         res.render("pages/signup");
     })
-    .get("/get", ensureAuthenticated, paymentController.getPaymentData)
-    .post("/sync", ensureAuthenticated, paymentController.syncPayment)
     .get("/payhistory", ensureAuthenticated, paymentController.payHistory)
     .post("/complete-checkout", paymentController.completeCheckout)
     .delete("/remove/:id", ensureAuthenticated, paymentController.removeCourse);

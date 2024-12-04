@@ -73,7 +73,11 @@ paymentSchema.methods.FetchAllCourses = async function () {
     const payment = await this.model("Payments")
         .findById(this._id)
         .populate("items"); // Populating courses
-
+    await Promise.all(
+        payment.items.map(async (element) => {
+            await element.FetchAllModules();
+        })
+    );
     this.items = payment.items;
     this.calcTotal();
 };

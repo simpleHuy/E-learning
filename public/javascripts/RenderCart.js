@@ -223,7 +223,7 @@ function renderCart() {
                     </div>
                     <p class="text-gray-600 text-sm mt-1">${course.ShortDesc}</p>
                     <p class="text-gray-500 text-sm mt-2">
-                        ${course.Duration} total hours • ${course.Modules.length} lectures • ${course.Level}
+                        ${course.Duration} weeks • ${course.Modules.length} lectures • ${course.Level}
                     </p>
                 </div>
                 

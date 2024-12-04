@@ -1,7 +1,7 @@
 <body class="flex items-center justify-center min-h-screen bg-gray-100">
-    <div class="w-full bg-white p-6 shadow-lg flex">
+    <div class="w-full bg-white p-6 shadow-lg grid grid-cols-1 lg:grid-cols-5">
         <!-- Left Column (Chiếm 4/5 hoặc lớn hơn) -->
-        <div class="flex-grow pr-6">
+        <div class="col-span-4 pr-6">
             <!-- Billing Information -->
             <div class="bg-gray-50 p-4 rounded-lg shadow mb-6">
                 <h2 class="text-lg font-semibold text-gray-700 mb-4">Billing Information</h2>
@@ -50,7 +50,7 @@
         </div>
 
         <!-- Order Summary (Sát bên phải) -->
-        <div class="w-1/5 pl-6 ml-auto">
+        <div class="col-span-1 pl-6">
     <div class="bg-gray-50 p-4 rounded-lg shadow">
         <h2 class="text-lg font-semibold text-gray-700 mb-4">Order Summary</h2>
         <div class="text-gray-700 space-y-2">
@@ -83,7 +83,7 @@
                 By completing your purchase, you agree to these
                 <a href="#" class="text-blue-500 underline">Terms of Service</a>.
             </p>
-       <button id="completeCheckoutBtn" type="button"
+       <button id="completeCheckoutBtn" type="button" onclick="completeCheckout()"
     class="w-full text-white font-semibold py-3 rounded-lg flex items-center justify-center hover:bg-blue-500"
     style="background-color: #4f75ff;">
     <i class="fa-solid fa-lock mr-2"></i>
@@ -110,6 +110,7 @@ const paidCourses = {{{json paidCourses}}};
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('completeCheckoutBtn').addEventListener('click', async function() {
         try {
+            localStorage.removeItem('cart');
             const response = await fetch('/complete-checkout', {
                 method: 'POST',
                 headers: {

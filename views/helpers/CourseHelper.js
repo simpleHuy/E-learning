@@ -32,7 +32,7 @@ hbs.registerHelper("lt", function (v1, v2, options) {
 });
 
 hbs.registerHelper("calculateDiscount", (price, sale) => {
-    const discountedPrice = price - (price * sale) / 100;
+    const discountedPrice = (price * sale) / 100;
     return discountedPrice.toFixed(0); // Làm tròn số
 });
 hbs.registerHelper("isEmpty", function (array, options) {

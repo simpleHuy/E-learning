@@ -7,6 +7,15 @@ function closeNav() {
 }
 function logout() {
     localStorage.removeItem("cart");
+    fetch("/logout", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}), // You can pass any data you want in the body
+    }).catch((error) => {
+        console.error("An error occurred during logout:", error);
+    });
 }
 // Load cart from localStorage
 let carts = [];

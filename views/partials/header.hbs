@@ -94,11 +94,10 @@
             </li>
 
             <hr class="my-1 border-gray-200" />
-            <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                <form action="/logout" method="POST">
-                        <button type="submit">Logout</button>
-                </form>
-                
+            <li  class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                    <form action="/logout" method="POST" onsubmit="localStorage.removeItem('cart');">
+                <button type="submit">Logout</button>
+            </form>
             </li>
             </ul>
         </div>

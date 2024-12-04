@@ -54,10 +54,13 @@ cartSchema.methods.RemoveCourse = async function (courseId) {
 };
 
 cartSchema.methods.FetchAllCourses = async function () {
-    const Courses = await this.model("Carts")
-        .findById(this._id)
-        .populate("items");
-    this.items = Courses.items;
+    const Cart = await this.model("Carts").findById(this._id).populate("items");
+    await Promise.all(
+        Cart.items.map(async (element) => {
+            await element.FetchAllModules();
+        })
+    );
+    this.items = Cart.items;
     this.calcTotal();
 };
 cartSchema.statics.GetCartByUserId = async function (UserId) {

@@ -55,52 +55,6 @@ const paymentController = {
             );
         }
     },
-
-    getPaymentData: async (req, res) => {
-        if (req.session.isLoggedIn) {
-            const payment = await Payment.GetPaymentByUserId(req.user.id);
-            await payment.FetchAllCourses();
-            const courses = payment.items;
-            res.json({
-                isLoggedIn: true,
-                courses,
-                total: payment.calcTotal(),
-            });
-        } else {
-            res.json({ isLoggedIn: false });
-        }
-    },
-    syncPayment: async (req, res) => {
-        const { payment } = req.body;
-        const payments = await Payment.GetPaymentByUserId(req.user.id);
-        if (payments.items.length === 0) {
-            payments.items = payment;
-            await payments.save();
-            return;
-        }
-        console.log("Received payment:", payment.length);
-
-        payment.forEach((item) => {
-            const existingItem = payments.items.find((i) => i._id == item._id);
-            if (!existingItem) {
-                payments.items.push(item);
-            }
-        });
-        console.log("Updated payment:", payments.items.length);
-        await payments.save();
-    },
-    payHistory: async (req, res) => {
-        try {
-            const courseId = req.params.id;
-            console.log("Removing course:", courseId);
-            const payment = await Payment.GetPaymentByUserId(req.user.id);
-            console.log("Payment items:", payment.items);
-            await payments.save();
-        } catch (error) {
-            console.error("Error removing course:", error);
-            res.status(500).json({ success: false });
-        }
-    },
     removeCourse: async (req, res) => {
         try {
             const courseId = req.params.id;
@@ -154,50 +108,42 @@ const paymentController = {
             // Kiểm tra xem người dùng đã đăng nhập chưa
             if (!req.user || !req.user.id) {
                 console.error("User not authenticated");
-                return res
-                    .status(401)
-                    .json({
-                        success: false,
-                        message: "User not authenticated",
-                    });
+                return res.status(401).json({
+                    success: false,
+                    message: "User not authenticated",
+                });
             }
 
             // Lấy lịch sử thanh toán của người dùng
-            const paymentHistory = await Payment.find({ userId: req.user.id })
-                .populate({
-                    path: "items", // Populate the items field with course details
-                    select: "Title Price Img Rate ShortDesc Lecturer Duration Modules Level Sale", // Include Sale field for discount
-                })
-                .sort({ createdAt: -1 }); // Sắp xếp theo thời gian, thanh toán gần nhất trước
+            const paymentHistory = await Payment.GetPaymentByUserId(
+                req.user.id
+            );
+            await paymentHistory.FetchAllCourses();
+            // console.log("Payment history:", paymentHistory);
+            // // Kết hợp các khóa học đã thanh toán và tính giá đã giảm
+            // const paidCourses = paymentHistory.map((payment) => {
+            //     const coursesWithDiscount = payment.items.map((course) => {
+            //         const discountPrice =
+            //             course.Price - course.Price * (course.Sale / 100); // Tính giá đã giảm
+            //         return {
+            //             ...course._doc, // Giữ lại các thuộc tính ban đầu của khóa học
+            //             discountPrice: discountPrice.toFixed(2), // Thêm giá đã giảm vào mỗi khóa học
+            //         };
+            //     });
 
-            if (!paymentHistory.length) {
-                console.log("No payment history found for user:", req.user.id);
-            }
-
-            // Kết hợp các khóa học đã thanh toán và tính giá đã giảm
-            const paidCourses = paymentHistory.map((payment) => {
-                const coursesWithDiscount = payment.items.map((course) => {
-                    const discountPrice =
-                        course.Price - course.Price * (course.Sale / 100); // Tính giá đã giảm
-                    return {
-                        ...course._doc, // Giữ lại các thuộc tính ban đầu của khóa học
-                        discountPrice: discountPrice.toFixed(2), // Thêm giá đã giảm vào mỗi khóa học
-                    };
-                });
-
-                return {
-                    ...payment._doc, // Spread document to get all data
-                    isPaid: true, // Mark courses as paid
-                    courses: coursesWithDiscount, // Include populated course details with discounts
-                    total: payment.calcTotal(), // Calculate the total for this payment
-                };
-            });
+            //     return {
+            //         ...payment._doc, // Spread document to get all data
+            //         isPaid: true, // Mark courses as paid
+            //         courses: coursesWithDiscount, // Include populated course details with discounts
+            //         total: payment.calcTotal(), // Calculate the total for this payment
+            //     };
+            // });
 
             // Render trang lịch sử thanh toán với tất cả khóa học và giá đã giảm
             res.render("pages/payhistory", {
                 title: "Payment History",
                 isLoggedIn: true,
-                paidCourses: paidCourses, // Pass the array of courses for the view with discount
+                paidCourses: paymentHistory.items, // Pass the array of courses for the view with discount
             });
         } catch (error) {
             console.error("Error fetching payment history:", error);
