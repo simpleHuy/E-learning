@@ -1,15 +1,36 @@
-<section  class="container mx-auto mt-8 grid grid-cols-1 md:grid-cols-4  gap-8" >
-    <div class="col-span-3">
-    <h1 class="text-4xl font-bold">Payment Details</h1>
-    <div id="cart-container" class="max-w-4xl mx-auto p-4">
-        
-        </div>
-    </div>
-    <div class="col-span-1" id="cart-summary">
-    </div>
-</section>
-<script>
-    const isLoggedIn = {{isLoggedIn}};
-</script>
-<script src="/javascripts/payHistory.js"></script>
+{{#each paidCourses}}
+    {{#each this.courses}} <!-- Loop through the courses inside each payment -->
+        <div class="flex items-start border-t pt-4 mb-4 px-4 bg-gray-100 rounded-lg" style="background-color: #f3f4f6; background-size: cover;">
+            <!-- Hình ảnh khóa học -->
+            <img src="{{this.Img}}" alt="{{this.Title}}" class="w-24 h-24 rounded object-cover mr-4">
+            
+            <!-- Thông tin khóa học -->
+            <div class="flex-1">
+                <h2 class="font-bold text-lg">{{this.Title}}</h2>
+                <p class="text-sm text-gray-600">By {{this.Lecturer}}</p>
+                <div class="flex items-center text-yellow-500 mt-2">
+                    <span class="font-semibold">{{this.Rate}}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 .587l3.668 7.431 8.208 1.192-5.916 5.773 1.396 8.153L12 18.896l-7.356 3.87 1.396-8.153-5.916-5.773 8.208-1.192z" />
+                    </svg>
+                    <span class="text-gray-500 text-xs ml-2">({{this.Rate}} ratings)</span>
+                </div>
+                <p class="text-gray-600 text-sm mt-1">{{this.ShortDesc}}</p>
+                <p class="text-gray-500 text-sm mt-2">
+                    {{this.Duration}} total hours • {{this.Modules.length}} lectures • {{this.Level}}
+                </p>
+            </div>
 
+            <!-- Giá và nút hành động -->
+            <div class="text-right">
+                <p class="font-bold text-lg text-[#4f75ff]">
+                    ${{this.discountPrice}} <!-- Hiển thị giá đã giảm -->
+                </p>
+                <p class="text-gray-500 line-through text-sm">${{this.Price}}</p>
+                <div class="course-status mt-2 text-sm text-green-600">
+                    Status: Paid
+                </div>
+            </div>
+        </div>
+    {{/each}}
+{{/each}}

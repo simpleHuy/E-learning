@@ -57,58 +57,54 @@ const paymentController = {
     // New payHistory method to fetch payment history
     payHistory: async (req, res) => {
         try {
-            // Ensure user is authenticated
+            // Kiểm tra xem người dùng đã đăng nhập chưa
             if (!req.user || !req.user.id) {
                 console.error("User not authenticated");
                 return res.status(401).json({ success: false, message: "User not authenticated" });
             }
-
-            // Fetch payment history for the user
+    
+            // Lấy lịch sử thanh toán của người dùng
             const paymentHistory = await Payment.find({ userId: req.user.id })
-                .populate('items')  // Populate the courses in the payment history
-                .sort({ createdAt: -1 });  // Sort by most recent payment first
-
-            if (!paymentHistory) {
+                .populate({
+                    path: 'items', // Populate the items field with course details
+                    select: 'Title Price Img Rate ShortDesc Lecturer Duration Modules Level Sale', // Include Sale field for discount
+                })
+                .sort({ createdAt: -1 }); // Sắp xếp theo thời gian, thanh toán gần nhất trước
+    
+            if (!paymentHistory.length) {
                 console.log("No payment history found for user:", req.user.id);
             }
-
-            // Fetch cart for the user
-            const cart = await Cart.GetCartByUserId(req.user.id);
-            if (!cart) {
-                console.error("No cart found for user:", req.user.id);
-                return res.status(404).json({ success: false, message: "No cart found" });
-            }
-
-            // Populate courses in the cart
-            await cart.FetchAllCourses();
-            const cartCourses = cart.items;
-
-            // Combine the payment history (paid courses) and cart courses (unpaid courses)
-            const paidCourses = paymentHistory.map(payment => ({
-                ...payment._doc,  // Spread the payment document
-                isPaid: true,     // Mark these courses as paid
-                courses: payment.items,
-            }));
-
-            const unpaidCourses = cartCourses.map(course => ({
-                ...course._doc,   // Spread the course document
-                isPaid: false,    // Mark these courses as unpaid
-            }));
-
-            // Combine both arrays (paid and unpaid courses)
-            const allCourses = [...paidCourses, ...unpaidCourses];
-
-            // Render the pay history page with combined courses
-            res.render('pages/payhistory', {
-                title: 'Payment History',
+    
+            // Kết hợp các khóa học đã thanh toán và tính giá đã giảm
+            const paidCourses = paymentHistory.map(payment => {
+                const coursesWithDiscount = payment.items.map(course => {
+                    const discountPrice = course.Price - (course.Price * (course.Sale / 100)); // Tính giá đã giảm
+                    return {
+                        ...course._doc, // Giữ lại các thuộc tính ban đầu của khóa học
+                        discountPrice: discountPrice.toFixed(2), // Thêm giá đã giảm vào mỗi khóa học
+                    };
+                });
+    
+                return {
+                    ...payment._doc, // Spread document to get all data
+                    isPaid: true, // Mark courses as paid
+                    courses: coursesWithDiscount, // Include populated course details with discounts
+                    total: payment.calcTotal(), // Calculate the total for this payment
+                };
+            });
+    
+            // Render trang lịch sử thanh toán với tất cả khóa học và giá đã giảm
+            res.render("pages/payhistory", {
+                title: "Payment History",
                 isLoggedIn: true,
-                courses: allCourses,
+                paidCourses: paidCourses, // Pass the array of courses for the view with discount
             });
         } catch (error) {
             console.error("Error fetching payment history:", error);
             res.status(500).json({ success: false, message: "Internal server error" });
         }
     }
+    
     
     
 
