@@ -244,7 +244,7 @@ function renderCart() {
         <p class="text-md text-gray-500">You saved $${calculateSaved(
             cart
         )} on this order</p>
-        <button class="bg-[#4f75ff] text-lg text-white w-full px-8 py-3 rounded-md mt-4">Checkout</button>
+        <button class="bg-[#4f75ff] text-lg text-white w-full px-8 py-3 rounded-md mt-4"    onclick="window.location.href='/paycourses'">Checkout</button>
     `;
 }
 

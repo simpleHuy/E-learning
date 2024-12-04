@@ -22,7 +22,8 @@ const cartRoutes = require("./cart/api/cart");
 //AJAX API
 const validate = require("./validate/api/validate");
 const AjaxCourseRouter = require("./course/api/AjaxCourse");
-
+const Payment = require("./payment/data-access/PayModel"); 
+const Cart = require("./cart/data-access/CartModel"); 
 const app = express();
 db.connect();
 
@@ -59,6 +60,9 @@ app.use(
 // Cấu hình Passport
 app.use(passport.initialize());
 app.use(passport.session());
+hbs.registerHelper('json', function(context) {
+    return JSON.stringify(context);
+});
 
 // Cấu hình flash messages
 app.use(flash());
@@ -70,6 +74,40 @@ app.use((req, res, next) => {
     res.locals.existMail = req.flash("existMail");
     next();
 });
+app.post('/complete-checkout', async (req, res) => {
+    const userId = req.user.id; // Giả sử bạn đã có thông tin người dùng trong session
+    const { courses } = req.body; // Lấy danh sách khóa học từ frontend
+
+    try {
+        // Kiểm tra nếu không có khóa học
+        if (!courses || courses.length === 0) {
+            return res.status(400).json({ message: "No courses to process." });
+        }
+
+        // 1. Lưu các khóa học vào bảng Payments
+        const payment = new Payment({
+            userId: userId,
+            items: courses, // Các khóa học từ frontend
+            total: courses.reduce((sum, course) => sum + parseFloat(course.Price), 0), // Tính tổng tiền
+        });
+
+        await payment.save(); // Lưu vào Payments
+
+        // 2. Xóa các khóa học khỏi bảng Cart
+        await Cart.updateOne(
+            { userId: userId },
+            { $pull: { items: { $in: courses.map(course => course._id) } } } // Xóa các khóa học đã thanh toán khỏi giỏ hàng
+        );
+
+        // 3. Quay về trang chủ hoặc trả thông báo thành công
+        res.status(200).json({ message: "Checkout completed successfully" });
+
+    } catch (error) {
+        console.error("Error in completeCheckout:", error);
+        res.status(500).json({ message: "An error occurred while processing your checkout." });
+    }
+});
+
 app.use((req, res, next) => {
     res.locals.isLoggedIn = req.session.isLoggedIn || false;
     next();
@@ -86,7 +124,32 @@ app.use("/courses", AjaxCourseRouter);
 app.use(function (req, res, next) {
     next(createError(404));
 });
-
+hbs.registerHelper('ifCond', function (v1, operator, v2, options) {
+    switch (operator) {
+        case '==':
+            return v1 == v2 ? options.fn(this) : options.inverse(this);
+        case '===':
+            return v1 === v2 ? options.fn(this) : options.inverse(this);
+        case '!=':
+            return v1 != v2 ? options.fn(this) : options.inverse(this);
+        case '!==':
+            return v1 !== v2 ? options.fn(this) : options.inverse(this);
+        case '<':
+            return v1 < v2 ? options.fn(this) : options.inverse(this);
+        case '<=':
+            return v1 <= v2 ? options.fn(this) : options.inverse(this);
+        case '>':
+            return v1 > v2 ? options.fn(this) : options.inverse(this);
+        case '>=':
+            return v1 >= v2 ? options.fn(this) : options.inverse(this);
+        case '&&':
+            return v1 && v2 ? options.fn(this) : options.inverse(this);
+        case '||':
+            return v1 || v2 ? options.fn(this) : options.inverse(this);
+        default:
+            return options.inverse(this);
+    }
+});
 // error handler
 app.use(function (err, req, res, next) {
     // set locals, only providing error in development

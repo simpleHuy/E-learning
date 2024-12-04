@@ -13,5 +13,8 @@ router
     .post("/sync", ensureAuthenticated, paymentController.syncPayment)
     .delete("/remove/:id", ensureAuthenticated, paymentController.removeCourse)
     .get("/payhistory",ensureAuthenticated, paymentController.payHistory)
-
+    .post("/complete-checkout", paymentController.completeCheckout);
+    
+    
+    
 module.exports = router;

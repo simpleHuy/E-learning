@@ -51,43 +51,82 @@
 
         <!-- Order Summary (Sát bên phải) -->
         <div class="w-1/5 pl-6 ml-auto">
-            <div class="bg-gray-50 p-4 rounded-lg shadow">
-                <h2 class="text-lg font-semibold text-gray-700 mb-4">Order Summary</h2>
-                <div class="text-gray-700 space-y-2">
-                    <!-- Loop through the paidCourses array -->
-                    {{#each paidCourses}}
-                    <div class="flex justify-between">
-                        <h3 class="text-lg font-semibold text-gray-800">
-                            {{this.title}} <!-- Course Name -->
-                        </h3>
-                        <div class="flex items-center flex-col mt-1">
-                            <p class="text-gray-500 font-bold text-sm">{{this.total}}</p> <!-- Price of the course -->
-                        </div>
-                    </div>
-                    <div class="border-t border-gray-300 my-4"></div>
-                    <div class="flex justify-between text-lg font-bold text-gray-800 mb-4">
-                        <span>Total: (1 course)</span>
-                        <span>{{this.total}}</span> <!-- Total Price -->
-                    </div>
-                    {{/each}}
-
-                    <p class="text-sm text-gray-600 mb-4">
-                        By completing your purchase, you agree to these
-                        <a href="#" class="text-blue-500 underline">Terms of Service</a>.
-                    </p>
-
-                    <button type="submit"
-                        class="w-full text-white font-semibold py-3 rounded-lg flex items-center justify-center hover:bg-blue-500"
-                        style="background-color: #4f75ff;">
-                        <i class="fa-solid fa-lock mr-2"></i>
-                        Complete Checkout
-                    </button>
-
-                    <p class="text-center text-sm text-gray-500 mt-4">
-                        30-Day Money-Back Guarantee
-                    </p>
-                </div>
-            </div>
+    <div class="bg-gray-50 p-4 rounded-lg shadow">
+        <h2 class="text-lg font-semibold text-gray-700 mb-4">Order Summary</h2>
+        <div class="text-gray-700 space-y-2">
+            {{#if paidCourses.length}}
+                <!-- Hiển thị danh sách khóa học -->
+                {{#each paidCourses}}
+    <div class="flex justify-between">
+        <h3 class="text-lg font-semibold text-gray-800">{{this.Title}}</h3>
+        <div class="flex items-center flex-col mt-1">
+            <p class="text-gray-500 font-bold text-sm">
+                ${{this.discountPrice}} <!-- Hiển thị giá đã giảm -->
+            </p>
+            <p class="text-gray-500 text-sm line-through">
+                ${{this.Price}} <!-- Hiển thị giá gốc -->
+            </p>
         </div>
     </div>
+{{/each}}
+  <div class="border-t border-gray-300 my-4"></div>
+                <!-- Hiển thị tổng tiền -->
+                <div class="flex justify-between text-lg font-bold text-gray-800 mb-4">
+                    <span>Total: ({{paidCourses.length}} course{{#ifCond paidCourses.length ">" 1}}s{{/ifCond}})</span>
+                    <span>${{total}}</span>
+                </div>
+            {{else}}
+                <!-- Hiển thị khi không có khóa học nào -->
+                <p class="text-gray-600 text-sm">No courses in your order summary.</p>
+            {{/if}}
+            <p class="text-sm text-gray-600 mb-4">
+                By completing your purchase, you agree to these
+                <a href="#" class="text-blue-500 underline">Terms of Service</a>.
+            </p>
+       <button id="completeCheckoutBtn" type="button"
+    class="w-full text-white font-semibold py-3 rounded-lg flex items-center justify-center hover:bg-blue-500"
+    style="background-color: #4f75ff;">
+    <i class="fa-solid fa-lock mr-2"></i>
+    Complete Checkout
+</button>
+
+
+
+
+
+            <p class="text-center text-sm text-gray-500 mt-4">
+                30-Day Money-Back Guarantee
+            </p>
+        </div>
+    </div>
+</div>
+
+    </div>
 </body>
+<script>
+    
+const paidCourses = {{{json paidCourses}}}; 
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('completeCheckoutBtn').addEventListener('click', async function() {
+        try {
+            const response = await fetch('/complete-checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ courses: paidCourses })
+            });
+
+            if (response.ok) {
+                window.location.href = "/"; 
+            } else {
+                alert("An error occurred while completing your checkout.");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    });
+});
+
+</script>
