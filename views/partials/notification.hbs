@@ -19,3 +19,13 @@
         <span class="text-red-800">{{errorMessage}}</span>
     </div>
 {{/if}}
+{{#if warningMessage}}
+<div class="bg-yellow-200 px-6 py-4 mx-2 my-4 rounded-md text-lg flex items-center mx-auto max-w-lg">
+    <svg viewBox="0 0 24 24" class="text-yellow-600 w-5 h-5 sm:w-5 sm:h-5 mr-3">
+        <path fill="currentColor"
+            d="M12,0A12,12,0,1,0,24,12,12.014,12.014,0,0,0,12,0Zm0,22a10,10,0,1,1,10-10A10.011,10.011,0,0,1,12,22ZM11,7h2v8H11Zm0,10h2v2H11Z">
+        </path>
+    </svg>
+    <span class="text-yellow-800">{{warningMessage}}</span>
+</div>
+{{/if}}

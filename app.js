@@ -16,6 +16,11 @@ const homeRouter = require("./Home/api/home");
 const authRouter = require("./auth/api/authRoutes");
 const coursesRouter = require("./course/api/course");
 const dashboardRoutes = require("./Home/api/dashboard");
+const cartRoutes = require("./cart/api/cart");
+
+//AJAX API
+const validate = require("./validate/api/validate");
+const AjaxCourseRouter = require("./course/api/AjaxCourse");
 
 const app = express();
 db.connect();
@@ -59,16 +64,23 @@ app.use(flash());
 app.use((req, res, next) => {
     res.locals.successMessage = req.flash("successMessage");
     res.locals.errorMessage = req.flash("errorMessage");
+    res.locals.warningMessage = req.flash("warningMessage");
     res.locals.existUser = req.flash("existUser");
     res.locals.existMail = req.flash("existMail");
     next();
 });
-
+app.use((req, res, next) => {
+    res.locals.isLoggedIn = req.session.isLoggedIn || false;
+    res.locals.user = req.user || {};
+    next();
+});
+app.use("/validate", validate);
 app.use("/", homeRouter);
 app.use("/", authRouter);
 app.use("/", dashboardRoutes);
-
 app.use("/courses", coursesRouter);
+app.use("/cart", cartRoutes);
+app.use("/courses", AjaxCourseRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next(createError(404));

@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema(
             required: [true, "Email is required"],
             unique: true,
         },
+        verify: {
+            type: Boolean,
+            default: false,
+        },
     },
     { timestamps: true }
 );

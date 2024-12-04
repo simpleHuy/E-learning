@@ -2,6 +2,10 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../data-access/UserModel");
+const dotenv = require("dotenv");
+dotenv.config({ path: "config.env" });
+const jwt = require("jsonwebtoken");
+const transporter = require("../helpers/transporter");
 const bcrypt = require("bcrypt");
 
 // Local Strategy
@@ -15,12 +19,39 @@ passport.use(
             try {
                 const user = await User.findOne({ email });
                 if (!user) {
-                    return done(null, false, { message: "Incorrect email." });
+                    return done(null, false, {
+                        type: null,
+                        message: "Incorrect email.",
+                    });
                 }
                 const isMatch = await bcrypt.compare(password, user.password);
                 if (!isMatch) {
                     return done(null, false, {
+                        type: null,
                         message: "Incorrect password.",
+                    });
+                }
+                if (!user.verify) {
+                    const token = jwt.sign(
+                        { id: user.email },
+                        process.env.SECRET_KEY,
+                        {
+                            expiresIn: "1h",
+                        }
+                    );
+                    const url = `http://localhost:3000/verify/?token=${token}`;
+                    const mailOptions = {
+                        from: process.env.EMAIL,
+                        to: user.email,
+                        subject: "[E Learning] Verify your account",
+                        html: `Please click this link to verify your account: <a href="${url}">${url}</a>`,
+                    };
+                    await transporter.sendMail(mailOptions);
+                    return done(null, false, {
+                        type: "verify",
+                        token: token,
+                        message:
+                            "Please check your email to verify your account before logging in.",
                     });
                 }
                 return done(null, user);
@@ -50,6 +81,7 @@ passport.use(
                         displayName: profile.displayName,
                         username: profile.displayName,
                         email: profile.emails[0].value,
+                        verify: true,
                     });
                     await user.save();
                 }
@@ -63,13 +95,18 @@ passport.use(
 
 // Serialize user
 passport.serializeUser((user, done) => {
-    done(null, user._id);
+    console.log("Serialize User:", user); // Kiểm tra dữ liệu user
+    done(null, {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+    });
 });
 
 // Deserialize user
-passport.deserializeUser(async (id, done) => {
+passport.deserializeUser(async (user, done) => {
+    console.log("Deserialize User:", user); // Kiểm tra dữ liệu user
     try {
-        const user = await User.findById(id);
         done(null, user);
     } catch (error) {
         done(error);
