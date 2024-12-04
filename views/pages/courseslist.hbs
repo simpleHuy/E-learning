@@ -69,7 +69,8 @@
 
       <!-- Filter Section -->
       <div class="max-w-full p-6 mb-6 bg-white rounded-lg shadow-lg">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Multiselect Dropdown for Topic -->
           <div class="flex flex-col mb-4">
             <label for="topic" class="mb-1 text-xl text-gray-600">Topic</label>
             <div class="relative ">
@@ -104,175 +105,165 @@
             </div>
           </div>
 
-      <!-- Price Range Section -->
-      <div class="flex flex-col mb-4">
-        <label for="price" class="mb-1 text-xl text-gray-600">Price</label>
-        <div class="relative">
-          <!-- Selected Items -->
-          <div
-            id="selected-price"
-            class="flex flex-wrap gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer"
-            onclick="toggleDropdown('price')">
-            <span class="text-gray-400">All prices</span>
-            <svg class="w-4 h-4 ml-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </div>
+          <!-- Price Range Section -->
+          <div class="flex flex-col mb-4">
+            <label for="price" class="mb-1 text-xl text-gray-600">Price</label>
+            <div class="relative">
+              <!-- Selected Items -->
+              <div
+                id="selected-price"
+                class="flex flex-wrap gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer"
+                onclick="toggleDropdown('price')">
+                <span class="text-gray-400">All prices</span>
+                <svg class="w-4 h-4 ml-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
 
-          <!-- Dropdown -->
-          <div id="dropdown-price"
-            class="absolute z-50 w-full bg-white border rounded shadow-lg hidden max-h-64 overflow-y-auto p-4">
-              <!-- Min and Max Price Inputs -->
-            <div class="flex items-center justify-between mb-4">
-              <!-- Đảm bảo các dấu $ luôn hiển thị -->
-              <div class="flex items-center space-x-2">
-                <span class="text-sm">Min</span>
-                <div class="relative">
-                  <div class="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
-                    $
+              <!-- Dropdown -->
+              <div id="dropdown-price"
+                class="absolute z-50 w-full bg-white border rounded shadow-lg hidden max-h-64 overflow-y-auto p-4">
+                  <!-- Min and Max Price Inputs -->
+                <div class="flex items-center justify-between mb-4">
+                  <!-- Đảm bảo các dấu $ luôn hiển thị -->
+                  <div class="flex items-center space-x-2">
+                    <span class="text-sm">Min</span>
+                    <div class="relative">
+                      <div class="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
+                        $
+                      </div>
+                      <input
+                        id="minPrice"
+                        type="number"
+                        class="w-20 pl-6 h-8 text-center text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4f75ff]"
+                        value="0"
+                      />
+                    </div>
                   </div>
-                  <input
-                    id="minPrice"
-                    type="number"
-                    class="w-20 pl-6 h-8 text-center text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4f75ff]"
-                    value="0"
-                  />
+                  <span class="text-xl">-</span>
+                  <div class="flex items-center space-x-2">
+                    <span class="text-sm">Max</span>
+                    <div class="relative">
+                      <div class="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
+                        $
+                      </div>
+                      <input
+                        id="maxPrice"
+                        type="number"
+                        class="w-20 pl-6 h-8 text-center text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4f75ff]"
+                        value="100"/>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="relative mb-4">
+                    <!-- Progress Bar (higher z-index) -->
+                  <div class="absolute h-1 rounded-full top-1/2 transform -translate-y-1/2 w-full z-10 bg-gray-300">
+                    <div id="progress" class="absolute h-full bg-[#4f75ff] rounded-full"></div>
+                  </div>
+                    <!-- Range Inputs (lower z-index) -->
+                  <div class="relative">
+                    <input
+                      id="minRange"
+                      type="range"
+                      class="range-input range-min absolute w-full h-1 top-0 z-10"
+                      min="0"
+                      max="500"
+                      value="0"
+                      step="10"/>
+                    <input
+                      id="maxRange"
+                      type="range"
+                      class="range-input range-max absolute w-full h-1 top-0 z-10"
+                      min="0"
+                      max="500"
+                      value="100"
+                      step="10"/>
+                  </div>
+                </div>
+                <div class="mt-10 text-right mr-2">
+                  <button class="min-w-[120px] max-w-[150px] text-white font-semibold bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-lg"
+                          id="acceptPriceRangeBtn" onclick="acceptPriceRange()">
+                        OK
+                  </button>
                 </div>
               </div>
-              <span class="text-xl">-</span>
-              <div class="flex items-center space-x-2">
-                <span class="text-sm">Max</span>
-                <div class="relative">
-                  <div class="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
-                    $
-                  </div>
-                  <input
-                    id="maxPrice"
-                    type="number"
-                    class="w-20 pl-6 h-8 text-center text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4f75ff]"
-                    value="100"/>
-                </div>
-              </div>
-            </div>
-
-            <div class="relative mb-4">
-                <!-- Progress Bar (higher z-index) -->
-              <div class="absolute h-1 rounded-full top-1/2 transform -translate-y-1/2 w-full z-10 bg-gray-300">
-                <div id="progress" class="absolute h-full bg-[#4f75ff] rounded-full"></div>
-              </div>
-                <!-- Range Inputs (lower z-index) -->
-              <div class="relative">
-                <input
-                  id="minRange"
-                  type="range"
-                  class="range-input range-min absolute w-full h-1 top-0 z-10"
-                  min="0"
-                  max="500"
-                  value="0"
-                  step="10"/>
-                <input
-                  id="maxRange"
-                  type="range"
-                  class="range-input range-max absolute w-full h-1 top-0 z-10"
-                  min="0"
-                  max="500"
-                  value="100"
-                  step="10"/>
-              </div>
-            </div>
-            <div class="mt-10 text-right mr-2">
-              <button class="min-w-[120px] max-w-[150px] text-white font-semibold bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-lg"
-                      id="acceptPriceRangeBtn" onclick="acceptPriceRange()">
-                    OK
-              </button>
+              <div id="price-tags" class="mt-2 flex flex-wrap gap-2"></div>
             </div>
           </div>
-          <div id="price-tags" class="mt-2 flex flex-wrap gap-2"></div>
-        </div>
-      </div>
-      <!-- Multiselect Dropdown for Level -->
-      <div class="flex flex-col mb-4">
-      <label for="level" class="mb-1 text-xl text-gray-600">Level</label>
-      <div class="relative">
-        <!-- Selected Items -->
-        <div
-          id="selected-level"
-          class="flex items-center gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer"
-          onclick="toggleDropdown('level')">
-          <span id="selected-level-text" class="text-gray-400">All levels</span>
-          <svg class="w-4 h-4 ml-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
 
-        <!-- Dropdown -->
-        <div id="dropdown-level"
-          class="absolute z-50 w-full bg-white border rounded shadow-lg hidden max-h-48 overflow-y-auto">
-          <label class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100">
-            <input
-              type="checkbox"
-              value="Beginner"
-              class="form-checkbox text-blue-500 mr-2"
-              onchange="toggleCheckboxSelection(this, 'level')"/>
-            Beginner
-          </label>
-          <label class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100">
-            <input
-              type="checkbox"
-              value="Intermediate"
-              class="form-checkbox text-blue-500 mr-2"
-              onchange="toggleCheckboxSelection(this, 'level')"
-            />
-            Intermediate
-          </label>
-          <label class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100">
-            <input
-              type="checkbox"
-              value="Advanced"
-              class="form-checkbox text-blue-500 mr-2"
-              onchange="toggleCheckboxSelection(this, 'level')"
-            />
-            Advanced
-          </label>
-        </div>
-        <div id="level-tags" class="mt-2 flex flex-wrap gap-2"></div>
-      </div>
-      </div>
-
-
-        <!-- Multiselect Dropdown for Skill -->
-        <div class="flex flex-col mb-4">
-          <label for="skill" class="mb-1 text-xl text-gray-600">Skill Gain</label>
+          <!-- Multiselect Dropdown for Level -->
+          <div class="flex flex-col mb-4">
+          <label for="level" class="mb-1 text-xl text-gray-600">Level</label>
           <div class="relative">
             <!-- Selected Items -->
             <div
-              id="selected-skill"
-              class="flex flex-wrap gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer"
-              onclick="toggleDropdown('skill')"
-            >
-              <span class="text-gray-400">Any skill</span>
+              id="selected-level"
+              class="flex items-center gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer"
+              onclick="toggleDropdown('level')">
+              <span id="selected-level-text" class="text-gray-400">All levels</span>
               <svg class="w-4 h-4 ml-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
             </div>
 
             <!-- Dropdown -->
-            <div
-              id="dropdown-skill"
-              class="absolute z-50 w-full bg-white border rounded shadow-lg hidden max-h-48 overflow-y-auto"
-            >
-            {{#each skills}}
               <div
-                class="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                onclick="toggleSelection('{{this.Name}}', 'skill')"
-              >
-                {{this.Name}}
+                id="dropdown-level"
+                class="absolute z-50 w-full bg-white border rounded shadow-lg hidden max-h-48 overflow-y-auto">
+                <div
+                  class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                  onclick="toggleSelection('Beginner', 'level')">
+                    Beginner
+                </div>
+                <div
+                  class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                  onclick="toggleSelection('Intermediate', 'level')">
+                    Intermediate
+                </div>
+                <div
+                  class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                  onclick="toggleSelection('Advance', 'level')">
+                    Advance
+                </div>
               </div>
-            {{/each}}
-            </div>
-            <div id="skill-tags" class="mt-2 flex flex-wrap gap-2"></div>
+            <div id="level-tags" class="mt-2 flex flex-wrap gap-2"></div>
           </div>
-        </div>
+          </div>
+
+          <!-- Multiselect Dropdown for Skill -->
+          <div class="flex flex-col mb-4">
+            <label for="skill" class="mb-1 text-xl text-gray-600">Skill Gain</label>
+            <div class="relative">
+              <!-- Selected Items -->
+              <div
+                id="selected-skill"
+                class="flex flex-wrap gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer"
+                onclick="toggleDropdown('skill')"
+              >
+                <span class="text-gray-400">Any skill</span>
+                <svg class="w-4 h-4 ml-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+              </div>
+
+              <!-- Dropdown -->
+              <div
+                id="dropdown-skill"
+                class="absolute z-50 w-full bg-white border rounded shadow-lg hidden max-h-48 overflow-y-auto"
+              >
+              {{#each skills}}
+                <div
+                  class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                  onclick="toggleSelection('{{this.Name}}', 'skill')"
+                >
+                  {{this.Name}}
+                </div>
+              {{/each}}
+              </div>
+              <div id="skill-tags" class="mt-2 flex flex-wrap gap-2"></div>
+            </div>
+          </div>
         </div>
         <div class="flex justify-center">
           <button class="min-w-[120px] max-w-[150px] text-white font-semibold bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-lg hidden"
@@ -281,6 +272,52 @@
           </button>
         </div>
       </div>
+
+      <!-- Sort Section -->
+      <div class="inline-block relative text-4xl shadow-lg px-4 py-1 rounded-lg top-10 mb-6 bg-white">
+        <div class="mb-4">
+            <span for="sort" class="mb-1 text-xl text-gray-600">Sort</span>
+            <div class="inline-block ">
+              <!-- Selected Items -->
+              <div
+                class="flex flex-wrap gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer"
+                onclick="toggleDropdown('sort')"
+              >
+                <span id="sort-info" class="text-gray-400 w-30">None</span>
+                <svg class="w-4 h-4 ml-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+                
+              <!-- Dropdown -->
+              <div id="dropdown-sort"
+                class="absolute z-50 w-full bg-white border rounded shadow-lg hidden max-h-48 overflow-y-auto text-base">
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('Title', 'asc')">
+                  By Name ( A - Z )
+                </div>
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('Title', 'desc')">
+                  By Name ( Z - A )
+                </div>
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('Price', 'asc')">
+                  By Price ( Low - High )
+                </div>
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('Price', 'desc')">
+                  By Price ( High - Low )
+                </div>
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('Duration', 'asc')">
+                  By Duration ( Short - Long )
+                </div>
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('Duration', 'desc')">
+                  By Duration ( Long - Short )
+                </div>
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('default', 'none')">
+                  None
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
       <!-- Course Cards -->
       {{#if courses.length}}
       <div id="course-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -291,6 +328,9 @@
                   <div class="flex items-center text-sm text-gray-500 mb-2">
                       <div class="mr-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">{{this.Duration}} Weeks</div> | 
                       <span class="ml-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">{{this.Level}}</span>
+                      <div class="ml-auto inline-block py-0.5 px-2 text-right font-semibold text-lg text-black">
+                        ${{this.Price}}
+                      </div>
                   </div>
                   <h3 class="text-xl font-semibold">{{this.Title}}</h3>
                   <p class="text-gray-400 text-sm mt-2">{{this.ShortDesc}}</p>

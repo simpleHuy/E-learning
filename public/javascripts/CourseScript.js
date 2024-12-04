@@ -1,48 +1,3 @@
-// click on module will show lessons
-function toggleContent(module) {
-    const content = document.getElementById(module);
-    const OpenFlag = content.classList.contains("hidden");
-    if (OpenFlag) {
-        content.classList.remove("hidden", "slide-up");
-        content.classList.add("slide-down");
-    } else {
-        content.classList.remove("slide-down");
-        content.classList.add("slide-up");
-        setTimeout(() => content.classList.add("hidden"), 300);
-    }
-}
-
-function showAllCourses() {
-    const toggleButton = document.getElementById("ShowAllBtn");
-    const courseContainer = document.getElementById("CourseContainer");
-    const Flag = courseContainer.classList.contains("custom-max-h");
-    if (Flag) {
-        courseContainer.classList.remove("custom-max-h");
-        courseContainer.classList.remove("overflow-hidden");
-        toggleButton.innerText = "Show Less";
-    } else {
-        courseContainer.classList.add("custom-max-h");
-        courseContainer.classList.add("overflow-hidden");
-        toggleButton.innerText = "Show All";
-    }
-}
-
-// Check if the section is overflowing
-function isSectionOverflowing(section) {
-    if (!section) {
-        return false;
-    }
-    return section.scrollHeight > section.clientHeight;
-}
-
-// Check if the course container is overflowing
-const courseContainer = document.getElementById("CourseContainer");
-const isOverflowing = isSectionOverflowing(courseContainer);
-if (!isOverflowing) {
-    const toggleButton = document.getElementById("ShowAllBtn");
-    if (toggleButton) toggleButton.style.display = "none";
-}
-
 // Pagination logic
 function changePage(page) {
     // Get the current page from the URL
@@ -109,14 +64,14 @@ function toggleSelection(item, field) {
 
     // Kiểm tra nếu item đã được chọn
     if (selectedItems[field].includes(item)) {
-        selectedItems[field] = selectedItems[field].filter((i) => i !== item);
+        removeSelection(item, field);
     } else {
         selectedItems[field].push(item);
+        showButtonSubmit();
     }
 
     // Cập nhật giao diện
     updateTags(selectedContainer, field);
-    showButtonSubmit();
     // Đóng dropdown
     dropdown.classList.add("hidden");
 }
@@ -166,23 +121,6 @@ function removeSelection(item, field) {
     const container = document.getElementById(`${field}-tags`);
     updateTags(container, field);
     hiddenButtonSubmit();
-}
-
-// Hàm xử lý với checkbox
-function toggleCheckboxSelection(checkbox, field) {
-    const selectedContainer = document.getElementById(`${field}-tags`);
-
-    if (checkbox.checked) {
-        selectedItems[field].push(checkbox.value);
-    } else {
-        selectedItems[field] = selectedItems[field].filter(
-            (item) => item !== checkbox.value
-        );
-    }
-
-    // Cập nhật giao diện
-    updateTags(selectedContainer, field);
-    showButtonSubmit();
 }
 
 // Ẩn dropdown khi nhấp ra ngoài
@@ -272,31 +210,93 @@ function clearAllFilters() {
 
 function SubmitFilter() {
     const url = new URL(window.location.href);
-    // please delete all query params related to filters
-    const params = new URLSearchParams();
-    for (const [key, value] of Object.entries(selectedItems)) {
-        // make it like topic=A&topic=B&topic=C
-        if (value.length > 0) {
-            value.forEach((item) => {
-                params.append(key, item);
-            });
+
+    //deletel all search params except page, sort, order
+    const params = new URLSearchParams(url.search);
+    for (const key of params.keys()) {
+        if (key !== "page" && key !== "sort" && key !== "order") {
+            params.delete(key);
         }
     }
+
+    // Add the selected items to the URL
+    for (const field in selectedItems) {
+        if (selectedItems[field].length > 0) {
+            params.set(field, selectedItems[field].join(","));
+        }
+    }
+
     clearAllFilters();
     url.search = params.toString();
     window.location.href = url.toString();
 }
 
-const searchInput = document.getElementById('search');
-searchInput.addEventListener('keydown', function (event) {
-    if (event.key === 'Enter') { 
+const searchInput = document.getElementById("search");
+searchInput.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
         const query = searchInput.value.trim();
         if (query) {
             const url = new URL(window.location.href);
             const params = new URLSearchParams(url.search);
-            params.set('search', query);
+            params.set("search", query);
             url.search = params.toString();
             window.location.href = url.toString();
         }
+    }
+});
+
+function appliedSort(field, direction) {
+    if (field === "default") {
+        document.getElementById("dropdown-sort").classList.add("hidden");
+        return;
+    }
+    // Update the URL
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    params.set("sort", field);
+    params.set("order", direction);
+    url.search = params.toString();
+    window.location.href = url.toString();
+}
+
+function changeSortInfo(field, direction) {
+    // Update the sort info text based on the selected option
+    const sortInfo = document.getElementById("sort-info");
+
+    // Determine the text to display based on the field and direction
+    let sortText = "";
+    switch (field) {
+        case "Title":
+            sortText =
+                direction === "asc" ? "By Name ( A - Z )" : "By Name ( Z - A )";
+            break;
+        case "Price":
+            sortText =
+                direction === "asc"
+                    ? "By Price ( Low - High )"
+                    : "By Price ( High - Low )";
+            break;
+        case "Duration":
+            sortText =
+                direction === "asc"
+                    ? "By Duration ( Short - Long )"
+                    : "By Duration ( Long - Short )";
+            break;
+    }
+
+    // Update the #sort-info element's text
+    sortInfo.textContent = sortText;
+}
+
+// chỉnh lại sort info khi trang được tải
+window.addEventListener("DOMContentLoaded", (event) => {
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    const sortField = params.get("sort");
+    const sortOrder = params.get("order");
+
+    if (sortField && sortOrder) {
+        changeSortInfo(sortField, sortOrder);
+    } else {
     }
 });
