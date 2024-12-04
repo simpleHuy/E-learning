@@ -1,10 +1,9 @@
-// coursesController.js
 const ITEMS_PER_PAGE = 6;
-
 const CourseModel = require("../data-access/CourseModel");
 const SkillModel = require("../data-access/SkillModel");
 const TopicModel = require("../data-access/TopicModel");
 const { StatusCodes, getReasonPhrase } = require("http-status-codes");
+const mongoose = require("mongoose");
 
 // Function to fetch and display courses with pagination
 const CourseController = {
@@ -92,6 +91,8 @@ const CourseController = {
             });
         }
     },
+
+    
 };
 
 module.exports = CourseController;
