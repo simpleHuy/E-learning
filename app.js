@@ -10,24 +10,27 @@ const flash = require("connect-flash");
 const dotenv = require("dotenv");
 dotenv.config({ path: "config.env" });
 const MongoStore = require("connect-mongo");
-const passport = require("./auth/domain/passport");
+const passport = require(".Components/auth/domain/passport");
 
-const homeRouter = require("./Home/api/home");
-const authRouter = require("./auth/api/authRoutes");
-const paymentRouter = require("./payment/api/pay")
-const coursesRouter = require("./course/api/course");
-const dashboardRoutes = require("./Home/api/dashboard");
-const cartRoutes = require("./cart/api/cart");
+// Require routers
+const homeRouter = require(".Components/Home/api/home");
+const authRouter = require(".Components/auth/api/authRoutes");
+const paymentRouter = require(".Components/payment/api/pay")
+const coursesRouter = require(".Components/course/api/course");
+const dashboardRoutes = require(".Components/Home/api/dashboard");
+const cartRoutes = require(".Components/cart/api/cart");
+
 hbs.registerHelper("calcTotal", (courses, isPaid) => {
     return courses
         .filter(course => course.isPaid === isPaid)
         .reduce((total, course) => total + course.price, 0);
 });
-//AJAX API
-const validate = require("./validate/api/validate");
-const AjaxCourseRouter = require("./course/api/AjaxCourse");
-const Payment = require("./payment/data-access/PayModel"); 
-const Cart = require("./cart/data-access/CartModel"); 
+
+// AJAX API
+const validate = require(".Components/validate/api/validate");
+const AjaxCourseRouter = require(".Components/course/api/AjaxCourse");
+const Payment = require(".Components/payment/data-access/PayModel"); 
+const Cart = require(".Components/cart/data-access/CartModel"); 
 const app = express();
 db.connect();
 
