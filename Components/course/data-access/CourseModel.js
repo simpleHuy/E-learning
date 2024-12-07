@@ -113,17 +113,22 @@ CoursesSchema.methods.GetAllRelevantCourses = async function (CourseId) {
     return uniqueRelevantCourses;
 };
 
-CoursesSchema.statics.GetCoursesByFilter = async function (
+function createQuery(
     search = null,
     topic = null,
     skill = null,
     level = null,
     price = null,
     sort = null,
-    order = "asc"
-) {
+    order = "asc",
+    page = 1
+) {}
+
+CoursesSchema.statics.createCourseQuery = async function (filters) {
+    const { search, topic, skill, level, price } = filters;
     let query = {};
 
+    // Search filter
     if (search) {
         query.$or = [
             { Title: { $regex: search, $options: "i" } },
@@ -132,37 +137,57 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
             { Level: { $regex: search, $options: "i" } },
         ];
     }
+
+    // Topic filter
     if (topic) {
-        // topic is an array of topic names
-        const topics = await TopicModel.find({
-            Name: { $in: topic },
-        });
+        const topics = await TopicModel.find({ Name: { $in: topic } });
         query.Topic = { $in: topics.map((t) => t._id) };
     }
 
+    // Skill filter
     if (skill) {
-        // skill is an array of skill names
-        const skills = await SkillModel.find({
-            Name: { $in: skill },
-        });
+        const skills = await SkillModel.find({ Name: { $in: skill } });
         query.SkillGain = { $in: skills.map((s) => s._id) };
     }
 
+    // Level filter
     if (level) {
         query.Level = { $in: level };
     }
 
+    // Price filter
     if (price) {
-        // price less is min price, price greater is max price
-        //price '0, 100' => price[0, 100]
-        price = price.split(",").map((p) => parseInt(p));
-        const minPrice = Math.min(...price);
-        const maxPrice = Math.max(...price);
-        query.Price = { $gte: minPrice, $lte: maxPrice };
+        const [minPrice, maxPrice] = price.split(",").map((p) => parseInt(p));
+        query.Price = {
+            $gte: Math.min(minPrice, maxPrice),
+            $lte: Math.max(minPrice, maxPrice),
+        };
     }
 
-    if(sort === null)
-        return this.find(query);
+    return query;
+};
+
+CoursesSchema.statics.GetCoursesByFilter = async function (
+    search = null,
+    topic = null,
+    skill = null,
+    level = null,
+    price = null,
+    sort = null,
+    order = "asc",
+    page = 1
+) {
+    const ITEMS_PER_PAGE = 6;
+
+    const query = await this.createCourseQuery({
+        search,
+        topic,
+        skill,
+        level,
+        price,
+    });
+
+    if (sort === null) return this.find(query);
 
     const validSortFields = ["Title", "Duration", "Price"];
     let sortOption = {};
@@ -172,7 +197,20 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
         sortOption["Title"] = 1; // Default sort by Title ascending
     }
 
-    return this.find(query).sort(sortOption);
+    //pagging
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+
+    const courses = this.find(query)
+        .sort(sortOption)
+        .skip(startIndex)
+        .limit(ITEMS_PER_PAGE);
+    const totalCourses = this.countDocuments(query);
+    const totalPages = Math.ceil(totalCourses / ITEMS_PER_PAGE);
+
+    return {
+        courses,
+        totalPages,
+    };
 };
 
 const CourseModel = mongoose.model("Courses", CoursesSchema, "Courses");
