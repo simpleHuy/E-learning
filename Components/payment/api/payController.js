@@ -1,12 +1,11 @@
-const Payment = require("../data-access/PayModel");
-const Cart = require("../../cart/data-access/CartModel");
+const PaymentService = require("../domain/PaymentService");
 
 const paymentController = {
-    getPayment: async (req, res) => {
+    getPayment: (req, res) => {
         try {
             if (req.session.isLoggedIn) {
                 // Lấy dữ liệu thanh toán từ database
-                const cart = await Cart.GetCartByUserId(req.user.id); // Hàm này cần được định nghĩa trong model
+                const cart = PaymentService.GetCartByUserId(req.user.id); // Hàm này cần được định nghĩa trong model
                 if (!cart || cart.items.length === 0) {
                     return res.render("pages/paycourses", {
                         title: "Payment",
@@ -55,12 +54,11 @@ const paymentController = {
             );
         }
     },
-    removeCourse: async (req, res) => {
+    removeCourse: (req, res) => {
         try {
             const courseId = req.params.id;
-            const payment = await Payment.GetPaymentByUserId(req.user.id);
-            await payment.RemoveCourse(courseId);
-            await payment.save();
+            const userId = req.user.id;
+            PaymentService.removeCourse(userId, courseId);
             res.status(200).json({ success: true });
         } catch (error) {
             console.error("Error removing course:", error);
@@ -72,24 +70,7 @@ const paymentController = {
             const userId = req.user.id; // Giả sử bạn đã có thông tin người dùng trong session
             const { courses } = req.body; // Lấy danh sách khóa học từ frontend
 
-            // 1. Lưu các khóa học vào bảng Payments
-            const payment = new Payment({
-                userId: userId,
-                items: courses, // Các khóa học từ frontend
-                total: courses.reduce((sum, course) => sum + course.Price, 0), // Tính tổng tiền
-            });
-
-            await payment.save(); // Lưu vào Payments
-
-            // 2. Xóa các khóa học khỏi bảng Cart
-            await Cart.updateOne(
-                { userId: userId },
-                {
-                    $pull: {
-                        items: { $in: courses.map((course) => course._id) },
-                    },
-                } // Xóa các khóa học đã thanh toán
-            );
+            PaymentService.completeCheckout(userId, courses);
 
             // 3. Quay về trang chủ
             res.status(200).send({
@@ -115,29 +96,7 @@ const paymentController = {
             }
 
             // Lấy lịch sử thanh toán của người dùng
-            const paymentHistory = await Payment.GetPaymentByUserId(
-                req.user.id
-            );
-            await paymentHistory.FetchAllCourses();
-            // console.log("Payment history:", paymentHistory);
-            // // Kết hợp các khóa học đã thanh toán và tính giá đã giảm
-            // const paidCourses = paymentHistory.map((payment) => {
-            //     const coursesWithDiscount = payment.items.map((course) => {
-            //         const discountPrice =
-            //             course.Price - course.Price * (course.Sale / 100); // Tính giá đã giảm
-            //         return {
-            //             ...course._doc, // Giữ lại các thuộc tính ban đầu của khóa học
-            //             discountPrice: discountPrice.toFixed(2), // Thêm giá đã giảm vào mỗi khóa học
-            //         };
-            //     });
-
-            //     return {
-            //         ...payment._doc, // Spread document to get all data
-            //         isPaid: true, // Mark courses as paid
-            //         courses: coursesWithDiscount, // Include populated course details with discounts
-            //         total: payment.calcTotal(), // Calculate the total for this payment
-            //     };
-            // });
+            const paymentHistory = await PaymentService.getPaymentHistory(req.user.id);
 
             // Render trang lịch sử thanh toán với tất cả khóa học và giá đã giảm
             res.render("pages/payhistory", {
