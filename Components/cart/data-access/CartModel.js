@@ -71,4 +71,5 @@ cartSchema.statics.GetCartByUserId = async function (UserId) {
     }
     return cart;
 };
-module.exports = mongoose.model("Carts", cartSchema, "Carts");
+const CartModel = mongoose.model("Carts", cartSchema, "Carts");
+module.exports = CartModel;
