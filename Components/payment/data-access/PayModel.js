@@ -93,5 +93,5 @@ paymentSchema.statics.GetPaymentByUserId = async function (UserId) {
     return payment;
 };
 
-const PayModel = mongoose.model("Payments", paymentSchema, "Payments");
-module.exports = PayModel;
+const PaymentModel = mongoose.model("Payments", paymentSchema, "Payments");
+module.exports = PaymentModel;
