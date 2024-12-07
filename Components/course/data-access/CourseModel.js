@@ -72,8 +72,6 @@ CoursesSchema.methods.FetchAllModules = async function () {
     this.Modules = Modules;
 };
 
-CoursesSchema.methods.FetchAllSkillGains = async function () {};
-
 CoursesSchema.methods.calcTotalTime = function () {
     let totalTime = 0;
     for (let i = 0; i < this.Modules.length; i++) {
@@ -82,32 +80,31 @@ CoursesSchema.methods.calcTotalTime = function () {
     return totalTime;
 };
 
-CoursesSchema.methods.GetAllRelevantCourses = async function (CourseId) {
-    const Course = await this.model("Courses").findById(CourseId);
-
-    if (!Course) {
-        throw new Error("Course not found");
-    }
-
+CoursesSchema.statics.GetAllRelevantCourses = async function (CourseId) {
+    // Lấy khóa học hiện tại
+    const CurrentCourse = await this.findById(CourseId);
+    // Lấy các khóa học theo Topic
     const RelevantCoursesByTopic = await this.model("Courses").find({
-        Topic: Course.Topic,
-        _id: { $ne: CourseId },
+        Topic: CurrentCourse.Topic,  // Sử dụng `this.Topic` để lấy Topic của khóa học hiện tại
+        _id: { $ne: CurrentCourse._id },  // Đảm bảo không lấy chính khóa học này
     });
 
+    // Lấy các khóa học theo SkillGain
     const RelevantCoursesBySkill = await this.model("Courses").find({
-        SkillGain: { $in: Course.SkillGain },
-        _id: { $ne: CourseId },
+        SkillGain: { $in: CurrentCourse.SkillGain },  // Sử dụng `this.SkillGain` để lấy SkillGain của khóa học hiện tại
+        _id: { $ne: CurrentCourse._id },  // Đảm bảo không lấy chính khóa học này
     });
 
+    // Kết hợp các khóa học liên quan
     const allRelevantCourses = [
         ...RelevantCoursesByTopic,
         ...RelevantCoursesBySkill,
     ];
 
+    // Lọc các khóa học trùng lặp
     const uniqueRelevantCourses = allRelevantCourses.filter(
         (value, index, self) =>
-            index ===
-            self.findIndex((t) => t._id.toString() === value._id.toString())
+            index === self.findIndex((t) => t._id.toString() === value._id.toString())
     );
 
     return uniqueRelevantCourses;
@@ -200,11 +197,11 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
     //pagging
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
 
-    const courses = this.find(query)
+    const courses = await this.find(query)
         .sort(sortOption)
         .skip(startIndex)
         .limit(ITEMS_PER_PAGE);
-    const totalCourses = this.countDocuments(query);
+    const totalCourses = await this.countDocuments(query);
     const totalPages = Math.ceil(totalCourses / ITEMS_PER_PAGE);
 
     return {

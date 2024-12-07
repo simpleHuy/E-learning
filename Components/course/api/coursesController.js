@@ -40,26 +40,11 @@ const CourseController = {
     GetCourseDetail: async (req, res) => {
         try {
             const CourseId = req.params.id;
-            const Course = await CourseModel.GetCourseById(CourseId);
-            if (!Course) {
-                return res
-                    .status(StatusCodes.NOT_FOUND)
-                    .json({ message: getReasonPhrase(StatusCodes.NOT_FOUND) });
-            }
-
-            await Course.FetchAllModules();
-
-            for (let i = 0; i < Course.Modules.length; i++) {
-                const Module = Course.Modules[i];
-                await Module.FetchAllLessons();
-            }
-
-            const RelevantCourses = await Course.GetAllRelevantCourses(Course);
-
+            const {title, Course, relevantCourses} = await CourseService.getCourseDetail(CourseId);
             return res.status(StatusCodes.OK).render("pages/CourseDetail", {
-                title: Course.Title,
+                title: title,
                 Course: Course,
-                RelevantCourses: RelevantCourses,
+                RelevantCourses: relevantCourses,
             });
         } catch (error) {
             console.error("Error fetching course detail:", error); // Log error
