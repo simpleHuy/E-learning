@@ -29,9 +29,10 @@ const CourseService = {
         const skills = await SkillModel.GetAllSkills();
 
         return {
-            courses: coursesQuery,
-            currentPage: page,
+            courses: coursesQuery.courses,
+            currentPage: page || 1,
             totalPages: coursesQuery.totalPages,
+            isFirstPage: page == 1 || !page,
             isLastPage: page == coursesQuery.totalPages,
             topics,
             skills,

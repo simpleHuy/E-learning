@@ -173,16 +173,16 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
         price,
     });
 
-    if (sort === null) return this.find(query);
-
     const validSortFields = ["Title", "Duration", "Price"];
     let sortOption = {};
-    if (sort && validSortFields.includes(sort)) {
-        sortOption[sort] = order === "desc" ? -1 : 1;
-    } else {
-        sortOption["Title"] = 1; // Default sort by Title ascending
+    if(sort){
+        if (validSortFields.includes(sort)) {
+            sortOption[sort] = order === "desc" ? -1 : 1;
+        } else {
+            sortOption["Title"] = 1; // Default sort by Title ascending
+        }
     }
-
+    
     //pagging
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
 
