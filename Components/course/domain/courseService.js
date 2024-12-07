@@ -81,11 +81,22 @@ const CourseService = {
                     SkillGain: { $first: "$SkillGain" },
                     Topic: { $first: "$Topic" },
                     Modules: { $push: "$Modules" }, // Gom tất cả các module vào mảng Modules
+                    Duration: { $first: "$Duration" },
+                    Level: { $first: "$Level" },
+                    Description: { $first: "$Description" },
+                    Img: { $first: "$Img" },
+                    Price: { $first: "$Price" },
+                    Rate: { $first: "$Rate" },
+                    Lecturer: { $first: "$Lecturer" },
                 },
             },
         ]);
 
-        const relevantCourses = await CourseModel.GetAllRelevantCourses(Course[0]._id);
+        console.log(Course[0]);
+
+        const relevantCourses = await CourseModel.GetAllRelevantCourses(
+            Course[0]._id
+        );
         return {
             title: Course[0].Title,
             Course: Course[0],
