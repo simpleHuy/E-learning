@@ -110,17 +110,6 @@ CoursesSchema.statics.GetAllRelevantCourses = async function (CourseId) {
     return uniqueRelevantCourses;
 };
 
-function createQuery(
-    search = null,
-    topic = null,
-    skill = null,
-    level = null,
-    price = null,
-    sort = null,
-    order = "asc",
-    page = 1
-) {}
-
 CoursesSchema.statics.createCourseQuery = async function (filters) {
     const { search, topic, skill, level, price } = filters;
     let query = {};
