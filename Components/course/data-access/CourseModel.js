@@ -175,4 +175,5 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
     return this.find(query).sort(sortOption);
 };
 
-module.exports = mongoose.model("Courses", CoursesSchema, "Courses");
+const CourseModel = mongoose.model("Courses", CoursesSchema, "Courses");
+module.exports = CourseModel;

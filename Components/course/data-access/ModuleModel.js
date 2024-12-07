@@ -35,4 +35,5 @@ ModuleSchema.methods.FetchAllLessons = async function () {
     this.Duration = this.calcTotalDuration();
 };
 
-module.exports = mongoose.model("Modules", ModuleSchema, "Modules");
+const ModuleModel = mongoose.model("Modules", ModuleSchema, "Modules");
+module.exports = ModuleModel;

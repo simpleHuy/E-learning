@@ -16,4 +16,5 @@ const LessionSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model("Lessons", LessionSchema, "Lessons");
+const LessonModel = mongoose.model("Lessons", LessionSchema, "Lessons");
+module.exports = LessonModel;

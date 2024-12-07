@@ -11,4 +11,5 @@ SkillSchema.statics.GetAllSkills = async function () {
     return this.find().sort({ Name: 1 });
 };
 
-module.exports = mongoose.model("Skills", SkillSchema, "Skills");
+const SkillModel = mongoose.model("Skills", SkillSchema, "Skills");
+module.exports = SkillModel;
