@@ -1,11 +1,11 @@
 const PaymentService = require("../domain/PaymentService");
 
 const paymentController = {
-    getPayment: (req, res) => {
+    getPayment: async (req, res) => {
         try {
             if (req.session.isLoggedIn) {
                 // Lấy dữ liệu thanh toán từ database
-                const cart = PaymentService.GetCartByUserId(req.user.id); // Hàm này cần được định nghĩa trong model
+                const cart = await PaymentService.GetCartByUserId(req.user.id); // Hàm này cần được định nghĩa trong model
                 if (!cart || cart.items.length === 0) {
                     return res.render("pages/paycourses", {
                         title: "Payment",
@@ -54,11 +54,11 @@ const paymentController = {
             );
         }
     },
-    removeCourse: (req, res) => {
+    removeCourse: async (req, res) => {
         try {
             const courseId = req.params.id;
             const userId = req.user.id;
-            PaymentService.removeCourse(userId, courseId);
+            await PaymentService.removeCourse(userId, courseId);
             res.status(200).json({ success: true });
         } catch (error) {
             console.error("Error removing course:", error);
@@ -70,7 +70,7 @@ const paymentController = {
             const userId = req.user.id; // Giả sử bạn đã có thông tin người dùng trong session
             const { courses } = req.body; // Lấy danh sách khóa học từ frontend
 
-            PaymentService.completeCheckout(userId, courses);
+            await PaymentService.completeCheckout(userId, courses);
 
             // 3. Quay về trang chủ
             res.status(200).send({
@@ -96,7 +96,9 @@ const paymentController = {
             }
 
             // Lấy lịch sử thanh toán của người dùng
-            const paymentHistory = await PaymentService.getPaymentHistory(req.user.id);
+            const paymentHistory = await PaymentService.getPaymentHistory(
+                req.user.id
+            );
 
             // Render trang lịch sử thanh toán với tất cả khóa học và giá đã giảm
             res.render("pages/payhistory", {
