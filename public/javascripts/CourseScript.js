@@ -345,17 +345,20 @@ searchInput.addEventListener("keydown", function (event) {
 });
 
 function appliedSort(field, direction) {
-    if (field === "default") {
-        document.getElementById("dropdown-sort").classList.add("hidden");
-        return;
-    }
+    document.getElementById("dropdown-sort").classList.add("hidden");
     // Update the URL
     const url = new URL(window.location.href);
     const params = new URLSearchParams(url.search);
     params.set("sort", field);
     params.set("order", direction);
-    url.search = params.toString();
-    window.location.href = url.toString();
+    if(field === "None") {
+        params.delete("sort");
+        params.delete("order");
+    }
+    changeSortInfo(field, direction);
+
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+    fetchCoursesData(params);
 }
 
 function changeSortInfo(field, direction) {
@@ -380,6 +383,9 @@ function changeSortInfo(field, direction) {
                 direction === "asc"
                     ? "By Duration ( Short - Long )"
                     : "By Duration ( Long - Short )";
+            break;
+        default:
+            sortText = "None";
             break;
     }
 
