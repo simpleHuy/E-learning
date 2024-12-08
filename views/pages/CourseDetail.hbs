@@ -150,21 +150,6 @@
 </section>
 
 <script>
-    const searchInput = document.getElementById('search');
-    searchInput.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') { 
-            const query = searchInput.value.trim();
-            if (query) {
-                // add /courses
-                const url = new URL(window.location.href);
-                url.pathname = '/courses';
-                const params = new URLSearchParams(url.search);
-                params.set('search', query);
-                url.search = params.toString();
-                window.location.href = url.toString();
-            }
-        }
-    });
     function buyNow(courseId, title, price, img) {
     // Check if the user is authenticated via session variable
     const isLoggedIn = {{isLoggedIn}}; // Inject this from the server if you're using Handlebars

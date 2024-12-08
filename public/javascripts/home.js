@@ -15,6 +15,33 @@ faq.forEach((item) => {
     });
 });
 
+const searchInput = document.getElementById("search");
+searchInput.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+        const query = searchInput.value.trim();
+        if (query) {
+            const url = new URL(window.location.href);
+            const params = new URLSearchParams(url.search);
+            params.set("search", query);
+
+            if (document.title === "Our Courses") {
+                params.delete("page");
+                // Perform AJAX request
+                window.history.replaceState(
+                    {},
+                    "",
+                    `${window.location.pathname}?${params.toString()}`
+                );
+                fetchCoursesData(params);
+            } else {
+                // Redirect to /courses?search
+                url.search = params.toString();
+                window.location.href = `/courses?${params.toString()}`;
+            }
+        }
+    }
+});
+
 // SLIDE
 const carousel = document.querySelector(".carousel");
 const first = carousel.querySelector(".slide").offsetWidth;
@@ -41,3 +68,4 @@ next.addEventListener("click", () => {
         console.log(first);
     }
 });
+
