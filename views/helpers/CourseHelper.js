@@ -4,12 +4,25 @@ hbs.registerHelper("calcNumberOfModules", function (Course) {
     return Course.Modules.length;
 });
 
+// calc all lessons duration
 hbs.registerHelper("calcTotalVideoTime", function (Course) {
-    return Math.floor(Course.calcTotalTime() / 60);
+    const totalTime =  Course.Modules.reduce((acc, module) => {
+        return (
+            acc +
+            module.Lessons.reduce((acc, lesson) => {
+                return acc + lesson.Duration;
+            }, 0)
+        );
+    }, 0);
+
+    return Math.floor(totalTime / 60);
 });
 
-hbs.registerHelper("ConvertMinutesToHours", function (value) {
-    return (value / 60).toFixed(1);
+hbs.registerHelper("calcModulesTime", function (Module) {
+    const totalTime = Module.Lessons.reduce((acc, lesson) => {
+        return acc + lesson.Duration;
+    }, 0);
+    return (totalTime / 60).toFixed(1);
 });
 
 hbs.registerHelper("increment", function (value) {

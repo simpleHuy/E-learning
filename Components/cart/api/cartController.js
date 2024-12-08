@@ -1,4 +1,4 @@
-const Cart = require("../data-access/CartModel");
+const CartService = require("../domain/CartService");
 
 const cartController = {
     getCart: async (req, res) => {
@@ -11,10 +11,10 @@ const cartController = {
             res.render("pages/cart", { title: "Cart", isLoggedIn: false });
         }
     },
+    
     getCartData: async (req, res) => {
         if (req.session.isLoggedIn) {
-            const cart = await Cart.GetCartByUserId(req.user.id);
-            await cart.FetchAllCourses();
+            const cart = await CartService.GetCartByUserId(req.user.id);
             const courses = cart.items;
             res.json({
                 isLoggedIn: true,
@@ -25,33 +25,17 @@ const cartController = {
             res.json({ isLoggedIn: false });
         }
     },
+
     syncCart: async (req, res) => {
         const { cart } = req.body;
-        const carts = await Cart.GetCartByUserId(req.user.id);
-        if (carts.items.length === 0) {
-            carts.items = cart;
-            await carts.save();
-            return;
-        }
-        console.log("Received cart:", cart.length);
-
-        cart.forEach((item) => {
-            const existingItem = carts.items.find((i) => i._id == item._id);
-            if (!existingItem) {
-                carts.items.push(item);
-            }
-        });
-        console.log("Updated cart:", carts.items.length);
-        await carts.save();
+        await CartService.syncCart(req.user.id, cart);
     },
+
     removeCourse: async (req, res) => {
         try {
             const courseId = req.params.id;
-            console.log("Removing course:", courseId);
-            const cart = await Cart.GetCartByUserId(req.user.id);
-            console.log("Cart items:", cart.items);
-            await cart.RemoveCourse(courseId);
-            await cart.save();
+            const userId = req.user.id;
+            await CartService.RemoveCourse(userId, courseId);
             res.status(200).json({ success: true });
         } catch (error) {
             console.error("Error removing course:", error);

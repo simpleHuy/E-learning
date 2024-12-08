@@ -11,4 +11,5 @@ TopicSchema.statics.GetAllTopics = async function () {
     return this.find().sort({ Name: 1 });
 };
 
-module.exports = mongoose.model("Topics", TopicSchema, "Topics");
+const TopicModel = mongoose.model("Topics", TopicSchema, "Topics");
+module.exports = TopicModel;

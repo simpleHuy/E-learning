@@ -72,8 +72,6 @@ CoursesSchema.methods.FetchAllModules = async function () {
     this.Modules = Modules;
 };
 
-CoursesSchema.methods.FetchAllSkillGains = async function () {};
-
 CoursesSchema.methods.calcTotalTime = function () {
     let totalTime = 0;
     for (let i = 0; i < this.Modules.length; i++) {
@@ -82,35 +80,77 @@ CoursesSchema.methods.calcTotalTime = function () {
     return totalTime;
 };
 
-CoursesSchema.methods.GetAllRelevantCourses = async function (CourseId) {
-    const Course = await this.model("Courses").findById(CourseId);
-
-    if (!Course) {
-        throw new Error("Course not found");
-    }
-
+CoursesSchema.statics.GetAllRelevantCourses = async function (CourseId) {
+    // Lấy khóa học hiện tại
+    const CurrentCourse = await this.findById(CourseId);
+    // Lấy các khóa học theo Topic
     const RelevantCoursesByTopic = await this.model("Courses").find({
-        Topic: Course.Topic,
-        _id: { $ne: CourseId },
+        Topic: CurrentCourse.Topic,  // Sử dụng `this.Topic` để lấy Topic của khóa học hiện tại
+        _id: { $ne: CurrentCourse._id },  // Đảm bảo không lấy chính khóa học này
     });
 
+    // Lấy các khóa học theo SkillGain
     const RelevantCoursesBySkill = await this.model("Courses").find({
-        SkillGain: { $in: Course.SkillGain },
-        _id: { $ne: CourseId },
+        SkillGain: { $in: CurrentCourse.SkillGain },  // Sử dụng `this.SkillGain` để lấy SkillGain của khóa học hiện tại
+        _id: { $ne: CurrentCourse._id },  // Đảm bảo không lấy chính khóa học này
     });
 
+    // Kết hợp các khóa học liên quan
     const allRelevantCourses = [
         ...RelevantCoursesByTopic,
         ...RelevantCoursesBySkill,
     ];
 
+    // Lọc các khóa học trùng lặp
     const uniqueRelevantCourses = allRelevantCourses.filter(
         (value, index, self) =>
-            index ===
-            self.findIndex((t) => t._id.toString() === value._id.toString())
+            index === self.findIndex((t) => t._id.toString() === value._id.toString())
     );
 
     return uniqueRelevantCourses;
+};
+
+CoursesSchema.statics.createCourseQuery = async function (filters) {
+    const { search, topic, skill, level, price } = filters;
+    let query = {};
+
+    // Search filter
+    if (search) {
+        query.$or = [
+            { Title: { $regex: search, $options: "i" } },
+            { Description: { $regex: search, $options: "i" } },
+            { Lecturer: { $regex: search, $options: "i" } },
+            { Level: { $regex: search, $options: "i" } },
+        ];
+    }
+
+    // Topic filter
+    if (topic) {
+        const topics = await TopicModel.find({ Name: { $in: topic } });
+        query.Topic = { $in: topics.map((t) => t._id) };
+    }
+
+    // Skill filter
+    if (skill) {
+        const skills = await SkillModel.find({ Name: { $in: skill } });
+        query.SkillGain = { $in: skills.map((s) => s._id) };
+    }
+
+    // Level filter
+    if (level) {
+        query.Level = { $in: level };
+    }
+
+    // Price filter
+    if (price) {
+        const [minPrice, maxPrice] = price.split(",").map((p) => parseInt(p));
+        query.Price = {
+            $gte: Math.min(minPrice, maxPrice),
+            $lte: Math.max(minPrice, maxPrice),
+        };
+    }
+
+    return query;
 };
 
 CoursesSchema.statics.GetCoursesByFilter = async function (
@@ -120,59 +160,44 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
     level = null,
     price = null,
     sort = null,
-    order = "asc"
+    order = "asc",
+    page = 1
 ) {
-    let query = {};
+    const ITEMS_PER_PAGE = 6;
 
-    if (search) {
-        query.$or = [
-            { Title: { $regex: search, $options: "i" } },
-            { Description: { $regex: search, $options: "i" } },
-            { Lecturer: { $regex: search, $options: "i" } },
-            { Level: { $regex: search, $options: "i" } },
-        ];
-    }
-    if (topic) {
-        // topic is an array of topic names
-        const topics = await TopicModel.find({
-            Name: { $in: topic },
-        });
-        query.Topic = { $in: topics.map((t) => t._id) };
-    }
-
-    if (skill) {
-        // skill is an array of skill names
-        const skills = await SkillModel.find({
-            Name: { $in: skill },
-        });
-        query.SkillGain = { $in: skills.map((s) => s._id) };
-    }
-
-    if (level) {
-        query.Level = { $in: level };
-    }
-
-    if (price) {
-        // price less is min price, price greater is max price
-        //price '0, 100' => price[0, 100]
-        price = price.split(",").map((p) => parseInt(p));
-        const minPrice = Math.min(...price);
-        const maxPrice = Math.max(...price);
-        query.Price = { $gte: minPrice, $lte: maxPrice };
-    }
-
-    if(sort === null)
-        return this.find(query);
+    const query = await this.createCourseQuery({
+        search,
+        topic,
+        skill,
+        level,
+        price,
+    });
 
     const validSortFields = ["Title", "Duration", "Price"];
     let sortOption = {};
-    if (sort && validSortFields.includes(sort)) {
-        sortOption[sort] = order === "desc" ? -1 : 1;
-    } else {
-        sortOption["Title"] = 1; // Default sort by Title ascending
+    if(sort){
+        if (validSortFields.includes(sort)) {
+            sortOption[sort] = order === "desc" ? -1 : 1;
+        } else {
+            sortOption["Title"] = 1; // Default sort by Title ascending
+        }
     }
+    
+    //pagging
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
 
-    return this.find(query).sort(sortOption);
+    const courses = await this.find(query)
+        .sort(sortOption)
+        .skip(startIndex)
+        .limit(ITEMS_PER_PAGE);
+    const totalCourses = await this.countDocuments(query);
+    const totalPages = Math.ceil(totalCourses / ITEMS_PER_PAGE);
+
+    return {
+        courses,
+        totalPages,
+    };
 };
 
-module.exports = mongoose.model("Courses", CoursesSchema, "Courses");
+const CourseModel = mongoose.model("Courses", CoursesSchema, "Courses");
+module.exports = CourseModel;
