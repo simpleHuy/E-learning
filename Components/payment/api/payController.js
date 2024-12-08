@@ -1,11 +1,12 @@
 const PaymentService = require("../domain/PaymentService");
+const CartService = require("../../cart/domain/CartService");
 
 const paymentController = {
     getPayment: async (req, res) => {
         try {
             if (req.session.isLoggedIn) {
                 // Lấy dữ liệu thanh toán từ database
-                const cart = await PaymentService.GetCartByUserId(req.user.id); // Hàm này cần được định nghĩa trong model
+                const cart = await CartService.GetCartByUserId(req.user.id); 
                 if (!cart || cart.items.length === 0) {
                     return res.render("pages/paycourses", {
                         title: "Payment",

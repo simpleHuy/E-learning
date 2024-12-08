@@ -20,12 +20,6 @@ const coursesRouter = require("./Components/course/api/course");
 const dashboardRoutes = require("./Components/Home/api/dashboard");
 const cartRoutes = require("./Components/cart/api/cart");
 
-hbs.registerHelper("calcTotal", (courses, isPaid) => {
-    return courses
-        .filter((course) => course.isPaid === isPaid)
-        .reduce((total, course) => total + course.price, 0);
-});
-
 // AJAX API
 const validate = require("./Components/validate/api/validate");
 const AjaxCourseRouter = require("./Components/course/api/AjaxCourse");
@@ -41,6 +35,7 @@ hbs.registerPartials(path.join(__dirname, "views/partials"));
 
 //helpers
 require("./views/helpers/CourseHelper");
+require("./views/helpers/CoponentsHelper");
 
 hbs.registerPartials(path.join(__dirname, "views/partials"));
 

@@ -1,8 +1,7 @@
 const PaymentModel = require("../data-access/PayModel");
-const Cart = require("../../cart/data-access/CartModel");
+const CartModel = require("../../cart/data-access/CartModel");
 
-
-const PaymentService ={
+const PaymentService = {
     getPaymentByUserId: async (userId) => {
         return await PaymentModel.getPaymentByUserId(userId);
     },
@@ -24,7 +23,7 @@ const PaymentService ={
         await payment.save(); // Lưu vào Payments
 
         // 2. Xóa các khóa học khỏi bảng Cart
-        await Cart.updateOne(
+        await CartModel.updateOne(
             { userId: userId },
             {
                 $pull: {
@@ -34,15 +33,13 @@ const PaymentService ={
         );
     },
 
-    getPaymentHistory: async () => {
+    getPaymentHistory: async (userId) => {
         // Lấy lịch sử thanh toán của người dùng
-        const paymentHistory = await Payment.GetPaymentByUserId(
-            req.user.id
-        );
+        const paymentHistory = await PaymentModel.GetPaymentByUserId(userId);
         await paymentHistory.FetchAllCourses();
 
         return paymentHistory;
-    }
+    },
 };
 
 module.exports = PaymentService;
