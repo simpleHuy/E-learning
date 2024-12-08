@@ -3,12 +3,12 @@ const { StatusCodes, getReasonPhrase } = require("http-status-codes");
 
 // Function to fetch and display courses with pagination
 const CourseController = {
-    getCourses: async (req, res) => {
+    getCoursesList: async (req, res) => {
         try {
             const { search, topic, skill, level, price, sort, order, page } =
                 req.query;
 
-            const CoursesData = await CourseService.getCourses(
+            const CoursesData = await CourseService.getCoursesListInfo(
                 search,
                 topic,
                 skill,
@@ -21,6 +21,7 @@ const CourseController = {
 
             // Render the Handlebars template with pagination and courses data
             res.render("pages/courseslist", {
+                title: "Our Courses",
                 courses: CoursesData.courses,
                 currentPage: CoursesData.currentPage,
                 totalPages: CoursesData.totalPages,
@@ -40,7 +41,8 @@ const CourseController = {
     GetCourseDetail: async (req, res) => {
         try {
             const CourseId = req.params.id;
-            const {title, Course, relevantCourses} = await CourseService.getCourseDetail(CourseId);
+            const { title, Course, relevantCourses } =
+                await CourseService.getCourseDetail(CourseId);
             return res.status(StatusCodes.OK).render("pages/CourseDetail", {
                 title: title,
                 Course: Course,
@@ -78,7 +80,33 @@ const CourseController = {
                 message: "Internal server error",
             });
         }
-    }
+    },
+
+    GetCourseData: async (req, res) => {
+        try {
+            const { search, topic, skill, level, price, sort, order, page } =
+                req.query;
+
+            const CoursesData = await CourseService.GetCourse(
+                search,
+                topic,
+                skill,
+                level,
+                price,
+                sort,
+                order,
+                page
+            );
+
+            return res.status(200).json(CoursesData);
+        } catch (error) {
+            console.error("Error in GetCourseData:", error);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                error: error.message,
+            });
+        }
+    },
 };
 
 module.exports = CourseController;

@@ -16,32 +16,74 @@ function changePage(page) {
     // page transitions
     currentPage = Math.max(currentPage, 1);
     params.set("page", currentPage);
-    
+    window.history.pushState({}, "", `${url.pathname}?${params.toString()}`);
+
     const xhr = new XMLHttpRequest();
-    const endpoint = `/courses?${params.toString()}`;
+    const endpoint = `/courses/api/course-list-data?${params.toString()}`;
 
     // Cấu hình XHR
     xhr.open("GET", endpoint, true);
 
     xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) { // 4 = DONE
+        if (xhr.readyState === 4) {
             if (xhr.status === 200) {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(xhr.responseText, "text/html");
-                const courseContainer = document.getElementById("course-container");
-                const newCourseContainer = doc.querySelector("#course-container");
-                const paggingContainer = document.getElementById("pagging");
-                const newPaggingContainer = doc.querySelector("#pagging");
-                courseContainer.innerHTML = newCourseContainer.innerHTML;
-                paggingContainer.innerHTML = newPaggingContainer.innerHTML;
-                window.history.pushState({}, "", endpoint);
+                const response = JSON.parse(xhr.responseText);
+                updateCoursesContainer(response.courses);
+                updatePagination(response.currentPage, response.totalPages);
             } else {
                 console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
             }
         }
     };
-
+    xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send();
+}
+
+function updateCoursesContainer(courses) {
+    const coursesContainer = document.getElementById("courses-container");
+    coursesContainer.innerHTML = courses
+        .map(
+            (course) => `
+    <a href="/courses/${course._id}">
+          <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
+              <img src="${course.Img}" alt="${course.Title}" class="w-full h-72 object-cover" />
+              <div class="p-6 flex-grow">
+                  <div class="flex items-center text-sm text-gray-500 mb-2">
+                      <div class="mr-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">${course.Duration} Weeks</div> | 
+                      <span class="ml-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">${course.Level}</span>
+                      <div class="ml-auto inline-block py-0.5 px-2 text-right font-semibold text-lg text-black">
+                        $${course.Price}
+                      </div>
+                  </div>
+                  <h3 class="text-xl font-semibold">${course.Title}</h3>
+                  <p class="text-gray-400 text-sm mt-2">${course.ShortDesc}</p>
+              </div>
+              <div class="grid grid-cols-2 gap-2 mt-auto mb-3 p-3">
+                  <button class="mt-4 w-full bg-gray-100 text-black py-2 rounded-md">Get it Now</button>
+                  <button id="seeMore-btn" class="mt-4 w-full bg-gray-100 text-black py-2 rounded-md" 
+                  onclick="window.location.href='/courses/${course._id}'">See detail</button>
+              </div>
+          </div>
+          </a>`
+        )
+        .join("");
+}
+
+function updatePagination(currentPage, totalPages) {
+    currentPage = parseInt(currentPage);
+    totalPages = parseInt(totalPages);
+    const paginationContainer = document.getElementById("Pagination");
+
+    const nextDisabled = currentPage === totalPages ? "disabled" : "";
+    const prevDisabled = currentPage === 1 ? "disabled" : "";
+
+    // Cập nhật phân trang
+    paginationContainer.innerHTML = `
+        <button id="prev-btn" class="px-4 py-2 bg-gray-800 text-white rounded-md disabled:bg-gray-300 text-gray-700" 
+            onclick="changePage('prev')" ${prevDisabled}>Previous</button>
+        <div id="page-info" class="text-gray-700 font-medium inline-block relative top-2">Page ${currentPage} of ${totalPages}</div>
+        <button id="next-btn" class="px-4 py-2 bg-gray-800 text-white rounded-md disabled:bg-gray-300 text-gray-700" 
+            onclick="changePage('next')" ${nextDisabled}>Next</button>`;
 }
 
 // Đối tượng lưu các mục đã chọn

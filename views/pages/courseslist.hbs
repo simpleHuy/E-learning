@@ -320,7 +320,7 @@
 
       <!-- Course Cards -->
       {{#if courses.length}}
-      <div id="course-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div id="courses-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {{#each courses}}
           <a href="/courses/{{this._id}}">
           <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
@@ -352,7 +352,7 @@
       {{/if}}
 
       <!-- Pagination -->
-      <div class="flex justify-center mt-8 space-x-4" id="pagging">
+      <div class="flex justify-center mt-8 space-x-4" id="Pagination">
           <button id="prev-btn" class="px-4 py-2 bg-gray-800 text-white rounded-md {{#if isFirstPage}}disabled:bg-gray-300 text-gray-700{{/if}}" 
                   onclick="changePage('prev')"
                   {{#if isFirstPage}}disabled{{/if}}>Previous</button>
