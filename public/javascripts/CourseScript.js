@@ -138,7 +138,6 @@ function toggleSelection(item, field) {
         removeSelection(item, field);
     } else {
         selectedItems[field].push(item);
-        showButtonSubmit();
     }
 
     // Cập nhật giao diện
@@ -194,7 +193,6 @@ function removeSelection(item, field) {
 
     const container = document.getElementById(`${field}-tags`);
     updateTags(container, field);
-    hiddenButtonSubmit();
     
     const url = new URL(window.location.href);
     const params = new URLSearchParams(url.search);
@@ -256,20 +254,8 @@ function updateSliderProgress() {
     progress.style.right = `${100 - maxPercentage}%`;
 }
 
-function showButtonSubmit() {
-    const submitButton = document.getElementById("SubmitFilterButton");
-    if (submitButton.classList.contains("hidden"))
-        submitButton.classList.remove("hidden");
-}
 
-function hiddenButtonSubmit() {
-    const submitButton = document.getElementById("SubmitFilterButton");
-    if (
-        !submitButton.classList.contains("hidden") &&
-        Object.values(selectedItems).every((item) => item.length === 0)
-    )
-        submitButton.classList.add("hidden");
-}
+
 
 function acceptPriceRange() {
     const dropdown = document.getElementById("dropdown-price");
@@ -277,7 +263,6 @@ function acceptPriceRange() {
     const minPrice = document.getElementById("minPrice").value;
     const maxPrice = document.getElementById("maxPrice").value;
     selectedItems.price = [minPrice, maxPrice];
-    showButtonSubmit();
     const selectedContainer = document.getElementById("price-tags");
     updateTags(selectedContainer, "price");
 
@@ -304,7 +289,6 @@ function clearAllFilters() {
     selectedContainers.forEach((container) => {
         container.innerHTML = "";
     });
-    hiddenButtonSubmit();
 }
 
 function SubmitFilter() {
