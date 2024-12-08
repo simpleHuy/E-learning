@@ -104,6 +104,11 @@ const CourseService = {
             relevantCourses,
         };
     },
+
+    AddToCart: async (courseId, userId) => {
+        const result = await CourseModel.GetCourseById(courseId);
+        await result.FetchAllModules();
+    },
 };
 
 module.exports = CourseService;

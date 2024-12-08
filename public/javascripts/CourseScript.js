@@ -16,8 +16,32 @@ function changePage(page) {
     // page transitions
     currentPage = Math.max(currentPage, 1);
     params.set("page", currentPage);
-    url.search = params.toString();
-    window.location.href = url.toString();
+    
+    const xhr = new XMLHttpRequest();
+    const endpoint = `/courses?${params.toString()}`;
+
+    // Cấu hình XHR
+    xhr.open("GET", endpoint, true);
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) { // 4 = DONE
+            if (xhr.status === 200) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(xhr.responseText, "text/html");
+                const courseContainer = document.getElementById("course-container");
+                const newCourseContainer = doc.querySelector("#course-container");
+                const paggingContainer = document.getElementById("pagging");
+                const newPaggingContainer = doc.querySelector("#pagging");
+                courseContainer.innerHTML = newCourseContainer.innerHTML;
+                paggingContainer.innerHTML = newPaggingContainer.innerHTML;
+                window.history.pushState({}, "", endpoint);
+            } else {
+                console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
+            }
+        }
+    };
+
+    xhr.send();
 }
 
 // Đối tượng lưu các mục đã chọn
