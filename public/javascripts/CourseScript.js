@@ -44,27 +44,27 @@ function updateCoursesContainer(courses) {
     coursesContainer.innerHTML = courses
         .map(
             (course) => `
-    <a href="/courses/${course._id}">
-          <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
-              <img src="${course.Img}" alt="${course.Title}" class="w-full h-72 object-cover" />
-              <div class="p-6 flex-grow">
-                  <div class="flex items-center text-sm text-gray-500 mb-2">
-                      <div class="mr-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">${course.Duration} Weeks</div> | 
-                      <span class="ml-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">${course.Level}</span>
-                      <div class="ml-auto inline-block py-0.5 px-2 text-right font-semibold text-lg text-black">
+            <a href="/courses/${course._id}">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
+                <img src="${course.Img}" alt="${course.Title}" class="w-full h-72 object-cover" />
+                <div class="p-6 flex-grow">
+                    <div class="flex items-center text-sm text-gray-500 mb-2">
+                        <div class="mr-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">${course.Duration} Weeks</div> | 
+                        <span class="ml-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">${course.Level}</span>
+                        <div class="ml-auto inline-block py-0.5 px-2 text-right font-semibold text-lg text-black">
                         $${course.Price}
-                      </div>
-                  </div>
-                  <h3 class="text-xl font-semibold">${course.Title}</h3>
-                  <p class="text-gray-400 text-sm mt-2">${course.ShortDesc}</p>
-              </div>
-              <div class="grid grid-cols-2 gap-2 mt-auto mb-3 p-3">
-                  <button class="mt-4 w-full bg-gray-100 text-black py-2 rounded-md">Get it Now</button>
-                  <button id="seeMore-btn" class="mt-4 w-full bg-gray-100 text-black py-2 rounded-md" 
-                  onclick="window.location.href='/courses/${course._id}'">See detail</button>
-              </div>
-          </div>
-          </a>`
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold">${course.Title}</h3>
+                    <p class="text-gray-400 text-sm mt-2">${course.ShortDesc}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-auto mb-3 p-3">
+                    <button class="mt-4 w-full bg-gray-100 text-black py-2 rounded-md">Get it Now</button>
+                    <button id="seeMore-btn" class="mt-4 w-full bg-gray-100 text-black py-2 rounded-md" 
+                    onclick="window.location.href='/courses/${course._id}'">See detail</button>
+                </div>
+            </div>
+            </a>`
         )
         .join("");
 }
