@@ -313,8 +313,8 @@
       </div>
 
       <!-- Course Cards -->
-      {{#if courses.length}}
       <div id="courses-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {{#if courses.length}}
         {{#each courses}}
           <a href="/courses/{{this._id}}">
           <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
@@ -338,12 +338,12 @@
           </div>
           </a>
           {{/each}}
+        {{else}}
+          <div class="text-gray-600 mt-8 col-span-3">
+              <h2 class="text-4xl font-bold text-center">No Courses found</h2>
+          </div>
+        {{/if}}
       </div>
-      {{else}}
-      <div class="text-center text-gray-600 mt-8">
-          <h2 class="text-4xl font-bold text-center">No Courses found</h2>
-      </div>
-      {{/if}}
 
       <!-- Pagination -->
       <div class="flex justify-center mt-8 space-x-4" id="Pagination">

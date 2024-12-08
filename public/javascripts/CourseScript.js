@@ -16,7 +16,11 @@ function changePage(page) {
     // page transitions
     currentPage = Math.max(currentPage, 1);
     params.set("page", currentPage);
-    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+    window.history.replaceState(
+        {},
+        "",
+        `${window.location.pathname}?${params.toString()}`
+    );
 
     // Fetch the new data
     fetchCoursesData(params);
@@ -46,6 +50,15 @@ function fetchCoursesData(params) {
 
 function updateCoursesContainer(courses) {
     const coursesContainer = document.getElementById("courses-container");
+
+    if (courses.length === 0) {
+        coursesContainer.innerHTML = `
+        <div class="text-gray-600 mt-8 col-span-3">
+            <h2 class="text-4xl font-bold text-center">No Courses found</h2>
+        </div>`;
+        return;
+    }
+
     coursesContainer.innerHTML = courses
         .map(
             (course) => `
@@ -81,6 +94,7 @@ function updatePagination(currentPage, totalPages) {
 
     const nextDisabled = currentPage === totalPages ? "disabled" : "";
     const prevDisabled = currentPage === 1 ? "disabled" : "";
+    currentPage = Math.min(currentPage, totalPages);
 
     // Cập nhật phân trang
     paginationContainer.innerHTML = `
@@ -148,7 +162,11 @@ function toggleSelection(item, field) {
     const url = new URL(window.location.href);
     const params = new URLSearchParams(url.search);
     params.set(field, selectedItems[field].join(","));
-    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+    window.history.replaceState(
+        {},
+        "",
+        `${window.location.pathname}?${params.toString()}`
+    );
     fetchCoursesData(params);
 }
 
@@ -187,23 +205,27 @@ function updateTags(container, field) {
 function removeSelection(item, field) {
     if (field === "price") {
         selectedItems[field] = [];
-    } else{
-        selectedItems[field] = selectedItems[field].filter((i) => i !== item);    
+    } else {
+        selectedItems[field] = selectedItems[field].filter((i) => i !== item);
     }
 
     const container = document.getElementById(`${field}-tags`);
     updateTags(container, field);
-    
+
     const url = new URL(window.location.href);
     const params = new URLSearchParams(url.search);
-    
+
     if (selectedItems[field].length > 0) {
         params.set(field, selectedItems[field].join(","));
     } else {
         params.delete(field); // Optionally, you can delete the parameter if the array is empty
     }
-    
-    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+
+    window.history.replaceState(
+        {},
+        "",
+        `${window.location.pathname}?${params.toString()}`
+    );
     fetchCoursesData(params);
 }
 
@@ -254,9 +276,6 @@ function updateSliderProgress() {
     progress.style.right = `${100 - maxPercentage}%`;
 }
 
-
-
-
 function acceptPriceRange() {
     const dropdown = document.getElementById("dropdown-price");
     dropdown.classList.add("hidden");
@@ -276,7 +295,11 @@ function acceptPriceRange() {
         params.delete("price");
     }
 
-    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+    window.history.replaceState(
+        {},
+        "",
+        `${window.location.pathname}?${params.toString()}`
+    );
     fetchCoursesData(params);
 }
 
@@ -314,8 +337,6 @@ function SubmitFilter() {
     window.location.href = url.toString();
 }
 
-
-
 function appliedSort(field, direction) {
     document.getElementById("dropdown-sort").classList.add("hidden");
     // Update the URL
@@ -323,13 +344,17 @@ function appliedSort(field, direction) {
     const params = new URLSearchParams(url.search);
     params.set("sort", field);
     params.set("order", direction);
-    if(field === "None") {
+    if (field === "None") {
         params.delete("sort");
         params.delete("order");
     }
     changeSortInfo(field, direction);
 
-    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+    window.history.replaceState(
+        {},
+        "",
+        `${window.location.pathname}?${params.toString()}`
+    );
     fetchCoursesData(params);
 }
 
