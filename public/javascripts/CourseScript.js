@@ -92,7 +92,7 @@ function updatePagination(currentPage, totalPages) {
     totalPages = parseInt(totalPages);
     const paginationContainer = document.getElementById("Pagination");
 
-    const nextDisabled = currentPage === totalPages ? "disabled" : "";
+    const nextDisabled = currentPage >= totalPages ? "disabled" : "";
     const prevDisabled = currentPage === 1 ? "disabled" : "";
     currentPage = Math.min(currentPage, totalPages);
 
@@ -162,6 +162,7 @@ function toggleSelection(item, field) {
     const url = new URL(window.location.href);
     const params = new URLSearchParams(url.search);
     params.set(field, selectedItems[field].join(","));
+    params.delete("page");
     window.history.replaceState(
         {},
         "",
