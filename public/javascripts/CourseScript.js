@@ -396,9 +396,33 @@ window.addEventListener("DOMContentLoaded", (event) => {
     const params = new URLSearchParams(url.search);
     const sortField = params.get("sort");
     const sortOrder = params.get("order");
+    const skill = params.get("skill");
+    const level = params.get("level");
+    const topic = params.get("topic");
+    const price = params.get("price");
 
     if (sortField && sortOrder) {
         changeSortInfo(sortField, sortOrder);
-    } else {
     }
+
+    if (skill) {
+        selectedItems.skill = skill.split(",");
+        updateTags(document.getElementById("skill-tags"), "skill");
+    }
+
+    if (level) {
+        selectedItems.level = level.split(",");
+        updateTags(document.getElementById("level-tags"), "level");
+    }
+
+    if (topic) {
+        selectedItems.topic = topic.split(",");
+        updateTags(document.getElementById("topic-tags"), "topic");
+    }
+
+    if (price) {
+        selectedItems.price = price.split(",");
+        updateTags(document.getElementById("price-tags"), "price");
+    }
+
 });
