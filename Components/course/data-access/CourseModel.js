@@ -126,19 +126,22 @@ CoursesSchema.statics.createCourseQuery = async function (filters) {
 
     // Topic filter
     if (topic) {
-        const topics = await TopicModel.find({ Name: { $in: topic } });
+        topicArray = topic.split(",");
+        const topics = await TopicModel.find({ Name: { $in: topicArray } });
         query.Topic = { $in: topics.map((t) => t._id) };
     }
 
     // Skill filter
     if (skill) {
-        const skills = await SkillModel.find({ Name: { $in: skill } });
+        skillArray = skill.split(",");
+        const skills = await SkillModel.find({ Name: { $in: skillArray } });
         query.SkillGain = { $in: skills.map((s) => s._id) };
     }
 
     // Level filter
     if (level) {
-        query.Level = { $in: level };
+        levelArray = level.split(",");
+        query.Level = { $in: levelArray };
     }
 
     // Price filter

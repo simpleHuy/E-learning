@@ -33,7 +33,7 @@ const CourseService = {
             currentPage: page || 1,
             totalPages: coursesQuery.totalPages,
             isFirstPage: page == 1 || !page,
-            isLastPage: page == coursesQuery.totalPages,
+            isLastPage: page >= coursesQuery.totalPages,
             topics,
             skills,
         };
