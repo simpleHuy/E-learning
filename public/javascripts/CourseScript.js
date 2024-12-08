@@ -16,8 +16,13 @@ function changePage(page) {
     // page transitions
     currentPage = Math.max(currentPage, 1);
     params.set("page", currentPage);
-    window.history.pushState({}, "", `${url.pathname}?${params.toString()}`);
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
 
+    // Fetch the new data
+    fetchCoursesData(params);
+}
+
+function fetchCoursesData(params) {
     const xhr = new XMLHttpRequest();
     const endpoint = `/courses/api/course-list-data?${params.toString()}`;
 
@@ -140,6 +145,12 @@ function toggleSelection(item, field) {
     updateTags(selectedContainer, field);
     // Đóng dropdown
     dropdown.classList.add("hidden");
+    //set params in url
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    params.set(field, selectedItems[field].join(","));
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+    fetchCoursesData(params);
 }
 
 // Hàm cập nhật thẻ (tags)
@@ -177,16 +188,25 @@ function updateTags(container, field) {
 function removeSelection(item, field) {
     if (field === "price") {
         selectedItems[field] = [];
-        const container = document.getElementById(`${field}-tags`);
-        updateTags(container, field);
-        hiddenButtonSubmit();
-        return;
+    } else{
+        selectedItems[field] = selectedItems[field].filter((i) => i !== item);    
     }
 
-    selectedItems[field] = selectedItems[field].filter((i) => i !== item);
     const container = document.getElementById(`${field}-tags`);
     updateTags(container, field);
     hiddenButtonSubmit();
+    
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    
+    if (selectedItems[field].length > 0) {
+        params.set(field, selectedItems[field].join(","));
+    } else {
+        params.delete(field); // Optionally, you can delete the parameter if the array is empty
+    }
+    
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+    fetchCoursesData(params);
 }
 
 // Ẩn dropdown khi nhấp ra ngoài
@@ -260,6 +280,19 @@ function acceptPriceRange() {
     showButtonSubmit();
     const selectedContainer = document.getElementById("price-tags");
     updateTags(selectedContainer, "price");
+
+    // Update URL parameters and fetch new data
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+
+    if (selectedItems.price.length > 0) {
+        params.set("price", selectedItems.price.join(","));
+    } else {
+        params.delete("price");
+    }
+
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+    fetchCoursesData(params);
 }
 
 function clearAllFilters() {
