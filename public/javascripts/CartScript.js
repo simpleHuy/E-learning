@@ -61,7 +61,7 @@ function addToCart(CourseId) {
             }
         }
     };
-    xhr.open("POST", "/courses/add-to-cart", true);
+    xhr.open("POST", "/courses/api/add-to-cart", true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify({ courseid: CourseId }));
 }
