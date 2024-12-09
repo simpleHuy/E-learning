@@ -5,7 +5,13 @@ const HomeController = {
     GetHomePage: async (req, res) => {
         try {
             const Courses = await Course.find().sort({ Sale: -1 }).limit(6);
-            console.log(Courses);
+            if (req.user) {
+                return res.status(200).render("pages/home", {
+                    title: "E-Learning Website",
+                    Courses: Courses,
+                    user: req.user,
+                });
+            }
             return res.status(200).render("pages/home", {
                 title: "E-Learning Website",
                 Courses: Courses,

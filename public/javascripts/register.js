@@ -2,11 +2,13 @@ document
     .getElementById("registerForm")
     .addEventListener("submit", function (event) {
         event.preventDefault(); // Ngăn form gửi mặc định
-
+        `   `;
         const username = document.getElementById("username").value;
         const email = document.getElementById("email").value;
         const password = document.getElementById("passwordInput").value;
-        console.log(username, email, password);
+        username.textContent = "";
+        email.textContent = "";
+        password.textContent = "";
         const xhr = new XMLHttpRequest();
 
         // Xử lý phản hồi từ server

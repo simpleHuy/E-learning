@@ -40,7 +40,9 @@ const CourseController = {
     GetCourseDetail: async (req, res) => {
         try {
             const CourseId = req.params.id;
-            const {title, Course, relevantCourses} = await CourseService.getCourseDetail(CourseId);
+            const isLoggedIn = false;
+            const { title, Course, relevantCourses } =
+                await CourseService.getCourseDetail(CourseId);
             return res.status(StatusCodes.OK).render("pages/CourseDetail", {
                 title: title,
                 Course: Course,

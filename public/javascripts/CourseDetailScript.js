@@ -42,3 +42,103 @@ if (!isOverflowing) {
     const toggleButton = document.getElementById("ShowAllBtn");
     if (toggleButton) toggleButton.style.display = "none";
 }
+document.addEventListener("DOMContentLoaded", () => {
+    const reviewsContainer = document.getElementById("reviews-container");
+    const pagination = document.getElementById("pagination");
+
+    let currentPage = 1;
+    let reviewsPerPage = 3;
+    // Fetch and render reviews
+    function fetchReviews(page = 1) {
+        fetch(
+            `/reviews?courseId=${Course._id}&page=${page}&limit=${reviewsPerPage}`
+        )
+            .then((response) => response.json())
+            .then((data) => {
+                renderReviews(data.reviews);
+                renderPagination(data.totalPages, page);
+            });
+    }
+    const commentInput = document.getElementById("Comment");
+
+    const submitReview = document.getElementById("submit-review");
+    submitReview.addEventListener("click", function () {
+        const comment = commentInput.value.trim();
+        if (comment) {
+            fetch("/reviews", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    User: user.id,
+                    Course: Course._id,
+                    Comment: comment,
+                }),
+            })
+                .then(function (response) {
+                    if (response.ok) {
+                        commentInput.value = "";
+                        fetchReviews();
+                    } else {
+                        alert("Failed to post review");
+                    }
+                })
+                .catch(function (error) {
+                    console.error("Error posting review:", error);
+                });
+        }
+    });
+
+    // Render reviews
+    function renderReviews(reviews) {
+        if (reviews.length === 0) {
+            reviewsContainer.innerHTML = `
+                <div class="text-gray-500 text-center py-4">
+                    No reviews for this course yet.
+                </div>
+            `;
+            return;
+        }
+        console.log(reviews);
+        reviewsContainer.innerHTML = reviews
+            .map(
+                (review) => `
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <div class="flex items-center gap-4 mb-2">
+                        <img src="/assets/images/Avatar01.png" alt="${
+                            review.User.username
+                        }" class="w-12 h-12 rounded-full border-2 border-blue-500">
+                        <div>
+                            <p class="font-semibold">${review.User.username}</p>
+                            <p class="text-gray-500 text-sm">${new Date(
+                                review.Date
+                            ).toLocaleString()}</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-800">${review.Comment}</p>
+                </div>
+            `
+            )
+            .join("");
+    }
+
+    // Render pagination buttons
+    function renderPagination(totalPages, currentPage) {
+        pagination.innerHTML = "";
+        for (let i = 1; i <= totalPages; i++) {
+            const button = document.createElement("button");
+            button.textContent = i;
+            button.className = `px-4 py-2 rounded-lg ${
+                i === currentPage ? "bg-blue-700 text-white" : "bg-gray-200"
+            }`;
+            button.addEventListener("click", () => {
+                fetchReviews(i);
+            });
+            pagination.appendChild(button);
+        }
+    }
+
+    // Initial fetch
+    fetchReviews();
+});

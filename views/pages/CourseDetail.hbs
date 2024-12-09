@@ -148,7 +148,32 @@
         {{/each}}
     </div>
 </section>
+<section class="max-w-8xl mx-auto px-4 py-8" id="review-section">
+    <h2 class="text-2xl font-semibold mb-4">User Reviews</h2>
 
+    <!-- Review Form -->
+    {{#if isLoggedIn}}
+    <form id="review-form" class="mb-6">
+        <div class="flex gap-4 items-center">
+            <input id = "User" name ="User"type="hidden" value = "{{user.id}}">
+            <input id = "Course" name ="Course" type="hidden" value = "{{Course._id}}">
+            <textarea id="Comment" name="Comment" class="flex-grow border-2 border-gray-300 p-2 rounded-lg focus:outline-none focus:border-blue-500" rows="3" placeholder="Write your review..."></textarea>
+            <button type="button" id="submit-review" class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-4 py-2 rounded-lg">
+                Post
+            </button>
+        </div>
+    </form>
+    {{/if}}
+
+    <!-- Reviews List -->
+    <div id="reviews-container" class="space-y-4">
+    </div>
+
+    <div id="pagination" class="flex justify-center mt-4 space-x-2">
+    </div>
+</section>
+
+<script src="/javascripts/CourseDetailScript.js"></script>
 <script>
     const searchInput = document.getElementById('search');
     searchInput.addEventListener('keydown', function (event) {
@@ -165,22 +190,23 @@
             }
         }
     });
+    const isLoggedIn = {{isLoggedIn}};
     function buyNow(courseId, title, price, img) {
-    // Check if the user is authenticated via session variable
-    const isLoggedIn = {{isLoggedIn}}; // Inject this from the server if you're using Handlebars
-
-    if (isLoggedIn) {
-        // If logged in, redirect to the paycourses page with course details
-        window.location.href = `/paycourses?courseId=${courseId}&title=${title}&price=${price}`;
-    } else {
-        // If not logged in, redirect to the login page
-        window.location.href = `/login?redirect=/paycourses?courseId=${courseId}&title=${title}&price=${price}`;
+        // Check if the user is authenticated via session variable 
+        if (isLoggedIn) {
+            // If logged in, redirect to the paycourses page with course details
+            window.location.href = `/paycourses?courseId=${courseId}&title=${title}&price=${price}`;
+        } else {
+            // If not logged in, redirect to the login page
+            window.location.href = `/login?redirect=/paycourses?courseId=${courseId}&title=${title}&price=${price}`;
+        }
     }
-}
-
-
+    
+    const Course = JSON.parse('{{{json Course}}}');
+    const user = JSON.parse('{{{json user}}}');
+    console.log(user);
 </script>
-<script src="/javascripts/CourseDetailScript.js"></script>
+
 
 <script src="/javascripts/CartScript.js"></script>
 

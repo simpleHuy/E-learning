@@ -25,6 +25,7 @@ const validate = require("./Components/validate/api/validate");
 const AjaxCourseRouter = require("./Components/course/api/AjaxCourse");
 const Payment = require("./Components/payment/data-access/PayModel");
 const Cart = require("./Components/cart/data-access/CartModel");
+const ReviewRouter = require("./Components/review/api/review");
 const app = express();
 db.connect();
 
@@ -116,6 +117,7 @@ app.post("/complete-checkout", async (req, res) => {
 
 app.use((req, res, next) => {
     res.locals.isLoggedIn = req.session.isLoggedIn || false;
+    if (req.user) res.locals.user = req.user;
     next();
 });
 app.use("/validate", validate);
@@ -126,6 +128,7 @@ app.use("/courses", coursesRouter);
 app.use("/paycourses", paymentRouter);
 app.use("/cart", cartRoutes);
 app.use("/courses", AjaxCourseRouter);
+app.use("/reviews", ReviewRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next(createError(404));
