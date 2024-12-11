@@ -42,7 +42,7 @@ const CourseController = {
             const CourseId = req.params.id;
             const isLoggedIn = false;
             const { title, Course, relevantCourses } =
-                await CourseService.getCourseDetail(CourseId);
+            await CourseService.getCourseDetail(CourseId);
             return res.status(StatusCodes.OK).render("pages/CourseDetail", {
                 title: title,
                 Course: Course,
