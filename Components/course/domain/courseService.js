@@ -4,7 +4,131 @@ const TopicModel = require("../data-access/TopicModel");
 const mongoose = require("mongoose");
 
 const CourseService = {
-    getCourses: async (
+    getCoursesListInfo: async (
+        search,
+        topic,
+        skill,
+        level,
+        price,
+        sort,
+        order,
+        page
+    ) => {
+        const coursesQuery = await CourseService.GetCourse(
+            search,
+            topic,
+            skill,
+            level,
+            price,
+            sort,
+            order,
+            page
+        );
+
+        const topics = await TopicModel.GetAllTopics();
+        const skills = await SkillModel.GetAllSkills();
+
+        return {
+            courses: coursesQuery.courses,
+            currentPage: page || 1,
+            totalPages: coursesQuery.totalPages,
+            isFirstPage: page == 1 || !page,
+            isLastPage: page >= coursesQuery.totalPages,
+            topics,
+            skills,
+        };
+    },
+
+    getCourseDetail: async (courseId) => {
+        try {
+            // Validate courseId
+            if (!courseId) {
+                throw new Error('Course ID is required');
+            }
+            console.log('courseId:', courseId);
+            // Check if courseId is a valid ObjectId
+            if (!mongoose.Types.ObjectId.isValid(courseId)) {
+                throw new Error('Invalid Course ID format');
+            }
+    
+            const Course = await CourseModel.aggregate([
+                { $match: { _id: new mongoose.Types.ObjectId(courseId) } },
+                {
+                    $lookup: {
+                        from: "Skills",
+                        localField: "SkillGain",
+                        foreignField: "_id",
+                        as: "SkillGain",
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "Modules",
+                        localField: "_id",
+                        foreignField: "CourseId",
+                        as: "Modules",
+                    },
+                },
+                {
+                    $unwind: {
+                        path: "$Modules",
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "Lessons",
+                        localField: "Modules._id",
+                        foreignField: "ModuleId",
+                        as: "Modules.Lessons",
+                    },
+                },
+                {
+                    $group: {
+                        _id: "$_id",
+                        Title: { $first: "$Title" },
+                        SkillGain: { $first: "$SkillGain" },
+                        Topic: { $first: "$Topic" },
+                        Modules: { $push: "$Modules" },
+                        Duration: { $first: "$Duration" },
+                        Level: { $first: "$Level" },
+                        Description: { $first: "$Description" },
+                        Img: { $first: "$Img" },
+                        Price: { $first: "$Price" },
+                        Rate: { $first: "$Rate" },
+                        Lecturer: { $first: "$Lecturer" },
+                    },
+                },
+            ]);
+    
+            // Check if course exists
+            if (!Course || Course.length === 0) {
+                throw new Error('Course not found');
+            }
+    
+            const relevantCourses = await CourseModel.GetAllRelevantCourses(
+                Course[0]._id
+            );
+    
+            return {
+                title: Course[0].Title,
+                Course: Course[0],
+                relevantCourses,
+            };
+        } catch (error) {
+            console.error('Error in getCourseDetail:', error);
+            throw error;
+        }
+    },
+
+    AddToCart: async (courseId) => {
+        const result = await CourseModel.GetCourseById(courseId);
+        await result.FetchAllModules();
+
+        return result;
+    },
+
+    GetCourse: async (
         search,
         topic,
         skill,
@@ -25,83 +149,10 @@ const CourseService = {
             page
         );
 
-        const topics = await TopicModel.GetAllTopics();
-        const skills = await SkillModel.GetAllSkills();
-
         return {
             courses: coursesQuery.courses,
             currentPage: page || 1,
             totalPages: coursesQuery.totalPages,
-            isFirstPage: page == 1 || !page,
-            isLastPage: page == coursesQuery.totalPages,
-            topics,
-            skills,
-        };
-    },
-
-    getCourseDetail: async (courseId) => {
-        const Course = await CourseModel.aggregate([
-            { $match: { _id: new mongoose.Types.ObjectId(courseId) } },
-            {
-                $lookup: {
-                    from: "Skills",
-                    localField: "SkillGain",
-                    foreignField: "_id",
-                    as: "SkillGain",
-                },
-            },
-            {
-                $lookup: {
-                    from: "Modules",
-                    localField: "_id", // `_id` của Course
-                    foreignField: "CourseId", // `CourseId` của Module
-                    as: "Modules", // Gắn Modules vào kết quả
-                },
-            },
-
-            {
-                $unwind: {
-                    path: "$Modules", // Tách các modules ra từng tài liệu
-                    preserveNullAndEmptyArrays: true, // Giữ lại Course nếu không có Module
-                },
-            },
-
-            {
-                $lookup: {
-                    from: "Lessons",
-                    localField: "Modules._id", // `_id` của Module
-                    foreignField: "ModuleId", // `ModuleId` của Lessons
-                    as: "Modules.Lessons", // Gắn Lessons vào từng Module
-                },
-            },
-
-            {
-                $group: {
-                    _id: "$_id", // Group lại theo `_id` của course
-                    Title: { $first: "$Title" },
-                    SkillGain: { $first: "$SkillGain" },
-                    Topic: { $first: "$Topic" },
-                    Modules: { $push: "$Modules" }, // Gom tất cả các module vào mảng Modules
-                    Duration: { $first: "$Duration" },
-                    Level: { $first: "$Level" },
-                    Description: { $first: "$Description" },
-                    Img: { $first: "$Img" },
-                    Price: { $first: "$Price" },
-                    Rate: { $first: "$Rate" },
-                    Lecturer: { $first: "$Lecturer" },
-                },
-            },
-        ]);
-
-        console.log(Course[0]);
-
-        const relevantCourses = await CourseModel.GetAllRelevantCourses(
-            Course[0]._id
-        );
-        return {
-            title: Course[0].Title,
-            Course: Course[0],
-            relevantCourses,
         };
     },
 };

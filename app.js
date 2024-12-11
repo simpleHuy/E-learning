@@ -127,7 +127,7 @@ app.use("/", dashboardRoutes);
 app.use("/courses", coursesRouter);
 app.use("/paycourses", paymentRouter);
 app.use("/cart", cartRoutes);
-app.use("/courses", AjaxCourseRouter);
+app.use("/courses/api", AjaxCourseRouter);
 app.use("/reviews", ReviewRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

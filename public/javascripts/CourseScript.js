@@ -16,8 +16,93 @@ function changePage(page) {
     // page transitions
     currentPage = Math.max(currentPage, 1);
     params.set("page", currentPage);
-    url.search = params.toString();
-    window.location.href = url.toString();
+    window.history.replaceState(
+        {},
+        "",
+        `${window.location.pathname}?${params.toString()}`
+    );
+
+    // Fetch the new data
+    fetchCoursesData(params);
+}
+
+function fetchCoursesData(params) {
+    const xhr = new XMLHttpRequest();
+    const endpoint = `/courses/api/course-list-data?${params.toString()}`;
+
+    // Cấu hình XHR
+    xhr.open("GET", endpoint, true);
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                const response = JSON.parse(xhr.responseText);
+                updateCoursesContainer(response.courses);
+                updatePagination(response.currentPage, response.totalPages);
+            } else {
+                console.error(`Error: ${xhr.status} - ${xhr.statusText}`);
+            }
+        }
+    };
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send();
+}
+
+function updateCoursesContainer(courses) {
+    const coursesContainer = document.getElementById("courses-container");
+
+    if (courses.length === 0) {
+        coursesContainer.innerHTML = `
+        <div class="text-gray-600 mt-8 col-span-3">
+            <h2 class="text-4xl font-bold text-center">No Courses found</h2>
+        </div>`;
+        return;
+    }
+
+    coursesContainer.innerHTML = courses
+        .map(
+            (course) => `
+            <a href="/courses/${course._id}">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
+                <img src="${course.Img}" alt="${course.Title}" class="w-full h-72 object-cover" />
+                <div class="p-6 flex-grow">
+                    <div class="flex items-center text-sm text-gray-500 mb-2">
+                        <div class="mr-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">${course.Duration} Weeks</div> | 
+                        <span class="ml-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">${course.Level}</span>
+                        <div class="ml-auto inline-block py-0.5 px-2 text-right font-semibold text-lg text-black">
+                        $${course.Price}
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold">${course.Title}</h3>
+                    <p class="text-gray-400 text-sm mt-2">${course.ShortDesc}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-auto mb-3 p-3">
+                    <button class="mt-4 w-full bg-gray-100 text-black py-2 rounded-md">Get it Now</button>
+                    <button id="seeMore-btn" class="mt-4 w-full bg-gray-100 text-black py-2 rounded-md" 
+                    onclick="window.location.href='/courses/${course._id}'">See detail</button>
+                </div>
+            </div>
+            </a>`
+        )
+        .join("");
+}
+
+function updatePagination(currentPage, totalPages) {
+    currentPage = parseInt(currentPage);
+    totalPages = parseInt(totalPages);
+    const paginationContainer = document.getElementById("Pagination");
+
+    const nextDisabled = currentPage >= totalPages ? "disabled" : "";
+    const prevDisabled = currentPage === 1 ? "disabled" : "";
+    currentPage = Math.min(currentPage, totalPages);
+
+    // Cập nhật phân trang
+    paginationContainer.innerHTML = `
+        <button id="prev-btn" class="px-4 py-2 bg-gray-800 text-white rounded-md disabled:bg-gray-300 text-gray-700" 
+            onclick="changePage('prev')" ${prevDisabled}>Previous</button>
+        <div id="page-info" class="text-gray-700 font-medium inline-block relative top-2">Page ${currentPage} of ${totalPages}</div>
+        <button id="next-btn" class="px-4 py-2 bg-gray-800 text-white rounded-md disabled:bg-gray-300 text-gray-700" 
+            onclick="changePage('next')" ${nextDisabled}>Next</button>`;
 }
 
 // Đối tượng lưu các mục đã chọn
@@ -67,13 +152,23 @@ function toggleSelection(item, field) {
         removeSelection(item, field);
     } else {
         selectedItems[field].push(item);
-        showButtonSubmit();
     }
 
     // Cập nhật giao diện
     updateTags(selectedContainer, field);
     // Đóng dropdown
     dropdown.classList.add("hidden");
+    //set params in url
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    params.set(field, selectedItems[field].join(","));
+    params.delete("page");
+    window.history.replaceState(
+        {},
+        "",
+        `${window.location.pathname}?${params.toString()}`
+    );
+    fetchCoursesData(params);
 }
 
 // Hàm cập nhật thẻ (tags)
@@ -111,16 +206,28 @@ function updateTags(container, field) {
 function removeSelection(item, field) {
     if (field === "price") {
         selectedItems[field] = [];
-        const container = document.getElementById(`${field}-tags`);
-        updateTags(container, field);
-        hiddenButtonSubmit();
-        return;
+    } else {
+        selectedItems[field] = selectedItems[field].filter((i) => i !== item);
     }
 
-    selectedItems[field] = selectedItems[field].filter((i) => i !== item);
     const container = document.getElementById(`${field}-tags`);
     updateTags(container, field);
-    hiddenButtonSubmit();
+
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+
+    if (selectedItems[field].length > 0) {
+        params.set(field, selectedItems[field].join(","));
+    } else {
+        params.delete(field); // Optionally, you can delete the parameter if the array is empty
+    }
+
+    window.history.replaceState(
+        {},
+        "",
+        `${window.location.pathname}?${params.toString()}`
+    );
+    fetchCoursesData(params);
 }
 
 // Ẩn dropdown khi nhấp ra ngoài
@@ -170,30 +277,31 @@ function updateSliderProgress() {
     progress.style.right = `${100 - maxPercentage}%`;
 }
 
-function showButtonSubmit() {
-    const submitButton = document.getElementById("SubmitFilterButton");
-    if (submitButton.classList.contains("hidden"))
-        submitButton.classList.remove("hidden");
-}
-
-function hiddenButtonSubmit() {
-    const submitButton = document.getElementById("SubmitFilterButton");
-    if (
-        !submitButton.classList.contains("hidden") &&
-        Object.values(selectedItems).every((item) => item.length === 0)
-    )
-        submitButton.classList.add("hidden");
-}
-
 function acceptPriceRange() {
     const dropdown = document.getElementById("dropdown-price");
     dropdown.classList.add("hidden");
     const minPrice = document.getElementById("minPrice").value;
     const maxPrice = document.getElementById("maxPrice").value;
     selectedItems.price = [minPrice, maxPrice];
-    showButtonSubmit();
     const selectedContainer = document.getElementById("price-tags");
     updateTags(selectedContainer, "price");
+
+    // Update URL parameters and fetch new data
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+
+    if (selectedItems.price.length > 0) {
+        params.set("price", selectedItems.price.join(","));
+    } else {
+        params.delete("price");
+    }
+
+    window.history.replaceState(
+        {},
+        "",
+        `${window.location.pathname}?${params.toString()}`
+    );
+    fetchCoursesData(params);
 }
 
 function clearAllFilters() {
@@ -205,7 +313,6 @@ function clearAllFilters() {
     selectedContainers.forEach((container) => {
         container.innerHTML = "";
     });
-    hiddenButtonSubmit();
 }
 
 function SubmitFilter() {
@@ -231,32 +338,25 @@ function SubmitFilter() {
     window.location.href = url.toString();
 }
 
-const searchInput = document.getElementById("search");
-searchInput.addEventListener("keydown", function (event) {
-    if (event.key === "Enter") {
-        const query = searchInput.value.trim();
-        if (query) {
-            const url = new URL(window.location.href);
-            const params = new URLSearchParams(url.search);
-            params.set("search", query);
-            url.search = params.toString();
-            window.location.href = url.toString();
-        }
-    }
-});
-
 function appliedSort(field, direction) {
-    if (field === "default") {
-        document.getElementById("dropdown-sort").classList.add("hidden");
-        return;
-    }
+    document.getElementById("dropdown-sort").classList.add("hidden");
     // Update the URL
     const url = new URL(window.location.href);
     const params = new URLSearchParams(url.search);
     params.set("sort", field);
     params.set("order", direction);
-    url.search = params.toString();
-    window.location.href = url.toString();
+    if (field === "None") {
+        params.delete("sort");
+        params.delete("order");
+    }
+    changeSortInfo(field, direction);
+
+    window.history.replaceState(
+        {},
+        "",
+        `${window.location.pathname}?${params.toString()}`
+    );
+    fetchCoursesData(params);
 }
 
 function changeSortInfo(field, direction) {
@@ -282,6 +382,9 @@ function changeSortInfo(field, direction) {
                     ? "By Duration ( Short - Long )"
                     : "By Duration ( Long - Short )";
             break;
+        default:
+            sortText = "None";
+            break;
     }
 
     // Update the #sort-info element's text
@@ -294,9 +397,33 @@ window.addEventListener("DOMContentLoaded", (event) => {
     const params = new URLSearchParams(url.search);
     const sortField = params.get("sort");
     const sortOrder = params.get("order");
+    const skill = params.get("skill");
+    const level = params.get("level");
+    const topic = params.get("topic");
+    const price = params.get("price");
 
     if (sortField && sortOrder) {
         changeSortInfo(sortField, sortOrder);
-    } else {
     }
+
+    if (skill) {
+        selectedItems.skill = skill.split(",");
+        updateTags(document.getElementById("skill-tags"), "skill");
+    }
+
+    if (level) {
+        selectedItems.level = level.split(",");
+        updateTags(document.getElementById("level-tags"), "level");
+    }
+
+    if (topic) {
+        selectedItems.topic = topic.split(",");
+        updateTags(document.getElementById("topic-tags"), "topic");
+    }
+
+    if (price) {
+        selectedItems.price = price.split(",");
+        updateTags(document.getElementById("price-tags"), "price");
+    }
+
 });

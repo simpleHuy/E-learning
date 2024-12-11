@@ -80,7 +80,7 @@
                 class="flex flex-wrap gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer"
                 onclick="toggleDropdown('topic')"
               >
-                <span class="text-gray-400">All topics</span>
+                <span class="text-gray-400">Choose topics</span>
                 <svg class="w-4 h-4 ml-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
@@ -114,7 +114,7 @@
                 id="selected-price"
                 class="flex flex-wrap gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer"
                 onclick="toggleDropdown('price')">
-                <span class="text-gray-400">All prices</span>
+                <span class="text-gray-400">Choose prices</span>
                 <svg class="w-4 h-4 ml-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
@@ -201,7 +201,7 @@
               id="selected-level"
               class="flex items-center gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer"
               onclick="toggleDropdown('level')">
-              <span id="selected-level-text" class="text-gray-400">All levels</span>
+              <span id="selected-level-text" class="text-gray-400">Choose levels</span>
               <svg class="w-4 h-4 ml-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
@@ -241,7 +241,7 @@
                 class="flex flex-wrap gap-2 px-3 py-2 border rounded-full bg-white text-sm cursor-pointer"
                 onclick="toggleDropdown('skill')"
               >
-                <span class="text-gray-400">Any skill</span>
+                <span class="text-gray-400">Choose skills</span>
                 <svg class="w-4 h-4 ml-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
@@ -264,12 +264,6 @@
               <div id="skill-tags" class="mt-2 flex flex-wrap gap-2"></div>
             </div>
           </div>
-        </div>
-        <div class="flex justify-center">
-          <button class="min-w-[120px] max-w-[150px] text-white font-semibold bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-lg hidden"
-                  id="SubmitFilterButton" onclick="SubmitFilter()">
-            Submit
-          </button>
         </div>
       </div>
 
@@ -310,7 +304,7 @@
                 <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('Duration', 'desc')">
                   By Duration ( Long - Short )
                 </div>
-                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('default', 'none')">
+                <div class="px-4 py-2 cursor-pointer hover:bg-gray-100" onclick="appliedSort('None', 'none')">
                   None
                 </div>
               </div>
@@ -319,8 +313,8 @@
       </div>
 
       <!-- Course Cards -->
-      {{#if courses.length}}
-      <div id="course-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div id="courses-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {{#if courses.length}}
         {{#each courses}}
           <a href="/courses/{{this._id}}">
           <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
@@ -344,15 +338,15 @@
           </div>
           </a>
           {{/each}}
+        {{else}}
+          <div class="text-gray-600 mt-8 col-span-3">
+              <h2 class="text-4xl font-bold text-center">No Courses found</h2>
+          </div>
+        {{/if}}
       </div>
-      {{else}}
-      <div class="text-center text-gray-600 mt-8">
-          <h2 class="text-4xl font-bold text-center">No Courses found</h2>
-      </div>
-      {{/if}}
 
       <!-- Pagination -->
-      <div class="flex justify-center mt-8 space-x-4">
+      <div class="flex justify-center mt-8 space-x-4" id="Pagination">
           <button id="prev-btn" class="px-4 py-2 bg-gray-800 text-white rounded-md {{#if isFirstPage}}disabled:bg-gray-300 text-gray-700{{/if}}" 
                   onclick="changePage('prev')"
                   {{#if isFirstPage}}disabled{{/if}}>Previous</button>
