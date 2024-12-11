@@ -13,6 +13,7 @@ const ReviewService = {
             const totalReviews = await ReviewModel.countDocuments({
                 Course: courseId,
             });
+            console.log(reviews);
             const totalPages = Math.ceil(totalReviews / limit);
             return { reviews, totalPages };
         } catch (error) {

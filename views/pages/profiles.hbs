@@ -1,0 +1,131 @@
+<section class="container mx-auto mt-10 ">
+<div class="flex items-center justify-center p-10  border rounded-lg bg-white">
+  <div class="w-full">
+    <form id="profileForm" method="POST">
+      <!-- Profile Picture -->
+      <div class="flex items-center justify-center mb-6">
+        <img src="https://via.placeholder.com/80" alt="Profile" class="rounded-full w-20 h-20">
+      </div>
+
+      <!-- Name -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Name</label>
+        <div class="flex items-center">
+          <input type="text" id="name" name="name" class="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring-[#4f75ff] focus:border-[#4f75ff]" value="{{user.name}}" disabled>
+          <button type="button" class="ml-2 text-[#4f75ff]" onclick="enableEdit('name')"><i class="fa-solid fa-pen-to-square"></i></button>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Email</label>
+        <div class="flex items-center">
+          <input type="email" id="email" name="email" class="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring-[#4f75ff] focus:border-[#4f75ff]" value="{{user.email}}" disabled>
+          <button type="button" class="ml-2 text-[#4f75ff]" onclick="enableEdit('email')"><i class="fa-solid fa-pen-to-square"></i></button>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Address</label>
+        <div class="flex items-center">
+          <input type="text" id="address" name="address" class="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring-[#4f75ff] focus:border-[#4f75ff]" value="{{user.address}}" disabled>
+          <button type="button" class="ml-2 text-[#4f75ff]" onclick="enableEdit('address')"><i class="fa-solid fa-pen-to-square"></i></button>
+        </div>
+      </div>
+
+      <!-- Contact -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Contact</label>
+        <div class="flex items-center">
+          <input type="text" id="contact" name="contact" class="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring-[#4f75ff] focus:border-[#4f75ff]" value="{{user.contact}}" disabled>
+          <button type="button" class="ml-2 text-[#4f75ff]" onclick="enableEdit('contact')"><i class="fa-solid fa-pen-to-square"></i></button>
+        </div>
+      </div>
+
+      <div class="mb-6 relative">
+        <label class="block text-sm font-medium text-gray-700">Password</label>
+        <div class="flex items-center">
+          <input type="password" id="password" name="password" class="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring-[#4f75ff] focus:border-[#4f75ff]" value="{{user.password}}" disabled>
+          
+          <button
+            type="button"
+            id="togglePassword"
+            class="absolute inset-y-0 right-4 text-[#59595A]"
+          >
+          </button>
+          <button type="button" class="ml-2 text-[#4f75ff]" onclick="enableEdit('password')"><i class="fa-solid fa-pen-to-square"></i></button>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex justify-between">
+        <button type="button" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400" onclick="cancelEdit()">Cancel</button>
+        <button type="submit" class="px-4 py-2 bg-[#4f75ff] text-white rounded-lg">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+</section>
+
+<script>
+
+  function enableEdit(fieldId) {
+    document.getElementById(fieldId).disabled = false;
+    document.getElementById(fieldId).focus();
+  }
+
+  function cancelEdit() {
+    window.location.href = '/home';
+  }
+
+document.getElementById('profileForm').addEventListener('submit', function(event) {
+  event.preventDefault(); 
+  
+
+  const formData = new FormData(this);
+
+  const formObject = {};
+  formData.forEach((value, key) => {
+    formObject[key] = value;
+  });
+  console.log("Form Data:", formObject); 
+
+  fetch('/profile/update', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(Object.fromEntries(formData)),
+})
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      alert("Update success: " + JSON.stringify(data)); 
+      window.location.href = '/home';
+    } else {
+      alert("Update failed: " + JSON.stringify(data)); 
+    }
+  })
+  .catch(error => {
+     alert('Error occurred: ' + error.message);  
+  });
+});
+const togglePassword = document.getElementById('togglePassword');
+const passwordInput = document.getElementById('passwordInput');
+const eyeIcon = document.getElementById('eyeIcon');
+
+
+togglePassword.addEventListener('click', () => {
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text'; 
+    eyeIcon.classList.remove('fa-eye-slash'); 
+    eyeIcon.classList.add('fa-eye');
+  } else {
+    passwordInput.type = 'password'; 
+    eyeIcon.classList.remove('fa-eye'); 
+    eyeIcon.classList.add('fa-eye-slash');
+  }
+});
+
+</script>

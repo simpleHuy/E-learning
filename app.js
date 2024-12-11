@@ -19,6 +19,7 @@ const paymentRouter = require("./Components/payment/api/pay");
 const coursesRouter = require("./Components/course/api/course");
 const dashboardRoutes = require("./Components/Home/api/dashboard");
 const cartRoutes = require("./Components/cart/api/cart");
+const profileRouter = require("./Components/profile/api/profileRoutes");
 
 // AJAX API
 const validate = require("./Components/validate/api/validate");
@@ -129,6 +130,7 @@ app.use("/paycourses", paymentRouter);
 app.use("/cart", cartRoutes);
 app.use("/courses/api", AjaxCourseRouter);
 app.use("/reviews", ReviewRouter);
+app.use("/profile", profileRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next(createError(404));
