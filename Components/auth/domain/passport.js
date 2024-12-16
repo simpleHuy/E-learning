@@ -39,7 +39,7 @@ passport.use(
                             expiresIn: "1h",
                         }
                     );
-                    const url = `http://localhost:3000/verify/?token=${token}`;
+                    const url = `https://project-web-22-3.onrender.com/verify/?token=${token}`;
                     const mailOptions = {
                         from: process.env.EMAIL,
                         to: user.email,
