@@ -3,15 +3,15 @@ const CartService = require("../domain/CartService");
 const cartController = {
     getCart: async (req, res) => {
         if (req.session.isLoggedIn) {
-            res.render("pages/cart", {
+            res.render("pages/Cart", {
                 title: "Cart",
                 isLoggedIn: true,
             });
         } else {
-            res.render("pages/cart", { title: "Cart", isLoggedIn: false });
+            res.render("pages/Cart", { title: "Cart", isLoggedIn: false });
         }
     },
-    
+
     getCartData: async (req, res) => {
         if (req.session.isLoggedIn) {
             const cart = await CartService.GetCartByUserId(req.user.id);
