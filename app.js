@@ -20,7 +20,7 @@ const coursesRouter = require("./Components/course/api/course");
 const dashboardRoutes = require("./Components/Home/api/dashboard");
 const cartRoutes = require("./Components/cart/api/cart");
 const profileRouter = require("./Components/profile/api/profileRoutes");
-
+const checkoutRouter = require("./Components/checkout/api/checkout");
 // AJAX API
 const validate = require("./Components/validate/api/validate");
 const AjaxCourseRouter = require("./Components/course/api/AjaxCourse");
@@ -78,43 +78,11 @@ app.use((req, res, next) => {
     res.locals.existMail = req.flash("existMail");
     next();
 });
-app.post("/complete-checkout", async (req, res) => {
-    const userId = req.user.id; // Giả sử bạn đã có thông tin người dùng trong session
-    const { courses } = req.body; // Lấy danh sách khóa học từ frontend
+// Import các router mới
 
-    try {
-        // Kiểm tra nếu không có khóa học
-        if (!courses || courses.length === 0) {
-            return res.status(400).json({ message: "No courses to process." });
-        }
 
-        // 1. Lưu các khóa học vào bảng Payments
-        const payment = new Payment({
-            userId: userId,
-            items: courses, // Các khóa học từ frontend
-            total: courses.reduce(
-                (sum, course) => sum + parseFloat(course.Price),
-                0
-            ), // Tính tổng tiền
-        });
-
-        await payment.save(); // Lưu vào Payments
-
-        // 2. Xóa các khóa học khỏi bảng Cart
-        await Cart.updateOne(
-            { userId: userId },
-            { $pull: { items: { $in: courses.map((course) => course._id) } } } // Xóa các khóa học đã thanh toán khỏi giỏ hàng
-        );
-
-        // 3. Quay về trang chủ hoặc trả thông báo thành công
-        res.status(200).json({ message: "Checkout completed successfully" });
-    } catch (error) {
-        console.error("Error in completeCheckout:", error);
-        res.status(500).json({
-            message: "An error occurred while processing your checkout.",
-        });
-    }
-});
+// Thêm Router mới
+app.use("/complete-checkout", checkoutRouter);
 
 app.use((req, res, next) => {
     res.locals.isLoggedIn = req.session.isLoggedIn || false;
