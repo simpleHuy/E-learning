@@ -105,14 +105,14 @@ const CourseService = {
                 throw new Error('Course not found');
             }
     
-            const relevantCourses = await CourseModel.GetAllRelevantCourses(
+            const RelevantCourses = await CourseModel.GetAllRelevantCourses(
                 Course[0]._id
             );
     
             return {
                 title: Course[0].Title,
                 Course: Course[0],
-                relevantCourses,
+                RelevantCourses,
             };
         } catch (error) {
             console.error('Error in getCourseDetail:', error);

@@ -5,6 +5,6 @@ const redisCache = require("../../middlewares/redisCache");
 
 router
     .post("/add-to-cart", CourseController.AddToCart)
-    .get("/course-list-data", redisCache, CourseController.GetCourseData);
+    .get("/course-list-data", redisCache.CourseListCache, CourseController.GetCourseData);
 
 module.exports = router;

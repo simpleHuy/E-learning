@@ -20,7 +20,6 @@ const CourseController = {
                 page
             );
 
-
             res.render("pages/courseslist", {
                 title: "Our Courses",
                 courses: CoursesData.courses,
@@ -43,12 +42,19 @@ const CourseController = {
         try {
             const CourseId = req.params.id;
             const isLoggedIn = false;
-            const { title, Course, relevantCourses } =
+            const { title, Course, RelevantCourses } =
                 await CourseService.getCourseDetail(CourseId);
+
+            await redisClient.set(
+                req.originalUrl,
+                JSON.stringify({ title, Course, RelevantCourses }),
+                { EX: 60 * 60 }
+            );
+
             return res.status(StatusCodes.OK).render("pages/CourseDetail", {
                 title: title,
                 Course: Course,
-                RelevantCourses: relevantCourses,
+                RelevantCourses: RelevantCourses,
             });
         } catch (error) {
             console.error("Error fetching course detail:", error); // Log error
@@ -98,7 +104,13 @@ const CourseController = {
                 page
             );
 
-            await redisClient.set(req.originalUrl, JSON.stringify(CoursesData));
+            await redisClient.set(
+                req.originalUrl,
+                JSON.stringify(CoursesData),
+                {
+                    EX: 60 * 60, // 1 hour
+                }
+            );
 
             return res.status(200).json(CoursesData);
         } catch (error) {
