@@ -45,7 +45,6 @@ const CourseService = {
             if (!courseId) {
                 throw new Error('Course ID is required');
             }
-            console.log('courseId:', courseId);
             // Check if courseId is a valid ObjectId
             if (!mongoose.Types.ObjectId.isValid(courseId)) {
                 throw new Error('Invalid Course ID format');

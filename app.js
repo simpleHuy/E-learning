@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const hbs = require("hbs");
 const db = require("./config/database");
+const redisClient = require("./config/redis");
 const session = require("express-session");
 const flash = require("connect-flash");
 const dotenv = require("dotenv");
@@ -29,6 +30,7 @@ const Cart = require("./Components/cart/data-access/CartModel");
 const ReviewRouter = require("./Components/review/api/review");
 const app = express();
 db.connect();
+redisClient.connect();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -79,7 +81,6 @@ app.use((req, res, next) => {
     next();
 });
 // Import các router mới
-
 
 // Thêm Router mới
 app.use("/complete-checkout", checkoutRouter);

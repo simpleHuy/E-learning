@@ -1,5 +1,6 @@
 const CourseService = require("../domain/courseService");
 const { StatusCodes, getReasonPhrase } = require("http-status-codes");
+const redisClient = require("../../../config/redis");
 
 // Function to fetch and display courses with pagination
 const CourseController = {
@@ -19,7 +20,7 @@ const CourseController = {
                 page
             );
 
-            // Render the Handlebars template with pagination and courses data
+
             res.render("pages/courseslist", {
                 title: "Our Courses",
                 courses: CoursesData.courses,
@@ -60,7 +61,6 @@ const CourseController = {
     AddToCart: async (req, res) => {
         try {
             const { courseid } = req.body;
-            console.log("Received courseid:", courseid); // Log dữ liệu gửi từ client
             const result = await CourseService.AddToCart(courseid);
             if (!result) {
                 console.log("Course not found for id:", courseid);
@@ -68,7 +68,6 @@ const CourseController = {
                     .status(404)
                     .json({ success: false, message: "Course not found" });
             }
-            console.log("Course found:", result);
             res.status(200).json({
                 success: true,
                 message: "Added to cart",
@@ -98,6 +97,8 @@ const CourseController = {
                 order,
                 page
             );
+
+            await redisClient.set(req.originalUrl, JSON.stringify(CoursesData));
 
             return res.status(200).json(CoursesData);
         } catch (error) {

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const CourseController = require("./coursesController"); // Import controller
+const CourseController = require("./coursesController");
 
 router
     .get("/", CourseController.getCoursesList) 
