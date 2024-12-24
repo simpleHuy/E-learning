@@ -49,9 +49,9 @@ const checkoutController = {
             });
         }
     },
-    vnpayPost: async (req, res) => {
+    vnpayPost: (req, res) => {
         try {
-            await PaymentService.vnpayPost(req, res);
+            PaymentService.vnpayPost(req, res);
         } catch (error) {
             console.error("Error in vnpayPost:", error);
             res.status(500).json({

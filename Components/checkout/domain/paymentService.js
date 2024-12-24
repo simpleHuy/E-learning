@@ -4,6 +4,7 @@ const moment = require("moment-timezone");
 const dotenv = require("dotenv");
 const Payment = require("../../payment/data-access/PayModel");
 const Cart = require("../.././cart/data-access/CartModel");
+const { console } = require("inspector");
 dotenv.config({ path: "config.env" });
 const PaymentService = {
     vnPay: async (req, res) => {
@@ -14,7 +15,7 @@ const PaymentService = {
             const vnp_TmnCode = process.env.vnp_TmnCode;
             const vnp_HashSecret = process.env.vnp_HashSecret;
             const vnp_Url = process.env.vnp_Url;
-            const vnp_Returnurl = BASE_URL + "paycourses/vnpay_post";
+            const vnp_Returnurl = BASE_URL + "complete-checkout/vnpay_post";
             const vnp_apiUrl = process.env.vnp_apiUrl;
             let ipAddr =
                 req.headers["x-forwarded-for"] ||
@@ -141,7 +142,8 @@ const PaymentService = {
         if (secureHash === vnp_SecureHash) {
             // Kiểm tra mã giao dịch
             if (inputData["vnp_ResponseCode"] === "00") {
-                // Thanh toán thành công
+                //console.log("Transaction success");
+                Thanh toán thành công
                 const payment = new Payment({
                     userId: userId,
                     items: courses,

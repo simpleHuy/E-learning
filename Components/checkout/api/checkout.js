@@ -6,6 +6,6 @@ const router = express.Router();
 // Route gọi controller
 router
     .post("/", checkoutController.completeCheckout)
-    .post("/vnpay_post", checkoutController.vnpayPost);
+    .get("/vnpay_post", checkoutController.vnpayPost);
 
 module.exports = router;
