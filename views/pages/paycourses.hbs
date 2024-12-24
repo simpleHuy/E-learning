@@ -2,6 +2,19 @@
     <div class="w-full bg-white p-6 shadow-lg grid grid-cols-1 lg:grid-cols-5">
         <!-- Left Column (Chiếm 4/5 hoặc lớn hơn) -->
         <div class="col-span-4 pr-6">
+            {{#if rollback}}
+                {{#if success}}
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <strong class="font-bold">Success!</strong>
+                        <span class="block sm:inline">{{message}}</span>
+                    </div>
+                {{else}}
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <strong class="font-bold">Error!</strong>
+                        <span class="block sm:inline">{{message}}</span>
+                    </div>
+                {{/if}}
+            {{/if}}
             <!-- Billing Information -->
             <div class="bg-gray-50 p-4 rounded-lg shadow mb-6">
                 <h2 class="text-lg font-semibold text-gray-700 mb-4">Billing Information</h2>
@@ -52,17 +65,6 @@
                     </div>
                 </div>
             </div>
-
-            <script>
-                document.getElementById('payment-method').addEventListener('change', function() {
-                    var creditCardInfo = document.getElementById('credit-card-info');
-                    if (this.value === 'credit-card') {
-                        creditCardInfo.classList.remove('hidden');
-                    } else {
-                        creditCardInfo.classList.add('hidden');
-                    }
-                });
-            </script>
         </div>
 
         <!-- Order Summary (Sát bên phải) -->
@@ -99,17 +101,12 @@
                 By completing your purchase, you agree to these
                 <a href="#" class="text-blue-500 underline">Terms of Service</a>.
             </p>
-       <button id="completeCheckoutBtn" type="button" onclick="completeCheckout()"
+       <button id="completeCheckoutBtn" type="button"
     class="w-full text-white font-semibold py-3 rounded-lg flex items-center justify-center hover:bg-blue-500"
     style="background-color: #4f75ff;">
     <i class="fa-solid fa-lock mr-2"></i>
     Complete Checkout
 </button>
-
-
-
-
-
             <p class="text-center text-sm text-gray-500 mt-4">
                 30-Day Money-Back Guarantee
             </p>
@@ -120,39 +117,43 @@
     </div>
 </body>
 <script>
-    document.getElementById('payment-method').addEventListener('change', function() {
-        var creditCardInfo = document.getElementById('credit-card-info');
-        if (this.value === 'credit-card') {
-            creditCardInfo.classList.remove('hidden');
-        } else {
-            creditCardInfo.classList.add('hidden');
-        }
-    });
-const paidCourses = {{{json paidCourses}}}; 
-
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('completeCheckoutBtn').addEventListener('click', async function() {
-        try {
-            localStorage.removeItem('cart');
-            const response = await fetch('/complete-checkout', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ courses: paidCourses })
-            });
-
-            if (response.ok) {
-                window.location.href = "/"; 
+    
+    const total = {{{json total}}};
+    const paidCourses = {{{json paidCourses}}}; 
+    document.addEventListener('DOMContentLoaded', function() {
+        const paymentMethod = document.getElementById('payment-method');
+        document.getElementById('payment-method').addEventListener('change', function() {
+            var creditCardInfo = document.getElementById('credit-card-info');
+            if (this.value === 'credit-card') {
+                creditCardInfo.classList.remove('hidden');
             } else {
-                alert("An error occurred while completing your checkout.");
+                creditCardInfo.classList.add('hidden');
             }
-        } catch (error) {
-            console.error("Error:", error);
-        }
+        });
+        document.getElementById('completeCheckoutBtn').addEventListener('click', async function() {
+            try {
+                const response = await fetch('/complete-checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ courses: paidCourses,
+                    paymentMethod: paymentMethod.value,
+                    totalPrice: total})
+                });
+
+                if (response.ok) {
+                    const url = await response.json();
+                    //console.log(url.rollbackurl);
+                    window.location.href = url.rollbackurl;
+                    localStorage.removeItem('cart'); 
+                } else {
+                    alert("An error occurred while completing your checkout.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        });
     });
-});
 
 </script>
