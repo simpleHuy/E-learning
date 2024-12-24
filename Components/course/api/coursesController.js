@@ -19,6 +19,15 @@ const CourseController = {
                 order,
                 page
             );
+            // change params to string
+            
+            await redisClient.set(
+                req.params.queryString || '',
+                JSON.stringify(CoursesData),
+                {
+                    EX: 60 * 60, // 1 hour
+                }
+            );
 
             res.render("pages/courseslist", {
                 title: "Our Courses",
@@ -104,8 +113,9 @@ const CourseController = {
                 page
             );
 
+            // set parameters for key
             await redisClient.set(
-                req.originalUrl,
+                req.params.queryString || '',
                 JSON.stringify(CoursesData),
                 {
                     EX: 60 * 60, // 1 hour

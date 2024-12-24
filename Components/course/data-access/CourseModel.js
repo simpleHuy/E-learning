@@ -81,27 +81,22 @@ CoursesSchema.methods.calcTotalTime = function () {
 };
 
 CoursesSchema.statics.GetAllRelevantCourses = async function (CourseId) {
-    // Lấy khóa học hiện tại
     const CurrentCourse = await this.findById(CourseId);
-    // Lấy các khóa học theo Topic
     const RelevantCoursesByTopic = await this.model("Courses").find({
-        Topic: CurrentCourse.Topic,  // Sử dụng `this.Topic` để lấy Topic của khóa học hiện tại
-        _id: { $ne: CurrentCourse._id },  // Đảm bảo không lấy chính khóa học này
+        Topic: CurrentCourse.Topic,  
+        _id: { $ne: CurrentCourse._id }, 
     });
 
-    // Lấy các khóa học theo SkillGain
     const RelevantCoursesBySkill = await this.model("Courses").find({
-        SkillGain: { $in: CurrentCourse.SkillGain },  // Sử dụng `this.SkillGain` để lấy SkillGain của khóa học hiện tại
-        _id: { $ne: CurrentCourse._id },  // Đảm bảo không lấy chính khóa học này
+        SkillGain: { $in: CurrentCourse.SkillGain },
+        _id: { $ne: CurrentCourse._id }, 
     });
 
-    // Kết hợp các khóa học liên quan
     const allRelevantCourses = [
         ...RelevantCoursesByTopic,
         ...RelevantCoursesBySkill,
     ];
 
-    // Lọc các khóa học trùng lặp
     const uniqueRelevantCourses = allRelevantCourses.filter(
         (value, index, self) =>
             index === self.findIndex((t) => t._id.toString() === value._id.toString())
