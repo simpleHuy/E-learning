@@ -143,7 +143,7 @@ const PaymentService = {
             // Kiểm tra mã giao dịch
             if (inputData["vnp_ResponseCode"] === "00") {
                 //console.log("Transaction success");
-                Thanh toán thành công
+                //Thanh toán thành công
                 const payment = new Payment({
                     userId: userId,
                     items: courses,
