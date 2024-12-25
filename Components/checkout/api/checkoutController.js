@@ -1,5 +1,5 @@
 const PaymentService = require("../domain/paymentService");
-
+const Payment = require("../../payment/data-access/PayModel");
 const checkoutController = {
     completeCheckout: async (req, res) => {
         const userId = req.user?.id; // Kiểm tra thông tin user trong session
@@ -11,6 +11,13 @@ const checkoutController = {
                     .status(400)
                     .json({ message: "No courses to process." });
             }
+            const payment = new Payment({
+                userId: userId,
+                items: courses,
+                total: totalPrice,
+                status: "pending",
+            });
+            await payment.save();
             if (paymentMethod === "vnpay") {
                 const rollbackurl = await PaymentService.vnPay(req, res);
                 // res.redirect(rollbackurl);

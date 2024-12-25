@@ -6,10 +6,11 @@ const Payment = require("../../payment/data-access/PayModel");
 const Cart = require("../.././cart/data-access/CartModel");
 const { console } = require("inspector");
 dotenv.config({ path: "config.env" });
+const mongoose = require("mongoose");
 const PaymentService = {
     vnPay: async (req, res) => {
         try {
-            const { totalPrice } = req.body;
+            const { totalPrice, courses } = req.body;
             const BASE_URL = process.env.BASE_URL;
             const tongtien = Math.round(totalPrice * 23500);
             const vnp_TmnCode = process.env.vnp_TmnCode;
@@ -30,7 +31,7 @@ const PaymentService = {
             const formattedExpire = expire.format("YYYYMMDDHHmmss");
             // thanh toan bang vnpay
             const vnp_TxnRef = Date.now().toString(); // Mã đơn hàng
-            const vnp_OrderInfo = "Pay";
+            const vnp_OrderInfo = req.user?.id;
             const vnp_OrderType = "billpayment";
             const vnp_Amount = tongtien * 100;
             const vnp_Locale = "vn";
@@ -111,6 +112,8 @@ const PaymentService = {
         }
     },
     vnpayPost: async (req, res) => {
+        const id = req.user?.id;
+        console.log("id", id);
         const vnp_HashSecret = process.env.vnp_HashSecret; // Secret key từ VNPay
         const inputData = req.query; // Lấy tham số từ URL callback
 
@@ -144,24 +147,23 @@ const PaymentService = {
             if (inputData["vnp_ResponseCode"] === "00") {
                 //console.log("Transaction success");
                 //Thanh toán thành công
-                const payment = new Payment({
-                    userId: userId,
-                    items: courses,
-                    total: courses.reduce(
-                        (sum, course) => sum + parseFloat(course.Price),
-                        0
-                    ),
-                    status: "paid",
-                });
-
-                await payment.save();
+                const payment = await Payment.findByIdAndUpdate(
+                    {
+                        userId: id,
+                    },
+                    {
+                        status: "paid",
+                    }
+                );
 
                 // Xóa các khóa học khỏi bảng Cart
                 await Cart.updateOne(
-                    { userId: userId },
+                    {
+                        userId: id,
+                    },
                     {
                         $pull: {
-                            items: { $in: courses.map((course) => course._id) },
+                            items: null,
                         },
                     }
                 );
