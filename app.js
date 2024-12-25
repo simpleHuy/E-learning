@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const hbs = require("hbs");
 const db = require("./config/database");
+const redisClient = require("./config/redis");
 const session = require("express-session");
 const flash = require("connect-flash");
 const dotenv = require("dotenv");
@@ -29,6 +30,7 @@ const Cart = require("./Components/cart/data-access/CartModel");
 const ReviewRouter = require("./Components/review/api/review");
 const app = express();
 db.connect();
+redisClient.connect();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -61,14 +63,14 @@ app.use(
         }),
     })
 );
-// Cấu hình Passport
+// Configure Passport
 app.use(passport.initialize());
 app.use(passport.session());
 hbs.registerHelper("json", function (context) {
     return JSON.stringify(context);
 });
 
-// Cấu hình flash messages
+// Configure flash messages
 app.use(flash());
 app.use((req, res, next) => {
     res.locals.successMessage = req.flash("successMessage");
@@ -78,10 +80,8 @@ app.use((req, res, next) => {
     res.locals.existMail = req.flash("existMail");
     next();
 });
-// Import các router mới
 
-
-// Thêm Router mới
+// Configure routes
 app.use("/complete-checkout", checkoutRouter);
 
 app.use((req, res, next) => {
