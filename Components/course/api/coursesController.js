@@ -1,5 +1,6 @@
 const CourseService = require("../domain/courseService");
 const { StatusCodes, getReasonPhrase } = require("http-status-codes");
+const redisClient = require("../../../config/redis");
 
 // Function to fetch and display courses with pagination
 const CourseController = {
@@ -18,8 +19,12 @@ const CourseController = {
                 order,
                 page
             );
+            // change params to string
+            const cacheKey = req.originalUrl;
+            await redisClient.set(cacheKey, JSON.stringify(CoursesData), {
+                EX: 60 * 60, // 1 hour
+            });
 
-            // Render the Handlebars template with pagination and courses data
             res.render("pages/courseslist", {
                 title: "Our Courses",
                 courses: CoursesData.courses,
@@ -42,12 +47,19 @@ const CourseController = {
         try {
             const CourseId = req.params.id;
             const isLoggedIn = false;
-            const { title, Course, relevantCourses } =
+            const { title, Course, RelevantCourses } =
                 await CourseService.getCourseDetail(CourseId);
+
+            await redisClient.set(
+                req.params.id,
+                JSON.stringify({ title, Course, RelevantCourses }),
+                { EX: 60 * 60 }
+            );
+
             return res.status(StatusCodes.OK).render("pages/CourseDetail", {
                 title: title,
                 Course: Course,
-                RelevantCourses: relevantCourses,
+                RelevantCourses: RelevantCourses,
             });
         } catch (error) {
             console.error("Error fetching course detail:", error); // Log error
@@ -60,7 +72,6 @@ const CourseController = {
     AddToCart: async (req, res) => {
         try {
             const { courseid } = req.body;
-            console.log("Received courseid:", courseid); // Log dữ liệu gửi từ client
             const result = await CourseService.AddToCart(courseid);
             if (!result) {
                 console.log("Course not found for id:", courseid);
@@ -68,7 +79,6 @@ const CourseController = {
                     .status(404)
                     .json({ success: false, message: "Course not found" });
             }
-            console.log("Course found:", result);
             res.status(200).json({
                 success: true,
                 message: "Added to cart",
@@ -98,6 +108,12 @@ const CourseController = {
                 order,
                 page
             );
+
+            // set parameters for key
+            const cacheKey = req.originalUrl;
+            await redisClient.set(cacheKey, JSON.stringify(CoursesData), {
+                EX: 60 * 60, // 1 hour
+            });
 
             return res.status(200).json(CoursesData);
         } catch (error) {

@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const ModuleModel = require("./ModuleModel");
 const TopicModel = require("./TopicModel");
 const SkillModel = require("./SkillModel");
+const algoliaClient = require("../../../config/algoliaSearch");
 
 const CoursesSchema = new mongoose.Schema({
     Title: {
@@ -81,30 +82,26 @@ CoursesSchema.methods.calcTotalTime = function () {
 };
 
 CoursesSchema.statics.GetAllRelevantCourses = async function (CourseId) {
-    // Lấy khóa học hiện tại
     const CurrentCourse = await this.findById(CourseId);
-    // Lấy các khóa học theo Topic
     const RelevantCoursesByTopic = await this.model("Courses").find({
-        Topic: CurrentCourse.Topic,  // Sử dụng `this.Topic` để lấy Topic của khóa học hiện tại
-        _id: { $ne: CurrentCourse._id },  // Đảm bảo không lấy chính khóa học này
+        Topic: CurrentCourse.Topic,
+        _id: { $ne: CurrentCourse._id },
     });
 
-    // Lấy các khóa học theo SkillGain
     const RelevantCoursesBySkill = await this.model("Courses").find({
-        SkillGain: { $in: CurrentCourse.SkillGain },  // Sử dụng `this.SkillGain` để lấy SkillGain của khóa học hiện tại
-        _id: { $ne: CurrentCourse._id },  // Đảm bảo không lấy chính khóa học này
+        SkillGain: { $in: CurrentCourse.SkillGain },
+        _id: { $ne: CurrentCourse._id },
     });
 
-    // Kết hợp các khóa học liên quan
     const allRelevantCourses = [
         ...RelevantCoursesByTopic,
         ...RelevantCoursesBySkill,
     ];
 
-    // Lọc các khóa học trùng lặp
     const uniqueRelevantCourses = allRelevantCourses.filter(
         (value, index, self) =>
-            index === self.findIndex((t) => t._id.toString() === value._id.toString())
+            index ===
+            self.findIndex((t) => t._id.toString() === value._id.toString())
     );
 
     return uniqueRelevantCourses;
@@ -112,48 +109,57 @@ CoursesSchema.statics.GetAllRelevantCourses = async function (CourseId) {
 
 CoursesSchema.statics.createCourseQuery = async function (filters) {
     const { search, topic, skill, level, price } = filters;
-    let query = {};
 
-    // Search filter
-    if (search) {
-        query.$or = [
-            { Title: { $regex: search, $options: "i" } },
-            { Description: { $regex: search, $options: "i" } },
-            { Lecturer: { $regex: search, $options: "i" } },
-            { Level: { $regex: search, $options: "i" } },
-        ];
-    }
+    let algoliaQuery = {
+        query: search || "", // Ensure query is initialized with search term or an empty string
+        filters: "", // Start with an empty filters string
+    };
 
     // Topic filter
     if (topic) {
-        topicArray = topic.split(",");
+        const topicArray = topic.split(",");
         const topics = await TopicModel.find({ Name: { $in: topicArray } });
-        query.Topic = { $in: topics.map((t) => t._id) };
+        const topicIds = topics.map((t) => t._id);
+        if (topicIds.length > 0) {
+            const topicFilter = topicIds.map((id) => `Topic:"${id}"`).join(" OR ");
+            algoliaQuery.filters += `(${topicFilter})`;
+        }
     }
 
     // Skill filter
     if (skill) {
-        skillArray = skill.split(",");
+        const skillArray = skill.split(",");
         const skills = await SkillModel.find({ Name: { $in: skillArray } });
-        query.SkillGain = { $in: skills.map((s) => s._id) };
+        const skillIds = skills.map((s) => s._id);
+        if (skillIds.length > 0) {
+            const skillFilter = skillIds.map((id) => `SkillGain:"${id}"`).join(" OR ");
+            if (algoliaQuery.filters) algoliaQuery.filters += " AND ";
+            algoliaQuery.filters += `(${skillFilter})`;
+        }
     }
 
     // Level filter
     if (level) {
-        levelArray = level.split(",");
-        query.Level = { $in: levelArray };
+        const levelArray = level.split(",");
+        if (levelArray.length > 0) {
+            const levelFilter = levelArray.map((lvl) => `Level:"${lvl}"`).join(" OR ");
+            if (algoliaQuery.filters) {
+                algoliaQuery.filters += " AND ";
+            }
+            algoliaQuery.filters += `(${levelFilter})`;
+        }
     }
-
     // Price filter
     if (price) {
         const [minPrice, maxPrice] = price.split(",").map((p) => parseInt(p));
-        query.Price = {
-            $gte: Math.min(minPrice, maxPrice),
-            $lte: Math.max(minPrice, maxPrice),
-        };
+        const priceFilter = `Price >= ${Math.min(minPrice, maxPrice)} AND Price <= ${Math.max(minPrice, maxPrice)}`;
+        if (algoliaQuery.filters) {
+            algoliaQuery.filters += " AND ";
+        }
+        algoliaQuery.filters += priceFilter;
     }
 
-    return query;
+    return algoliaQuery;
 };
 
 CoursesSchema.statics.GetCoursesByFilter = async function (
@@ -177,24 +183,30 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
     });
 
     const validSortFields = ["Title", "Duration", "Price"];
-    let sortOption = {};
-    if(sort){
-        if (validSortFields.includes(sort)) {
-            sortOption[sort] = order === "desc" ? -1 : 1;
-        } else {
-            sortOption["Title"] = 1; // Default sort by Title ascending
-        }
+    if (sort && validSortFields.includes(sort)) {
+        query.sortBy = `${sort}:${order === "desc" ? "desc" : "asc"}`;
     }
-    
-    //pagging
-    const startIndex = (page - 1) * ITEMS_PER_PAGE;
 
-    const courses = await this.find(query)
-        .sort(sortOption)
-        .skip(startIndex)
-        .limit(ITEMS_PER_PAGE);
-    const totalCourses = await this.countDocuments(query);
-    const totalPages = Math.ceil(totalCourses / ITEMS_PER_PAGE);
+    //pagging
+    query.page = page - 1;
+    query.hitsPerPage = ITEMS_PER_PAGE;
+
+    const algoliaResult = await algoliaClient.search({
+        requests:[
+            {
+                indexName: "course",
+                query: query.query || "",
+                filters: query.filters || "",
+                page: query.page || 0,
+                hitsPerPage: query.hitsPerPage || 0,
+                sortBy: query.sortBy || "",
+            }
+        ]
+    });
+
+    const courses = algoliaResult.results[0].hits;
+    const totalCourses = algoliaResult.results[0].nbHits;
+    const totalPages = algoliaResult.results[0].nbPages;
 
     return {
         courses,
