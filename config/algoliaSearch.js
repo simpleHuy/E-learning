@@ -1,5 +1,7 @@
-const { searchClient } = require('algoliasearch');  // Access searchClient
+const { searchClient } = require('algoliasearch');
+const dotenv = require("dotenv");
+dotenv.config({ path: "config.env" });
 
-const client = searchClient('WAB3KVHFN2', '8d823068e91a2d9c9a9ee2dcc71f7463');
+const client = searchClient(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY);
 
 module.exports = client;
