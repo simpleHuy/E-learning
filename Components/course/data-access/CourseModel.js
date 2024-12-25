@@ -190,7 +190,6 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
     //pagging
     query.page = page - 1;
     query.hitsPerPage = ITEMS_PER_PAGE;
-    console.log(query);
 
     const algoliaResult = await algoliaClient.search({
         requests:[

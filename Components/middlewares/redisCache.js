@@ -2,7 +2,7 @@ const redisClient = require('../../config/redis');
 
 const redisCache = {
     CourseListCache: async (req, res, next) => {
-        const cacheKey = req.params.queryString || '';
+        const cacheKey = req.originalUrl.split('?')[1];
         try {
             const cachedData = await redisClient.get(cacheKey);
             if (cachedData) {
@@ -18,7 +18,7 @@ const redisCache = {
     },
 
     CourseDetailCache: async (req, res, next) => {
-        const cacheKey = req.originalUrl;
+        const cacheKey = req.params.id;
         try {
             const cachedData = await redisClient.get(cacheKey);
             if (cachedData) {
@@ -35,7 +35,7 @@ const redisCache = {
     },
 
     CourseRenderCache: async (req, res, next) => {
-        const cacheKey = req.params.queryString || '';
+        const cacheKey = req.originalUrl.split('?')[1];
         try {
             const cachedData = await redisClient.get(cacheKey);
             if (cachedData) {

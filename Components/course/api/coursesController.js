@@ -20,9 +20,9 @@ const CourseController = {
                 page
             );
             // change params to string
-            
+            const cacheKey = req.originalUrl.split('?')[1];
             await redisClient.set(
-                req.params.queryString || '',
+                cacheKey,
                 JSON.stringify(CoursesData),
                 {
                     EX: 60 * 60, // 1 hour
@@ -55,7 +55,7 @@ const CourseController = {
                 await CourseService.getCourseDetail(CourseId);
 
             await redisClient.set(
-                req.originalUrl,
+                req.params.id,
                 JSON.stringify({ title, Course, RelevantCourses }),
                 { EX: 60 * 60 }
             );
@@ -114,8 +114,9 @@ const CourseController = {
             );
 
             // set parameters for key
+            const cacheKey = req.originalUrl.split('?')[1];
             await redisClient.set(
-                req.params.queryString || '',
+                cacheKey,
                 JSON.stringify(CoursesData),
                 {
                     EX: 60 * 60, // 1 hour
