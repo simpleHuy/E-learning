@@ -20,14 +20,10 @@ const CourseController = {
                 page
             );
             // change params to string
-            const cacheKey = req.originalUrl.split('?')[1];
-            await redisClient.set(
-                cacheKey,
-                JSON.stringify(CoursesData),
-                {
-                    EX: 60 * 60, // 1 hour
-                }
-            );
+            const cacheKey = req.originalUrl;
+            await redisClient.set(cacheKey, JSON.stringify(CoursesData), {
+                EX: 60 * 60, // 1 hour
+            });
 
             res.render("pages/courseslist", {
                 title: "Our Courses",
@@ -114,14 +110,10 @@ const CourseController = {
             );
 
             // set parameters for key
-            const cacheKey = req.originalUrl.split('?')[1];
-            await redisClient.set(
-                cacheKey,
-                JSON.stringify(CoursesData),
-                {
-                    EX: 60 * 60, // 1 hour
-                }
-            );
+            const cacheKey = req.originalUrl;
+            await redisClient.set(cacheKey, JSON.stringify(CoursesData), {
+                EX: 60 * 60, // 1 hour
+            });
 
             return res.status(200).json(CoursesData);
         } catch (error) {
