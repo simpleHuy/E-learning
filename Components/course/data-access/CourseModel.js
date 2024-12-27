@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const ModuleModel = require("./ModuleModel");
 const TopicModel = require("./TopicModel");
 const SkillModel = require("./SkillModel");
-const algoliaClient = require("../../../config/algoliaSearch");
+const algoliaIndex = require("../../../config/algoliaSearch");
 
 const CoursesSchema = new mongoose.Schema({
     Title: {
@@ -121,7 +121,9 @@ CoursesSchema.statics.createCourseQuery = async function (filters) {
         const topics = await TopicModel.find({ Name: { $in: topicArray } });
         const topicIds = topics.map((t) => t._id);
         if (topicIds.length > 0) {
-            const topicFilter = topicIds.map((id) => `Topic:"${id}"`).join(" OR ");
+            const topicFilter = topicIds
+                .map((id) => `Topic:"${id}"`)
+                .join(" OR ");
             algoliaQuery.filters += `(${topicFilter})`;
         }
     }
@@ -132,7 +134,9 @@ CoursesSchema.statics.createCourseQuery = async function (filters) {
         const skills = await SkillModel.find({ Name: { $in: skillArray } });
         const skillIds = skills.map((s) => s._id);
         if (skillIds.length > 0) {
-            const skillFilter = skillIds.map((id) => `SkillGain:"${id}"`).join(" OR ");
+            const skillFilter = skillIds
+                .map((id) => `SkillGain:"${id}"`)
+                .join(" OR ");
             if (algoliaQuery.filters) algoliaQuery.filters += " AND ";
             algoliaQuery.filters += `(${skillFilter})`;
         }
@@ -142,7 +146,9 @@ CoursesSchema.statics.createCourseQuery = async function (filters) {
     if (level) {
         const levelArray = level.split(",");
         if (levelArray.length > 0) {
-            const levelFilter = levelArray.map((lvl) => `Level:"${lvl}"`).join(" OR ");
+            const levelFilter = levelArray
+                .map((lvl) => `Level:"${lvl}"`)
+                .join(" OR ");
             if (algoliaQuery.filters) {
                 algoliaQuery.filters += " AND ";
             }
@@ -152,7 +158,10 @@ CoursesSchema.statics.createCourseQuery = async function (filters) {
     // Price filter
     if (price) {
         const [minPrice, maxPrice] = price.split(",").map((p) => parseInt(p));
-        const priceFilter = `Price >= ${Math.min(minPrice, maxPrice)} AND Price <= ${Math.max(minPrice, maxPrice)}`;
+        const priceFilter = `Price >= ${Math.min(
+            minPrice,
+            maxPrice
+        )} AND Price <= ${Math.max(minPrice, maxPrice)}`;
         if (algoliaQuery.filters) {
             algoliaQuery.filters += " AND ";
         }
@@ -183,36 +192,27 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
     });
 
     const validSortFields = ["Title", "Duration", "Price"];
+    if (sort && validSortFields.includes(sort)) {
+        const ranking = `${order}(${sort})`;
+        await algoliaIndex.setSettings({
+            customRanking: [ranking],
+        });
+    } else {
+        await algoliaIndex.setSettings({
+            customRanking: [],
+        });
+    }
 
     //pagging
     query.page = page - 1;
     query.hitsPerPage = ITEMS_PER_PAGE;
-
-    const algoliaResult = await algoliaClient.search({
-        requests:[
-            {
-                indexName: "course",
-                query: query.query || "",
-                filters: query.filters || "",
-                page: query.page || 0,
-                hitsPerPage: query.hitsPerPage || 0,
-            }
-        ]
+    const algoliaResult = await algoliaIndex.search(query.query || "", {
+        filters: query.filters || "",
+        page: query.page || 0,
+        hitsPerPage: query.hitsPerPage || 6,
     });
-
-    const courses = algoliaResult.results[0].hits;
-    if (sort && validSortFields.includes(sort)) {
-        courses.sort((a, b) => {
-            if (order === "asc") {
-                return a[sort] - b[sort];
-            } else {
-                return b[sort] - a[sort];
-            }
-        });
-    }
-
-    const totalCourses = algoliaResult.results[0].nbHits;
-    const totalPages = algoliaResult.results[0].nbPages;
+    const courses = algoliaResult.hits;
+    const totalPages = algoliaResult.nbPages;
 
     return {
         courses,
