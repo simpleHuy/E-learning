@@ -183,9 +183,6 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
     });
 
     const validSortFields = ["Title", "Duration", "Price"];
-    if (sort && validSortFields.includes(sort)) {
-        query.sortBy = `${sort}:${order === "desc" ? "desc" : "asc"}`;
-    }
 
     //pagging
     query.page = page - 1;
@@ -199,12 +196,21 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
                 filters: query.filters || "",
                 page: query.page || 0,
                 hitsPerPage: query.hitsPerPage || 0,
-                sortBy: query.sortBy || "",
             }
         ]
     });
 
     const courses = algoliaResult.results[0].hits;
+    if (sort && validSortFields.includes(sort)) {
+        courses.sort((a, b) => {
+            if (order === "asc") {
+                return a[sort] - b[sort];
+            } else {
+                return b[sort] - a[sort];
+            }
+        });
+    }
+
     const totalCourses = algoliaResult.results[0].nbHits;
     const totalPages = algoliaResult.results[0].nbPages;
 
