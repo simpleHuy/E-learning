@@ -38,8 +38,6 @@ function addToCart(CourseId) {
             if (xhr.status === 200) {
                 const response = JSON.parse(xhr.responseText);
                 if (response.success) {
-                    console.log("Added to cart:", response.course);
-                    console.log("Current cart:", cart);
                     cart.push(response.course);
                     saveCartToLocalStorage();
                     const cartCount = document

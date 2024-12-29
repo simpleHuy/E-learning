@@ -425,5 +425,4 @@ window.addEventListener("DOMContentLoaded", (event) => {
         selectedItems.price = price.split(",");
         updateTags(document.getElementById("price-tags"), "price");
     }
-
 });
