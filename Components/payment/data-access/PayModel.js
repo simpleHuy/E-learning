@@ -11,16 +11,16 @@ const paymentSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Courses",
             required: true,
-            status: {
-                type: String,
-                enum: ["paid", "pending"],
-                default: "pending", // New courses added to payment are initially "pending"
-            },
         },
     ],
     total: {
         type: Number,
         required: true,
+    },
+    status: {
+        type: String,
+        enum: ["paid", "pending"],
+        default: "pending", // New courses added to payment are initially "pending"
     },
     createdAt: {
         type: Date,
