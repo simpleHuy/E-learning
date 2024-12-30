@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const ModuleModel = require("./ModuleModel");
 const TopicModel = require("./TopicModel");
 const SkillModel = require("./SkillModel");
-const algoliaIndex = require("../../../config/algoliaSearch");
+const algoliaClient = require("../../../config/algoliaSearch");
 
 const CoursesSchema = new mongoose.Schema({
     Title: {
@@ -192,27 +192,30 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
     });
 
     const validSortFields = ["Title", "Duration", "Price"];
+    let indexName = "course";
+
+    // to lower case sort
     if (sort && validSortFields.includes(sort)) {
-        const ranking = `${order}(${sort})`;
-        await algoliaIndex.setSettings({
-            customRanking: [ranking],
-        });
-    } else {
-        await algoliaIndex.setSettings({
-            customRanking: [],
-        });
+        indexName = `course_${sort.toLowerCase()}_${order}`;
     }
 
-    //pagging
-    query.page = page - 1;
+    query.page = Math.max(0, page - 1);
     query.hitsPerPage = ITEMS_PER_PAGE;
-    const algoliaResult = await algoliaIndex.search(query.query || "", {
-        filters: query.filters || "",
-        page: query.page || 0,
-        hitsPerPage: query.hitsPerPage || 6,
+
+    const algoliaResult = await algoliaClient.search({
+        requests: [
+            {
+                indexName: indexName,
+                query: query.query || "",
+                filters: query.filters || "",
+                page: query.page || 0,
+                hitsPerPage: query.hitsPerPage || 6,
+            },
+        ],
     });
-    const courses = algoliaResult.hits;
-    const totalPages = algoliaResult.nbPages;
+
+    const courses = algoliaResult.results[0].hits;
+    const totalPages = algoliaResult.results[0].nbPages;
 
     return {
         courses,
