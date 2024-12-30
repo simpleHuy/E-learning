@@ -53,3 +53,7 @@ hbs.registerHelper("isEmpty", function (array, options) {
         ? options.fn(this)
         : options.inverse(this);
 });
+
+hbs.registerHelper("getThumbnail", function (imgs) {
+    return imgs[0];
+});
