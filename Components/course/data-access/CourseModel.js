@@ -192,12 +192,11 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
     });
 
     const validSortFields = ["Title", "Duration", "Price"];
-    let indexName = "multiImage";
+    let indexName = "course";
 
-    // to lower case sort
-    // if (sort && validSortFields.includes(sort)) {
-    //     indexName = `course_${sort.toLowerCase()}_${order}`;
-    // }
+    if (sort && validSortFields.includes(sort)) {
+        indexName = `course_${sort.toLowerCase()}_${order}`;
+    }
 
     query.page = Math.max(0, page - 1);
     query.hitsPerPage = ITEMS_PER_PAGE;
@@ -215,7 +214,6 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
     });
 
     const courses = algoliaResult.results[0].hits;
-    console.log(courses[0].Img[0]);
     const totalPages = algoliaResult.results[0].nbPages;
 
     return {
