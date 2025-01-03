@@ -121,7 +121,9 @@ CoursesSchema.statics.createCourseQuery = async function (filters) {
         const topics = await TopicModel.find({ Name: { $in: topicArray } });
         const topicIds = topics.map((t) => t._id);
         if (topicIds.length > 0) {
-            const topicFilter = topicIds.map((id) => `Topic:"${id}"`).join(" OR ");
+            const topicFilter = topicIds
+                .map((id) => `Topic:"${id}"`)
+                .join(" OR ");
             algoliaQuery.filters += `(${topicFilter})`;
         }
     }
@@ -132,7 +134,9 @@ CoursesSchema.statics.createCourseQuery = async function (filters) {
         const skills = await SkillModel.find({ Name: { $in: skillArray } });
         const skillIds = skills.map((s) => s._id);
         if (skillIds.length > 0) {
-            const skillFilter = skillIds.map((id) => `SkillGain:"${id}"`).join(" OR ");
+            const skillFilter = skillIds
+                .map((id) => `SkillGain:"${id}"`)
+                .join(" OR ");
             if (algoliaQuery.filters) algoliaQuery.filters += " AND ";
             algoliaQuery.filters += `(${skillFilter})`;
         }
@@ -142,7 +146,9 @@ CoursesSchema.statics.createCourseQuery = async function (filters) {
     if (level) {
         const levelArray = level.split(",");
         if (levelArray.length > 0) {
-            const levelFilter = levelArray.map((lvl) => `Level:"${lvl}"`).join(" OR ");
+            const levelFilter = levelArray
+                .map((lvl) => `Level:"${lvl}"`)
+                .join(" OR ");
             if (algoliaQuery.filters) {
                 algoliaQuery.filters += " AND ";
             }
@@ -152,7 +158,10 @@ CoursesSchema.statics.createCourseQuery = async function (filters) {
     // Price filter
     if (price) {
         const [minPrice, maxPrice] = price.split(",").map((p) => parseInt(p));
-        const priceFilter = `Price >= ${Math.min(minPrice, maxPrice)} AND Price <= ${Math.max(minPrice, maxPrice)}`;
+        const priceFilter = `Price >= ${Math.min(
+            minPrice,
+            maxPrice
+        )} AND Price <= ${Math.max(minPrice, maxPrice)}`;
         if (algoliaQuery.filters) {
             algoliaQuery.filters += " AND ";
         }
@@ -183,29 +192,28 @@ CoursesSchema.statics.GetCoursesByFilter = async function (
     });
 
     const validSortFields = ["Title", "Duration", "Price"];
+    let indexName = "course";
+
     if (sort && validSortFields.includes(sort)) {
-        query.sortBy = `${sort}:${order === "desc" ? "desc" : "asc"}`;
+        indexName = `course_${sort.toLowerCase()}_${order}`;
     }
 
-    //pagging
-    query.page = page - 1;
+    query.page = Math.max(0, page - 1);
     query.hitsPerPage = ITEMS_PER_PAGE;
 
     const algoliaResult = await algoliaClient.search({
-        requests:[
+        requests: [
             {
-                indexName: "course",
+                indexName: indexName,
                 query: query.query || "",
                 filters: query.filters || "",
                 page: query.page || 0,
-                hitsPerPage: query.hitsPerPage || 0,
-                sortBy: query.sortBy || "",
-            }
-        ]
+                hitsPerPage: query.hitsPerPage || 6,
+            },
+        ],
     });
 
     const courses = algoliaResult.results[0].hits;
-    const totalCourses = algoliaResult.results[0].nbHits;
     const totalPages = algoliaResult.results[0].nbPages;
 
     return {

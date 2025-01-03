@@ -64,7 +64,7 @@ function updateCoursesContainer(courses) {
             (course) => `
             <a href="/courses/${course._id}">
             <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
-                <img src="${course.Img}" alt="${course.Title}" class="w-full h-72 object-cover" />
+                <img src="${course.Img[0]}" alt="${course.Title}" class="w-full h-72 object-cover" />
                 <div class="p-6 flex-grow">
                     <div class="flex items-center text-sm text-gray-500 mb-2">
                         <div class="mr-2 border border-slate-300 rounded-md inline-block py-0.5 px-2">${course.Duration} Weeks</div> | 

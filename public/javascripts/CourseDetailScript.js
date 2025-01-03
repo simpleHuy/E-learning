@@ -35,6 +35,23 @@ function isSectionOverflowing(section) {
     return section.scrollHeight > section.clientHeight;
 }
 
+let slideIndex = 0;
+showSlides();
+
+function showSlides() {
+    let i;
+    let slides = document.getElementsByClassName("mySlides");
+    for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+    }
+    slideIndex++;
+    if (slideIndex > slides.length) {
+        slideIndex = 1;
+    }
+    slides[slideIndex - 1].style.display = "block";
+    setTimeout(showSlides, 6000); // Change image every 2 seconds
+}
+
 // Check if the course container is overflowing
 const courseContainer = document.getElementById("CourseContainer");
 const isOverflowing = isSectionOverflowing(courseContainer);
@@ -42,6 +59,7 @@ if (!isOverflowing) {
     const toggleButton = document.getElementById("ShowAllBtn");
     if (toggleButton) toggleButton.style.display = "none";
 }
+
 document.addEventListener("DOMContentLoaded", () => {
     const reviewsContainer = document.getElementById("reviews-container");
     const pagination = document.getElementById("pagination");
