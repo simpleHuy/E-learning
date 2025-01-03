@@ -126,7 +126,7 @@ function loadCart(isLoggedIn) {
                     localStorage.setItem("cart", JSON.stringify(cart)); // Lưu vào localStorage
                     renderCart();
                 } else {
-                    alert("Failed to load cart from server.");
+                    console.log("Failed to load cart from server.");
                 }
             }
         };
@@ -161,10 +161,10 @@ function syncCartToServer() {
                         console.log(e);
                     }
                     // Xóa giỏ hàng cục bộ sau khi đồng bộ
-                    alert("Cart synced with server!");
+                    console.log("Cart synced with server!");
                     loadCart(true); // Tải lại giỏ hàng từ server
                 } else {
-                    alert("Failed to sync cart with server.");
+                    console.log("Failed to sync cart with server.");
                 }
             }
         };
@@ -268,7 +268,7 @@ function removeFromCart(courseId) {
                     localStorage.setItem("cart", JSON.stringify(cart));
                     renderCart();
                 } else {
-                    alert("Failed to remove item from cart.");
+                    console.log("Failed to remove item from cart.");
                 }
             }
         };

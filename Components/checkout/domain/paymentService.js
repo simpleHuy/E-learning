@@ -112,8 +112,6 @@ const PaymentService = {
         }
     },
     vnpayPost: async (req, res) => {
-        const id = req.user?.id;
-        console.log("id", id);
         const vnp_HashSecret = process.env.vnp_HashSecret; // Secret key từ VNPay
         const inputData = req.query; // Lấy tham số từ URL callback
 
@@ -147,26 +145,14 @@ const PaymentService = {
             if (inputData["vnp_ResponseCode"] === "00") {
                 //console.log("Transaction success");
                 //Thanh toán thành công
-                const payment = await Payment.findByIdAndUpdate(
-                    {
-                        userId: id,
-                    },
-                    {
-                        status: "paid",
-                    }
-                );
-
+                const id = inputData["vnp_OrderInfo"];
+                const payment = await Payment.findOne({ userId: id });
+                payment.status = "paid";
+                await payment.save();
                 // Xóa các khóa học khỏi bảng Cart
-                await Cart.updateOne(
-                    {
-                        userId: id,
-                    },
-                    {
-                        $pull: {
-                            items: null,
-                        },
-                    }
-                );
+                const cart = await Cart.findOne({ userId: id });
+                cart.items = [];
+                await cart.save();
                 return res.render("pages/paycourses", {
                     title: "Payment",
                     isLoggedIn: true,

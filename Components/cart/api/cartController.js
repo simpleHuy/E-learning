@@ -29,6 +29,7 @@ const cartController = {
     syncCart: async (req, res) => {
         const { cart } = req.body;
         await CartService.syncCart(req.user.id, cart);
+        res.status(200).json({ success: true });
     },
 
     removeCourse: async (req, res) => {
