@@ -1,4 +1,5 @@
 const User = require("../../auth/data-access/UserModel");
+const profileService = require("../domain/profileService");
 const bcrypt = require("bcrypt");
 
 const ProfileController = {
@@ -25,33 +26,16 @@ const ProfileController = {
 
     UpdateProfile: async (req, res) => {
         try {
-            const userId = req.user.id;
-            console.log("Received data in backend:", req.body);
-
-            const { name, email, address, contact, password } = req.body;
-
-            const updatedData = {};
-
-            if (name) updatedData.name = name;
-            if (email) updatedData.email = email;
-            if (address) updatedData.address = address;
-            if (contact) updatedData.contact = contact;
-            const newpass = await bcrypt.hash(password, 10);
-            if (password) updatedData.password = newpass;
-
-            console.log("Updated Data:", updatedData);
-
-            const updatedUser = await User.findByIdAndUpdate(
-                userId,
-                updatedData,
-                { new: true }
-            );
-
-            if (!updatedUser) {
-                return res
-                    .status(404)
-                    .json({ success: false, message: "User not found" });
+            if (req.file) {
+                console.log("File:", req.file);
+            } else {
+                console.log("No file uploaded");
             }
+            await profileService.updateUserProfile(req, res);
+            res.status(200).json({
+                success: true,
+                message: "Profile updated successfully",
+            });
         } catch (error) {
             console.error(error);
         }

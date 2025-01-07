@@ -124,9 +124,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 (review) => `
                 <div class="bg-white p-4 rounded-lg shadow-md">
                     <div class="flex items-center gap-4 mb-2">
-                        <img src="/assets/images/Avatar01.png" alt="${
-                            review.User.username
-                        }" class="w-12 h-12 rounded-full border-2 border-blue-500">
+                        <img src="${review.User.Img}" alt="${
+                    review.User.username
+                }" class="w-12 h-12 rounded-full border-2 border-blue-500">
                         <div>
                             <p class="font-semibold">${review.User.username}</p>
                             <p class="text-gray-500 text-sm">${new Date(
