@@ -208,7 +208,7 @@ function renderCart() {
         cartContainer.innerHTML += `
             <div class="flex items-start border-t pt-4 mb-4 px-4">
                 <!-- Hình ảnh khóa học -->
-                <img src="${course.Img}" alt="${course.Title}" class="w-24 h-24 rounded object-cover mr-4">
+                <img src="${course.Img[0]}" alt="${course.Title}" class="w-24 h-24 rounded object-cover mr-4">
                 
                 <!-- Thông tin khóa học -->
                 <div class="flex-1">
