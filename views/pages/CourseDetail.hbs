@@ -227,7 +227,7 @@
         {{#each RelevantCourses}}
         <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col cursor-pointer" Name="Course"
             onclick="window.location.href = `./courses/{{this._id}}`;">
-            <img src="{{this.Img}}" alt="{{this.Title}}" class="w-full h-72 object-cover" />
+            <img src="{{getThumbnail this.Img}}" alt="{{this.Title}}" class="w-full h-72 object-cover" />
             <div class="p-4 flex-grow">
                 <div class="flex items-center text-sm text-gray-500 mb-2">
                     <div class="mr-1 border border-slate-300 rounded-md inline-block py-0.5 px-2">{{this.Duration}} Weeks</div> |
