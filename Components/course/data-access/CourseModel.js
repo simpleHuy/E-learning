@@ -26,7 +26,7 @@ const CoursesSchema = new mongoose.Schema({
         required: true,
     },
     Img: {
-        type: String,
+        type: Array,
         required: true,
     },
     Price: {
