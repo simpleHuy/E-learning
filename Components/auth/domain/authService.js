@@ -139,8 +139,8 @@ const UserService = {
                 expiresIn: "1h",
             });
             const url = process.env.BASE_URL
-                ? process.env.BASE_URL + `verify/?token=${token}`
-                : `http://localhost:3000/verify/?token=${token}`;
+                ? process.env.BASE_URL + `reset-password/?token=${token}`
+                : `http://localhost:3000/reset-password/?token=${token}`;
             const mailOptions = {
                 from: process.env.EMAIL,
                 to: user.email,
