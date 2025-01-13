@@ -8,7 +8,7 @@ const { console } = require("inspector");
 dotenv.config({ path: "config.env" });
 const mongoose = require("mongoose");
 const PaymentService = {
-    vnPay: async (req, res) => {
+    vnPay: async (req, res, payment) => {
         try {
             const { totalPrice, courses } = req.body;
             const BASE_URL = process.env.BASE_URL
@@ -33,7 +33,7 @@ const PaymentService = {
             const formattedExpire = expire.format("YYYYMMDDHHmmss");
             // thanh toan bang vnpay
             const vnp_TxnRef = Date.now().toString(); // Mã đơn hàng
-            const vnp_OrderInfo = req.user?.id;
+            const vnp_OrderInfo = payment._id;
             const vnp_OrderType = "billpayment";
             const vnp_Amount = tongtien * 100;
             const vnp_Locale = "vn";
@@ -140,19 +140,29 @@ const PaymentService = {
             .createHmac("sha512", vnp_HashSecret)
             .update(hashdata)
             .digest("hex");
+        console.log("secureHash", secureHash);
 
         // Kiểm tra chữ ký
         if (secureHash === vnp_SecureHash) {
             // Kiểm tra mã giao dịch
-            if (inputData["vnp_ResponseCode"] === "00") {
-                //console.log("Transaction success");
+            if (inputData["vnp_ResponseCode"] == "00") {
+                console.log("Transaction success");
                 //Thanh toán thành công
                 const id = inputData["vnp_OrderInfo"];
-                const payment = await Payment.findOne({ userId: id });
-                payment.status = "paid";
-                await payment.save();
+                const payment = await Payment.findOne({ _id: id });
+                // const newPayment = {
+                //     userId: id,
+                //     items: payment.items,
+                //     total: payment.total,
+                //     status: "paid",
+                // };
+                // await Payment.deleteOne({ userId: id });
+                if (payment) {
+                    payment.status = "paid";
+                    await payment.save();
+                }
                 // Xóa các khóa học khỏi bảng Cart
-                const cart = await Cart.findOne({ userId: id });
+                const cart = await Cart.findOne({ userId: payment.userId });
                 cart.items = [];
                 await cart.save();
                 return res.render("pages/paycourses", {
@@ -168,6 +178,7 @@ const PaymentService = {
                 // Thực hiện cập nhật trạng thái đơn hàng trong DB
             } else {
                 // Thanh toán thất bại
+                console.log("Transaction failed");
                 return res.render("pages/paycourses", {
                     title: "Payment",
                     isLoggedIn: true,
@@ -181,6 +192,7 @@ const PaymentService = {
             }
         } else {
             // Chữ ký không hợp lệ
+            console.log("Invalid signature");
             return res.render("pages/paycourses", {
                 title: "Payment",
                 isLoggedIn: true,

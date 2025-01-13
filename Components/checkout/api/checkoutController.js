@@ -17,9 +17,14 @@ const checkoutController = {
                 total: totalPrice,
                 status: "pending",
             });
+            console.log("payment", payment._id);
             await payment.save();
             if (paymentMethod === "vnpay") {
-                const rollbackurl = await PaymentService.vnPay(req, res);
+                const rollbackurl = await PaymentService.vnPay(
+                    req,
+                    res,
+                    payment
+                );
                 // res.redirect(rollbackurl);
                 res.status(200).json({ rollbackurl });
             }
@@ -58,6 +63,7 @@ const checkoutController = {
     },
     vnpayPost: (req, res) => {
         try {
+            console.log("vnpayPost");
             PaymentService.vnpayPost(req, res);
         } catch (error) {
             console.error("Error in vnpayPost:", error);
