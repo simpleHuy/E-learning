@@ -41,7 +41,7 @@ const UserService = {
                 expiresIn: "1h",
             });
             const url = process.env.BASE_URL
-                ? process.env.BASE_URL + `/verify/?token=${token}`
+                ? process.env.BASE_URL + `verify/?token=${token}`
                 : `http://localhost:3000/verify/?token=${token}`;
             const mailOptions = {
                 from: process.env.EMAIL,
@@ -139,7 +139,7 @@ const UserService = {
                 expiresIn: "1h",
             });
             const url = process.env.BASE_URL
-                ? process.env.BASE_URL + `/verify/?token=${token}`
+                ? process.env.BASE_URL + `verify/?token=${token}`
                 : `http://localhost:3000/verify/?token=${token}`;
             const mailOptions = {
                 from: process.env.EMAIL,
