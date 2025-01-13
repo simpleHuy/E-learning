@@ -78,36 +78,36 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
     const commentInput = document.getElementById("Comment");
-
-    const submitReview = document.getElementById("submit-review");
-    submitReview.addEventListener("click", function () {
-        const comment = commentInput.value.trim();
-        if (comment) {
-            fetch("/reviews", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    User: user.id,
-                    Course: Course._id,
-                    Comment: comment,
-                }),
-            })
-                .then(function (response) {
-                    if (response.ok) {
-                        commentInput.value = "";
-                        fetchReviews();
-                    } else {
-                        alert("Failed to post review");
-                    }
+    if (isLoggedIn) {
+        const submitReview = document.getElementById("submit-review");
+        submitReview.addEventListener("click", function () {
+            const comment = commentInput.value.trim();
+            if (comment) {
+                fetch("/reviews", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        User: user.id,
+                        Course: Course._id,
+                        Comment: comment,
+                    }),
                 })
-                .catch(function (error) {
-                    console.error("Error posting review:", error);
-                });
-        }
-    });
-
+                    .then(function (response) {
+                        if (response.ok) {
+                            commentInput.value = "";
+                            fetchReviews();
+                        } else {
+                            alert("Failed to post review");
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error("Error posting review:", error);
+                    });
+            }
+        });
+    }
     // Render reviews
     function renderReviews(reviews) {
         if (reviews.length === 0) {
