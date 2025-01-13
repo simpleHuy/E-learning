@@ -40,7 +40,9 @@ const UserService = {
             const token = jwt.sign({ id: user.email }, process.env.SECRET_KEY, {
                 expiresIn: "1h",
             });
-            const url = `http://localhost:3000/verify/?token=${token}`;
+            const url = process.env.BASE_URL
+                ? process.env.BASE_URL + `/verify/?token=${token}`
+                : `http://localhost:3000/verify/?token=${token}`;
             const mailOptions = {
                 from: process.env.EMAIL,
                 to: user.email,
@@ -136,7 +138,9 @@ const UserService = {
             const token = jwt.sign({ id: user.email }, process.env.SECRET_KEY, {
                 expiresIn: "1h",
             });
-            const url = `http://localhost:3000/reset-password/?token=${token}`;
+            const url = process.env.BASE_URL
+                ? process.env.BASE_URL + `/verify/?token=${token}`
+                : `http://localhost:3000/verify/?token=${token}`;
             const mailOptions = {
                 from: process.env.EMAIL,
                 to: user.email,

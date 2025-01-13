@@ -11,7 +11,9 @@ const PaymentService = {
     vnPay: async (req, res) => {
         try {
             const { totalPrice, courses } = req.body;
-            const BASE_URL = process.env.BASE_URL;
+            const BASE_URL = process.env.BASE_URL
+                ? process.env.BASE_URL
+                : "http://localhost:3000/";
             const tongtien = Math.round(totalPrice * 23500);
             const vnp_TmnCode = process.env.vnp_TmnCode;
             const vnp_HashSecret = process.env.vnp_HashSecret;
