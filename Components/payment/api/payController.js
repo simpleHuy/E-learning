@@ -5,54 +5,55 @@ const paymentController = {
     getPayment: async (req, res) => {
         try {
             if (req.session.isLoggedIn) {
-                // Lấy dữ liệu thanh toán từ database
-                const cart = await CartService.GetCartByUserId(req.user.id); 
-                if (!cart || cart.items.length === 0) {
-                    return res.render("pages/paycourses", {
-                        title: "Payment",
-                        isLoggedIn: true,
-                        paidCourses: [], // Giỏ hàng trống
-                        total: 0,
+                // Check if course details are passed as query parameters
+                const { courseId, title, price } = req.query;
+    
+                let paidCourses = [];
+                let total = 0;
+    
+                if (courseId && title && price) {
+                    // If course details are passed, add them to paidCourses
+                    const discountPrice = parseFloat(price); // Assuming no discount for simplicity
+                    paidCourses.push({
+                        _id: courseId,
+                        Title: title,
+                        discountPrice: discountPrice.toFixed(2),
+                        Price: discountPrice.toFixed(2) // Assuming no discount for simplicity
                     });
+                    total = discountPrice;
+                } else {
+                    // Otherwise, get the cart from the database
+                    const cart = await CartService.GetCartByUserId(req.user.id);
+                    if (cart && cart.items.length > 0) {
+                        // Calculate total price with discount
+                        total = cart.items.reduce((sum, course) => {
+                            const discountPrice = course.Price - course.Price * (course.Sale / 100);
+                            return sum + discountPrice;
+                        }, 0);
+    
+                        // Add discountPrice field to each course in the cart
+                        paidCourses = cart.items.map((course) => {
+                            const discountPrice = course.Price - course.Price * (course.Sale / 100);
+                            return {
+                                ...course._doc,
+                                discountPrice: discountPrice.toFixed(2)
+                            };
+                        });
+                    }
                 }
-
-                // Tính toán tổng tiền với giá đã giảm
-                const total = cart.items.reduce((sum, course) => {
-                    const discountPrice =
-                        course.Price - course.Price * (course.Sale / 100); // Tính giá sau giảm
-                    return sum + discountPrice;
-                }, 0);
-
-                // Thêm trường discountPrice vào các khóa học trong giỏ hàng
-                const paidCourses = cart.items.map((course) => {
-                    const discountPrice =
-                        course.Price - course.Price * (course.Sale / 100); // Tính giá đã giảm
-                    return {
-                        ...course._doc, // Giữ lại các thuộc tính ban đầu của khóa học
-                        discountPrice: discountPrice.toFixed(2), // Thêm giá sau giảm vào mỗi khóa học
-                    };
-                });
-
+    
                 res.render("pages/paycourses", {
                     title: "Payment",
                     isLoggedIn: true,
-                    paidCourses: paidCourses, // Giỏ hàng với giá đã giảm
-                    total: total.toFixed(2), // Tổng tiền đã giảm
+                    paidCourses: paidCourses,
+                    total: total.toFixed(2)
                 });
             } else {
-                // Người dùng chưa đăng nhập
-                res.render("pages/paycourses", {
-                    title: "Payment",
-                    isLoggedIn: false,
-                    paidCourses: [], // Giỏ hàng trống
-                    total: 0,
-                });
+                res.redirect('/login');
             }
         } catch (error) {
-            console.error("Error in getPayment:", error);
-            res.status(500).send(
-                "An error occurred while processing payment data."
-            );
+            console.error(error);
+            res.status(500).send("Internal Server Error");
         }
     },
     removeCourse: async (req, res) => {
