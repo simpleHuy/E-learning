@@ -115,6 +115,10 @@ const UserService = {
                 req.flash("errorMessage", "Username or password is incorrect!");
                 return res.redirect("/login");
             }
+            if (user.ban === true) {
+                req.flash("errorMessage", "Your account is banned!");
+                return res.redirect("/login");
+            }
             req.logIn(user, (err) => {
                 if (err) {
                     console.error(err);
