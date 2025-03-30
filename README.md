@@ -1,13 +1,12 @@
-# E-learning
+# SkillBoost
 
 This project is a part of Web Application Development in HCMUS.
 
 ## Table of Contents
 
-- [E-learning](#e-learning)
+- [SkillBoost](#skillboost)
   - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
-  - [Features](#features)
   - [Dependencies](#dependencies)
   - [Technologies Used](#technologies-used)
   - [Installation](#installation)
@@ -15,15 +14,7 @@ This project is a part of Web Application Development in HCMUS.
 
 ## Introduction
 
-The E-learning project aims to provide a comprehensive platform for online education. This platform allows users to access courses, participate in discussions, and track their learning progress.
-
-## Features
-
--   User authentication and authorization
--   Course management
--   Interactive lessons
--   Discussion forums
--   Progress tracking
+SkillBoost is an online course marketplace that connects learners with instructors and industry experts across various fields. The project aims to provide a modern, flexible, and effective learning experience, allowing users to easily access high-quality courses.
   
 ## Dependencies
 - Node.js
